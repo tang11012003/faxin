@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>首页-改版</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background-color: #FAFAFC;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: #202536;
+    }
+    .phone-container {
+      width: 375px;
+      min-height: 1026px;
+      background: #FAFAFC;
+      position: relative;
+      overflow-x: hidden;
+      overflow-y: auto;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+    }
+    /* 背景渐变和背景图 */
+    .bg-gradient {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 375px;
+      height: 816px;
+      background: linear-gradient(180deg, #EFF2F9 0%, #FAFAFC 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .bg-pattern {
+      position: absolute;
+      top: -77px;
+      left: -274px;
+      width: 672px;
+      height: 317px;
+      opacity: 0.5;
+      z-index: 1;
+      pointer-events: none;
+      background-image: url('https://image-resource.mastergo.com/55295699515657/55295699515659/c3329ea3f18f5e6690b0d14ebc8053b0.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    /* 顶部状态栏 */
+    .status-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 375px;
+      height: 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 21px 0 21px;
+      z-index: 10;
+    }
+    .status-time {
+      font-size: 14px;
+      font-weight: 600;
+      color: #000000;
+      letter-spacing: -0.28px;
+    }
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-cellular {
+      display: flex;
+      align-items: flex-end;
+      gap: 1.5px;
+      height: 11px;
+    }
+    .status-cellular span {
+      width: 3px;
+      background-color: #000;
+      border-radius: 1px;
+    }
+    .status-cellular span:nth-child(1) { height: 4px; }
+    .status-cellular span:nth-child(2) { height: 6px; }
+    .status-cellular span:nth-child(3) { height: 8px; }
+    .status-cellular span:nth-child(4) { height: 11px; }
+    .status-wifi {
+      width: 15px;
+      height: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .status-battery {
+      width: 22px;
+      height: 11.3px;
+      border: 1px solid rgba(0, 0, 0, 0.35);
+      border-radius: 2.7px;
+      padding: 1px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .status-battery::after {
+      content: '';
+      position: absolute;
+      right: -3px;
+      top: 3px;
+      width: 1.3px;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 0 1px 1px 0;
+    }
+    .battery-level {
+      width: 16px;
+      height: 7.3px;
+      background: #000;
+      border-radius: 1.3px;
+    }
+
+    /* 顶部 Banner 区域 (组 5559) */
+    .banner-container {
+      position: absolute;
+      top: 71px;
+      left: 12px;
+      width: 351px;
+      height: 275px;
+      z-index: 2;
+    }
+    .banner-bg-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 351px;
+      height: 275px;
+    }
+    .banner-text-1 {
+      position: absolute;
+      top: 21px;
+      left: 18px;
+      font-size: 18px;
+      font-weight: 900;
+      color: #003D54;
+      line-height: 16px;
+      letter-spacing: 0.5px;
+    }
+    .banner-text-2 {
+      position: absolute;
+      top: 44px;
+      left: 18px;
+      font-size: 18px;
+      font-weight: 900;
+      color: #003D54;
+      line-height: 16px;
+      letter-spacing: 0.5px;
+    }
+    .banner-illustration {
+      position: absolute;
+      top: -17px;
+      right: -4px;
+      width: 86px;
+      height: 91px;
+      pointer-events: none;
+    }
+
+    /* 核心入口双卡片 */
+    .cards-row {
+      position: absolute;
+      top: 77px;
+      left: 9px;
+      width: 333px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 3;
+    }
+    .entry-card {
+      width: 162px;
+      height: 115px;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .entry-card.pay {
+      background: linear-gradient(180deg, #F0F9F4 5%, rgba(244, 255, 248, 0.75) 100%);
+      box-shadow: inset 1px 1px 3px 0px #FFFFFF;
+    }
+    .entry-card.manage {
+      background: linear-gradient(91deg, #CDECD2 1%, #F0FAF4 87%, #D0EFE9 103%);
+      box-shadow: inset 1px 1px 3px 0px #FFFFFF;
+    }
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      margin: 12px 0 0 12px;
+      gap: 4px;
+    }
+    .card-main-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: #202536;
+      line-height: 13px;
+    }
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 11px;
+      background: #F9CBB3;
+      border-radius: 2px;
+      padding: 0 3px;
+      font-size: 7px;
+      color: #844B2E;
+      line-height: 10px;
+    }
+    .card-subtitle {
+      font-size: 10px;
+      color: #565868;
+      margin: 4px 0 0 12px;
+      line-height: 10px;
+    }
+    .card-btn {
+      position: absolute;
+      left: 12px;
+      top: 51px;
+      width: 72px;
+      height: 30px;
+      background: linear-gradient(270deg, #00A887 0%, #6ED2A6 100%);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .entry-card.manage .card-btn {
+      background: linear-gradient(180deg, #00B493 0%, #60E8AD 100%);
+    }
+    .card-art-pay {
+      position: absolute;
+      right: 8px;
+      top: 25px;
+      width: 53px;
+      height: 90px;
+      pointer-events: none;
+    }
+    .card-art-manage {
+      position: absolute;
+      right: 8px;
+      top: 25px;
+      width: 53px;
+      height: 90px;
+      pointer-events: none;
+    }
+
+    /* 金刚区 (4大功能金刚位) */
+    .grid-menu {
+      position: absolute;
+      top: 212px;
+      left: 12px;
+      width: 327px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      z-index: 3;
+    }
+    .grid-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 62px;
+      position: relative;
+      cursor: pointer;
+    }
+    .grid-icon-wrap {
+      width: 27px;
+      height: 27px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .grid-label {
+      font-size: 12px;
+      color: #202536;
+      line-height: 12px;
+      text-align: center;
+    }
+    .grid-badge {
+      position: absolute;
+      top: 0;
+      right: -2px;
+      background: #F9CBB3;
+      color: #844B2E;
+      font-size: 7px;
+      padding: 0.5px 3px;
+      border-radius: 2px;
+      line-height: 10px;
+      white-space: nowrap;
+    }
+
+    /* 全部下拉与筛选行 */
+    .company-filter-row {
+      position: absolute;
+      top: 366px;
+      left: 16px;
+      width: 343px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 3;
+    }
+    .filter-left-all {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .all-text {
+      font-size: 19px;
+      font-weight: 700;
+      color: #1F2329;
+      line-height: 22px;
+      letter-spacing: -0.3px;
+    }
+    .all-arrow {
+      width: 0;
+      height: 0;
+      border-left: 4.5px solid transparent;
+      border-right: 4.5px solid transparent;
+      border-top: 5.5px solid #1F2329;
+      margin-top: 2px;
+    }
+    .filter-right-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #1F2329;
+      cursor: pointer;
+    }
+    .funnel-icon {
+      width: 15px;
+      height: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 搜索框 */
+    .search-bar {
+      position: absolute;
+      top: 406px;
+      left: 16px;
+      width: 343px;
+      height: 38px;
+      background: #F4F5F7;
+      border-radius: 19px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      z-index: 3;
+    }
+    .search-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8C98A4;
+    }
+    .search-placeholder {
+      font-size: 15px;
+      color: #8C98A4;
+      font-weight: 400;
+    }
+
+    /* 项目卡片列表 */
+    .project-card-list {
+      position: absolute;
+      top: 456px;
+      left: 16px;
+      width: 343px;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 110px;
+    }
+    .project-card {
+      width: 343px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+      position: relative;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 24px;
+      margin-bottom: 12px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .type-tag {
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 16px;
+    }
+    .type-tag.need-clock {
+      background: #FFF0ED;
+      color: #FF6A53;
+    }
+    .type-tag.no-clock {
+      background: #E8F8F0;
+      color: #00B96B;
+    }
+    .project-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1F2329;
+      line-height: 22px;
+      cursor: pointer;
+    }
+    .btn-more-dots {
+      font-size: 20px;
+      font-weight: 900;
+      color: #8C98A4;
+      letter-spacing: 2px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 灰色内嵌信息框 */
+    .project-info-box {
+      background: #F7F8FA;
+      border-radius: 8px;
+      padding: 11px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+    .info-row {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      line-height: 18px;
+    }
+    .info-label {
+      color: #8C98A4;
+      white-space: nowrap;
+    }
+    .info-val {
+      color: #1F2329;
+      font-weight: 500;
+    }
+
+    /* 卡片底部发起人和双按钮 */
+    .card-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .creator-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .creator-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .creator-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1F2329;
+    }
+    .creator-role {
+      font-size: 12px;
+      color: #8C98A4;
+    }
+    .card-btns-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-pay-salary {
+      padding: 7px 15px;
+      background: #F4F5F7;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #1F2329;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-pay-salary:hover {
+      background: #ECEEF2;
+    }
+    .btn-fast-invite {
+      padding: 7px 15px;
+      background: #00D679;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFFFFF;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 214, 121, 0.25);
+      transition: background 0.15s;
+    }
+    .btn-fast-invite:hover {
+      background: #00C46F;
+    }
+
+    /* 快捷邀请模态弹窗 */
+    .invite-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .invite-modal-overlay.active {
+      display: flex;
+    }
+    .invite-modal-card {
+      width: 300px;
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      animation: popIn 0.2s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .invite-modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1F2329;
+      margin-bottom: 4px;
+    }
+    .invite-modal-project {
+      font-size: 13px;
+      color: #00B96B;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .invite-qrcode-box {
+      width: 170px;
+      height: 170px;
+      background: #F8F9FA;
+      border: 1px solid #ECEEF2;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      padding: 8px;
+    }
+    .invite-qr-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .invite-tip-text {
+      font-size: 12px;
+      color: #8C98A4;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 16px;
+    }
+    .invite-btns-bar {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+    }
+    .invite-share-btn {
+      flex: 1;
+      height: 40px;
+      background: #F4F5F7;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1F2329;
+      cursor: pointer;
+    }
+    .invite-confirm-btn {
+      flex: 1;
+      height: 40px;
+      background: #00D679;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #FFFFFF;
+      cursor: pointer;
+    }
+
+    /* 底部导航栏 (菜单栏) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 375px;
+      height: 83px;
+      z-index: 50;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      padding-top: 10px;
+      background: #FFFFFF;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
+    .nav-bg-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 375px;
+      height: 83px;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      width: 70px;
+    }
+    .nav-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-text {
+      font-size: 10px;
+      color: #9497B1;
+      line-height: 12px;
+    }
+    .nav-item.active .nav-text {
+      color: #00D679;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-container">
+    <!-- 渐变底色与图案 -->
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+
+    <!-- 状态栏 -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <div class="status-cellular">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="status-wifi">
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-4.95-3.535a7 7 0 019.9 0l-1.414 1.414a5 5 0 00-7.072 0L3.05 5.965zM.222 3.136a11 11 0 0115.556 0l-1.414 1.414a9 9 0 00-12.728 0L.222 3.136z" fill="#000"/></svg>
+        </div>
+        <div class="status-battery">
+          <div class="battery-level"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 顶部运营 Banner 区域 -->
+    <div class="banner-container">
+      <div class="banner-bg-svg">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -59.25 375.24 334.25" width="375.24" height="334.25">
+  <defs><linearGradient id="grad_paint_18_10407" x1="0.5000" y1="-0.0000" x2="0.5000" y2="1.0000"><stop offset="0.04" stop-color="#8BDFE0"/><stop offset="0.37" stop-color="#AFECE4"/><stop offset="1" stop-color="#F1FFF2"/></linearGradient><linearGradient id="grad_paint_14_03312" x1="0.5000" y1="-0.0000" x2="0.5000" y2="1.0000"><stop offset="0" stop-color="#87DEE0"/><stop offset="0.37" stop-color="#C6F4E7"/><stop offset="1" stop-color="#F8F8F8"/></linearGradient></defs>
+  <path d="M262.43878,8.2254887L263.61237,9.4410744C268.68738,14.697679,275.68048,17.666563,282.98715,17.666563L336.63684,17.666563C344.5694,17.666563,351,24.097174,351,32.029736L351,260.63684C351,268.5694,344.5694,275,336.63684,275L14.363178,275C6.4306097,275,0,268.5694,0,260.63684L0,14.363168C0,6.4306097,6.4306097,-2.0867358e-17,14.363172,-4.6608557e-17L243.06401,-7.8874379e-16C250.3707,-8.1245404e-16,257.36377,2.9688845,262.43878,8.2254887" fill="url(#grad_paint_18_10407)" fill-rule="evenodd"/>
+  <path d="M262.38535,7.8878961L263.66583,9.1683702C268.71637,14.218906,275.56635,17.056267,282.70889,17.056267L336.63684,17.056267C344.5694,17.056267,351,23.486877,351,31.419439L351,228.01535L0,228.01535L0,14.363165C0,6.4306097,6.4306097,-2.0146485e-17,14.363172,-4.4998443e-17L243.34229,-7.6236814e-16C250.48482,-7.84745e-16,257.33481,2.8373613,262.38535,7.8878961" fill="url(#grad_paint_14_03312)" fill-rule="evenodd"/>
+  <path d="M375.23785400390625,24.686702728271484C375.23785400390625,71.04260387363206,337.65897121371995,108.62148666381836,291.3030700683594,108.62148666381836C244.9471689229988,108.62148666381836,207.3682861328125,71.04260387363206,207.3682861328125,24.686702728271484C207.3682861328125,-21.669198417089078,244.9471689229988,-59.24808120727539,291.3030700683594,-59.24808120727539C337.65897121371995,-59.24808120727539,375.23785400390625,-21.669198417089078,375.23785400390625,24.686702728271484Z" fill="#AFF6CD"/>
+</svg>
+      </div>
+      <div class="banner-text-1">考勤记工价</div>
+      <div class="banner-text-2">定点打卡 杜绝虚假考勤</div>
+      <div class="banner-illustration">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 22" width="33" height="22">
+  <path d="M0,11C0,17.075134,4.9248667,22,11,22L30.175676,22C31.735508,22,33,20.735508,33,19.175674L33,2.8243244C33,1.2644929,31.735508,0,30.175674,0L11,0C4.9248667,0,0,4.9248667,0,11Z" fill="none"/>
+</svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.97 0 69.7 38.83" width="69.7" height="38.83">
+  <defs><linearGradient id="grad_paint_11_43675" x1="0.2808" y1="-0.1022" x2="0.7192" y2="1.1022"><stop offset="0.09" stop-color="#23263A"/><stop offset="0.81" stop-color="#222733"/></linearGradient></defs>
+  <path d="M0.53377956,14.5C-2.9662201,27.5,11.534355,37.5,21.033779,37.5C21.877718,37.5,22.938726,37.53157,24.165264,37.568066C36.74472,37.942375,66.735626,38.83477,58.533779,11.5Q54.533779,0,41.033779,0L15.533781,0Q4.0337796,1.5,0.53377956,14.5Z" fill="url(#grad_paint_11_43675)"/>
+</svg>
+        
+      </div>
+
+      <!-- 核心双卡片 -->
+      <div class="cards-row">
+        <!-- 一键发薪卡片 -->
+        <div class="entry-card pay">
+          <div class="card-title-row">
+            <span class="card-main-title">一键发薪</span>
+            <span class="tag-badge">驻厂适用</span>
+          </div>
+          <div class="card-subtitle">批量操作秒到账</div>
+          <button class="card-btn" onclick="window.location.href='create_project.html'">创建项目</button>
+          <div class="card-art-pay">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 43 7" width="43" height="7">
+  <defs><linearGradient id="grad_paint_11_43720" x1="0.0000" y1="0.5000" x2="1.0000" y2="0.5000"><stop offset="0" stop-color="#A1DFB4"/><stop offset="1" stop-color="#00BA94"/></linearGradient></defs>
+  <path d="M0,7L43,7L43,6C43,2.686291,40.313709,0,37,0L6.0000005,0C2.6862915,0,0,2.686291,0,6L0,7Z" fill="url(#grad_paint_11_43720)"/>
+</svg>
+          </div>
+        </div>
+
+        <!-- 去管理卡片 -->
+        <div class="entry-card manage">
+          <div class="card-title-row">
+            <span class="card-main-title">日薪周薪考勤</span>
+            <span class="tag-badge">老用户免费体验</span>
+          </div>
+          <div class="card-subtitle">智能考勤计工价</div>
+          <button class="card-btn">去管理</button>
+          <div class="card-art-manage">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="9.95 0 29.09 90" width="29.09" height="90">
+  <defs><linearGradient id="grad_paint_11_43501" x1="-0.0086" y1="0.4911" x2="1.0086" y2="0.5089"><stop offset="0.01" stop-color="#CDECD2"/><stop offset="0.87" stop-color="#F0FAF4"/><stop offset="1.03" stop-color="#D0EFE9"/></linearGradient></defs>
+  <path d="M9.953125,90L39.046875,90L39.046875,4.1169744C39.046875,1.8432319,37.203644,0,34.929901,0L14.0700994,0C11.7963569,0,9.953125,1.8432319,9.953125,4.1169753L9.953125,90Z" fill="url(#grad_paint_11_43501)"/>
+</svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="9.84 9.89 29.32 29.46" width="29.32" height="29.46">
+  <defs><linearGradient id="grad_paint_11_43530" x1="0.5000" y1="-0.0000" x2="0.5000" y2="1.0000"><stop offset="0" stop-color="#00B493"/><stop offset="1" stop-color="#60E8AD"/></linearGradient></defs>
+  <path d="M24.499940750488282,39.341943020324706C20.451442750488283,39.341943020324706,16.788425950488282,37.692628020324705,14.135182350488282,35.02877302032471C11.481939450488282,32.36303602032471,9.842231750488281,28.682769020324706,9.842231750488281,24.615203020324707C9.842231750488281,20.861255020324705,11.24124865048828,17.434146920324707,13.542857150488281,14.834532220324707C16.22806645048828,11.800389020324706,20.143057750488282,9.888463020324707,24.50182275048828,9.888463020324707C28.341596750488282,9.888463020324707,31.837259750488283,11.371528120324706,34.45101175048828,13.801109520324708C37.34682475048828,16.49140832032471,39.15953275048828,20.341710020324705,39.15953275048828,24.61709302032471C39.15953275048828,28.42205102032471,37.72290775048828,31.888833020324707,35.36676975048828,34.50167402032471C32.68531775048828,37.475364020324704,28.809818750488283,39.343835020324704,24.50182375048828,39.343835020324704L24.499940750488282,39.341943020324706Z" fill="#080103"/>
+  <path d="M24.49994024420166,11.8684172075708C27.57063224420166,11.8684172075708,30.53226024420166,12.984966747570802,32.84327224420166,15.0121369475708C35.60557824420166,17.4360504475708,37.188874244201656,20.9368400475708,37.188874244201656,24.6171089475708C37.188874244201656,27.9384179475708,35.92336524420166,31.084026947570802,33.62739424420166,33.4720449475708C31.21484424420166,35.9828669475708,27.97303524420166,37.3639119475708,24.499939244201663,37.3639119475708C21.38787924420166,37.3639119475708,18.39428424420166,36.2209119475708,16.07199044420166,34.1446159475708C13.36609674420166,31.7263709475708,11.81288671420166,28.2520299475708,11.81288671420166,24.6171059475708C11.81288671420166,21.4072629475708,13.00317934420166,18.3410015475708,15.16751864420166,15.9813227475708C17.565028144201662,13.368483047570802,20.96666824420166,11.868415117570802,24.49994024420166,11.8684172075708Z
+M24.50181724420166,10.9407909662708C20.54169944420166,10.9407909662708,16.97646334420166,12.6392309475708,14.48869464420166,15.3522009475708C12.25478074420166,17.7893390475708,10.88961124420166,21.0426369475708,10.88961124420166,24.6152169475708C10.88961124420166,28.6808939475708,12.65530584420166,32.3309339475708,15.45898054420166,34.8360849475708C17.86401174420166,36.984169947570805,21.03060324420166,38.2896449475708,24.50181724420166,38.2896449475708C28.34535924420166,38.2896449475708,31.81845424420166,36.689444947570806,34.29305924420166,34.1143889475708C36.65859924420166,31.6545779475708,38.114033244201664,28.3049309475708,38.114033244201664,24.6152169475708C38.114033244201664,20.5060882475708,36.30884424420166,16.8182625475708,33.45251724420166,14.311220847570802C31.06065224420166,12.212258847570801,27.92978524420166,10.9389009475708,24.501822244201662,10.9389009475708L24.50181724420166,10.9407909662708Z" fill="url(#grad_paint_11_43530)"/>
+</svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.41 7.04" width="12.41" height="7.04">
+  <defs><linearGradient id="grad_paint_11_43527" x1="0.1585" y1="1.0915" x2="0.8415" y2="-0.0915"><stop offset="0.37" stop-color="#FFFFFF"/><stop offset="0.47" stop-color="rgb(255,255,255)" stop-opacity="0.98"/><stop offset="0.6" stop-color="rgb(255,255,255)" stop-opacity="0.91"/><stop offset="0.74" stop-color="rgb(255,255,255)" stop-opacity="0.81"/><stop offset="0.86" stop-color="rgb(255,255,255)" stop-opacity="0.7"/></linearGradient><linearGradient id="grad_paint_11_43517" x1="0.3994" y1="1.0704" x2="0.6006" y2="-0.0704"><stop offset="0.13" stop-color="rgb(255,255,255)" stop-opacity="0.7"/><stop offset="0.19" stop-color="rgb(255,255,255)" stop-opacity="0.78"/><stop offset="0.28" stop-color="rgb(255,255,255)" stop-opacity="0.88"/><stop offset="0.38" stop-color="rgb(255,255,255)" stop-opacity="0.95"/><stop offset="0.49" stop-color="rgb(255,255,255)" stop-opacity="0.99"/><stop offset="0.61" stop-color="#FFFFFF"/></linearGradient><linearGradient id="grad_paint_11_43523" x1="0.0000" y1="0.5000" x2="1.0000" y2="0.5000"><stop offset="0.15" stop-color="#FFFFFF"/><stop offset="0.99" stop-color="rgb(255,255,255)" stop-opacity="0.5"/></linearGradient><linearGradient id="grad_paint_11_43520" x1="0.0000" y1="0.5000" x2="1.0000" y2="0.5000"><stop offset="0.31" stop-color="#FFFFFF"/><stop offset="0.48" stop-color="rgb(255,255,255)" stop-opacity="0.77"/><stop offset="0.98" stop-color="rgb(255,255,255)" stop-opacity="0.65"/></linearGradient></defs>
+  <path d="M11.867196580432129,5.52973020978241C11.49299738043213,3.4647747097824095,9.941668280432129,1.9533709297824098,7.788610685432129,1.7002098597824098C7.754763452432129,1.6964320497824097,7.732198148932129,1.6643136097824098,7.735959750132129,1.6303069897824096C7.760404421432129,1.4262671497824098,7.852544990432129,1.1428789047824097,7.976650600432129,1.1579932887724096C10.187999980432128,1.4281567897824097,11.968738080432129,3.1171514097824096,12.38618708043213,5.28979430978241C12.41251278043213,5.41259560978241,12.14173408043213,5.5297288097824095,11.940531780432128,5.5750712097824096C11.90668488043213,5.58262910978241,11.874718680432128,5.56373730978241,11.867196580432129,5.52973020978241Z" fill="#FFFFFF"/>
+  <path d="M10.631775348614502,5.998905894671631C10.449376348614502,4.343918394671631,9.240279648614502,3.1612458246716306,7.630658853614502,2.9987697046716306C7.596811620614502,2.994991834671631,7.574246317114502,2.962873394671631,7.578007918314502,2.928866774671631C7.602452589614502,2.724826934671631,7.694593158614502,2.4414386896716307,7.818698768614502,2.456553073661631C9.559948648614501,2.668150144671631,10.947682348614503,4.052972794671631,11.167689048614502,5.79864549467163C11.186492248614503,5.923336994671631,10.906313148614501,6.019687694671631,10.701348748614501,6.049916494671631C10.667502148614503,6.055583994671631,10.635535748614501,6.032913694671631,10.631775348614502,5.998905894671631Z" fill="#FFFFFF"/>
+  <path d="M9.356863824688721,6.27224302991333C9.36814572468872,5.14624702991333,8.491880524688721,4.33953445991333,7.47458433368872,4.26018613991333C7.440737090688721,4.25640832991333,7.418171793888721,4.22428988991333,7.421933394308721,4.19028323991333C7.446378059688721,3.98624339991333,7.538518634688721,3.70285512491333,7.66262419468872,3.7179695089033302C8.89616522468872,3.86722082991333,9.864571124688721,4.8855290299133305,9.915342524688722,6.15132952991333C9.915342524688722,6.27790882991333,9.623880124688721,6.33269762991333,9.41891742468872,6.33269762991333C9.385070324688721,6.33269762991333,9.356863824688721,6.30624792991333,9.356863824688721,6.27224302991333Z" fill="#FFFFFF"/>
+  <path d="M0.49266496712579866,5.346297634295654C0.4907841666954987,6.553531484295654,2.969149932495499,7.0409598842956544,4.121835132495498,6.292814684295655C4.351244332495499,6.139785584295654,4.563728432495498,5.964084804295655,4.757409732495499,5.771380004295654C4.717921432495499,5.744930564295654,4.522359532495499,5.601346764295655,4.294831432495499,5.453985124295654C4.1293567324954985,5.346297634295654,3.9431962324954988,5.2386101702956545,3.8153292324954986,5.163039684295654C2.435117432495499,6.763238884295655,0.49266496712579866,6.340046084295654,0.49266496712579866,5.348187294295654L0.49266496712579866,5.346297634295654Z" fill="url(#grad_paint_11_43527)"/>
+  <path d="M6.750630408148194,1.1052138L4.533641108148194,1.1052138L4.533641108148194,0.060456101C4.533641108148194,0.026449453,4.505434708148194,0,4.473468508148193,0C3.5727570081481934,0,3.3753161081481933,0.22293212,3.3753161081481933,0.51387751L3.3753161081481933,1.1052138L1.2711491181481933,1.1052138C1.1451627461481935,1.1052138,1.0906310081481934,1.3980488,1.0906310081481934,1.603977C1.0906310081481934,1.6379836,1.1169564781481933,1.6663228,1.1508037221481933,1.6663228L3.3753161081481933,1.6663228L3.3753161081481933,2.4069104L1.9010838881481935,2.4069104C1.7750976081481933,2.4069104,1.7205657381481934,2.7091908,1.7205657381481934,2.907563C1.7205657381481934,2.9415698,1.7468912581481932,2.9680192,1.7807384681481935,2.9680192L4.740485708148194,2.9680192C4.6803131081481935,3.4988997,4.535523408148194,3.9693248,4.334318608148193,4.3774033C4.697235808148193,4.5493269,5.062034108148193,4.7344718,5.445634808148194,4.9045053C5.893168408148194,4.1828098,6.165826808148194,3.3553166,6.171468208148194,2.529712C6.171468208148194,2.4616988,6.116936208148194,2.4069104,6.051122708148194,2.4069104L4.533641108148194,2.4069104L4.533641108148194,1.6663228L6.630286208148194,1.6663228C6.756272308148193,1.6663228,6.810803908148193,1.384824,6.810803908148193,1.1675595C6.810803908148193,1.1335528,6.784479108148194,1.1052138,6.750630408148194,1.1052138Z" fill="url(#grad_paint_11_43517)"/>
+  <path d="M7.425695883026123,6.974793919592285C7.982293883026124,6.974793919592285,8.127084983026123,6.277658719592285,8.153410183026123,5.729774519592285C8.159050683026123,5.622086919592285,8.074434083026123,5.531402019592285,7.969130283026123,5.529513719592285C6.447886983026123,5.482282319592285,5.391103983026123,4.875831689592285,4.338080883026123,4.377068519592285C5.502048283026123,5.380262519592285,6.000354183026123,6.976683819592285,7.427576283026124,6.976683819592285L7.425695883026123,6.974793919592285Z" fill="url(#grad_paint_11_43523)"/>
+  <path d="M0.49266291,5.347538208410644C0.49266291,4.829882908410644,1.0586634,4.457699478410644,1.7450093,4.457699478410644C2.4313555,4.457699478410644,3.1477869,4.763759408410644,3.8153288,5.1623921084106446C4.1331172,5.351317808410645,4.4471436,5.562914708410645,4.7574091,5.772622108410644C5.6411967,6.367737808410645,6.4986596,6.945849408410645,7.3561206,6.976077808410645C5.9815488,6.925068808410645,5.4794812,5.3645438084106445,4.3343201,4.378352638410645C3.5727575,4.017504218410645,2.8130774,3.7114458084106445,1.8766381,3.7114458084106445C0.77472419,3.7114458084106445,0,4.433141108410645,0,5.347541208410645C0,5.483567908410644,0.11094357,5.595033208410644,0.24633254,5.595033208410644C0.38172153,5.595033208410644,0.49266434,5.483567908410644,0.49266291,5.347538208410644Z" fill="#FFFFFF"/>
+  <path d="M0.0018822352,5.346644028165283C0.0018822352,6.251597388165283,0.79541075,6.975182288165283,1.8785195,6.975182288165283C2.73034,6.975182288165283,3.4881411,6.716353888165283,4.1199546,6.293161288165283C2.96539,7.039416288165283,0.49266508,6.553877988165283,0.49266508,5.346644028165283C0.49266508,5.210617448165284,0.38172221,5.099152088165283,0.24633254,5.099152088165283C0.11094285,5.099152088165283,0,5.210617448165284,0,5.346644028165283L0.0018822352,5.346644028165283Z" fill="url(#grad_paint_11_43520)"/>
+</svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 金刚区 4 大金刚位 -->
+      <div class="grid-menu">
+        <div class="grid-item">
+          <span class="grid-badge">门店适用</span>
+          <div class="grid-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="2.25 2.25 22.5 22.5" width="22.5" height="22.5">
+  <path d="M2.25,7.875C2.25,4.7684026,4.7684026,2.25,7.875,2.25C7.875,2.25,19.125,2.25,19.125,2.25C22.231575,2.25,24.75,4.7684026,24.75,7.875C24.75,7.875,24.75,19.125,24.75,19.125C24.75,22.231575,22.231575,24.75,19.125,24.75C19.125,24.75,7.875,24.75,7.875,24.75C4.7684026,24.75,2.25,22.231575,2.25,19.125C2.25,19.125,2.25,7.875,2.25,7.875C2.25,7.875,2.25,7.875,2.25,7.875Z
+M7.875,4.5C6.0110434999999995,4.5,4.5,6.0110434999999995,4.5,7.875C4.5,7.875,4.5,19.125,4.5,19.125C4.5,20.989014,6.0110434999999995,22.5,7.875,22.5C7.875,22.5,19.125,22.5,19.125,22.5C20.989014,22.5,22.5,20.989014,22.5,19.125C22.5,19.125,22.5,7.875,22.5,7.875C22.5,6.0110434999999995,20.989014,4.5,19.125,4.5C19.125,4.5,7.875,4.5,7.875,4.5C7.875,4.5,7.875,4.5,7.875,4.5Z" fill="#202536" fill-rule="evenodd"/>
+  <path d="M12.375,13.5C12.375,11.0147176,14.3897176,9,16.875,9C16.875,9,22.5,9,22.5,9C23.742675,9,24.75,10.0073599,24.75,11.25C24.75,11.25,24.75,15.75,24.75,15.75C24.75,16.992641,23.742675,18,22.5,18C22.5,18,16.875,18,16.875,18C14.3897176,18,12.375,15.9852824,12.375,13.5C12.375,13.5,12.375,13.5,12.375,13.5Z
+M16.875,11.25C15.6323588,11.25,14.625,12.2573588,14.625,13.5C14.625,14.742640999999999,15.6323588,15.75,16.875,15.75C16.875,15.75,22.5,15.75,22.5,15.75C22.5,15.75,22.5,11.25,22.5,11.25C22.5,11.25,16.875,11.25,16.875,11.25C16.875,11.25,16.875,11.25,16.875,11.25Z" fill="#202536" fill-rule="evenodd"/>
+  <path d="M15.75,13.5C15.75,12.87867939,16.25367939,12.375,16.875,12.375C16.875,12.375,16.9875001,12.375,16.9875001,12.375C17.608815,12.375,18.1125,12.87867939,18.1125,13.5C18.1125,14.121315,17.608815,14.625,16.9875001,14.625C16.9875001,14.625,16.875,14.625,16.875,14.625C16.25367939,14.625,15.75,14.121315,15.75,13.5C15.75,13.5,15.75,13.5,15.75,13.5Z" fill="#202536" fill-rule="evenodd"/>
+</svg>
+          </div>
+          <span class="grid-label">极速发薪</span>
+        </div>
+        <div class="grid-item">
+          <div class="grid-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="4.5 2.25 18 22.5" width="18" height="22.5">
+  <path d="M9,19.125C9,18.50367939,9.50367939,18,10.125,18C10.125,18,16.875,18,16.875,18C17.496315,18,18,18.50367939,18,19.125C18,19.746315,17.496315,20.25,16.875,20.25C16.875,20.25,10.125,20.25,10.125,20.25C9.50367939,20.25,9,19.746315,9,19.125C9,19.125,9,19.125,9,19.125Z" fill="#202536" fill-rule="evenodd"/>
+  <path d="M9,14.625C9,14.00367939,9.50367939,13.5,10.125,13.5C10.125,13.5,16.875,13.5,16.875,13.5C17.496315,13.5,18,14.00367939,18,14.625C18,15.246315,17.496315,15.75,16.875,15.75C16.875,15.75,10.125,15.75,10.125,15.75C9.50367939,15.75,9,15.246315,9,14.625C9,14.625,9,14.625,9,14.625Z" fill="#202536" fill-rule="evenodd"/>
+  <path d="M9,10.125C9,9.50367939,9.50367939,9,10.125,9C10.125,9,11.25,9,11.25,9C11.871315,9,12.375,9.50367939,12.375,10.125C12.375,10.746315,11.871315,11.25,11.25,11.25C11.25,11.25,10.125,11.25,10.125,11.25C9.50367939,11.25,9,10.746315,9,10.125C9,10.125,9,10.125,9,10.125Z" fill="#202536" fill-rule="evenodd"/>
+  <path d="M9,4.5C7.7573588,4.5,6.75,5.5073588,6.75,6.75C6.75,6.75,6.75,20.25,6.75,20.25C6.75,21.492676,7.7573588,22.5,9,22.5C9,22.5,18,22.5,18,22.5C19.242675,22.5,20.25,21.492676,20.25,20.25C20.25,20.25,20.25,9.931983899999999,20.25,9.931983899999999C20.25,9.6336112,20.131425,9.3474674,19.920487,9.1364846C19.920487,9.1364846,15.613515,4.8295014,15.613515,4.8295014C15.402533,4.61853,15.116389,4.5,14.818016,4.5C14.818016,4.5,9,4.5,9,4.5C9,4.5,9,4.5,9,4.5Z
+M4.5,6.75C4.5,4.2647176,6.5147176,2.25,9,2.25C9,2.25,14.818016,2.25,14.818016,2.25C15.713123,2.25,16.571588,2.60557875,17.204513,3.23851502C17.204513,3.23851502,21.511463,7.5454988,21.511463,7.5454988C22.144388,8.1784353,22.5,9.0368776,22.5,9.931983899999999C22.5,9.931983899999999,22.5,20.25,22.5,20.25C22.5,22.735239,20.485236999999998,24.75,18,24.75C18,24.75,9,24.75,9,24.75C6.5147176,24.75,4.5,22.735239,4.5,20.25C4.5,20.25,4.5,6.75,4.5,6.75C4.5,6.75,4.5,6.75,4.5,6.75Z" fill="#202536" fill-rule="evenodd"/>
+  <path d="M15.75,3.375C15.75,3.375,15.75,5.625,15.75,5.625C15.75,7.4889565,17.2610435,9,19.125,9C19.125,9,21.375,9,21.375,9C21.375,9,21.375,11.25,21.375,11.25C21.375,11.25,19.125,11.25,19.125,11.25C16.0184026,11.25,13.5,8.7315974,13.5,5.625C13.5,5.625,13.5,3.375,13.5,3.375C13.5,3.375,15.75,3.375,15.75,3.375C15.75,3.375,15.75,3.375,15.75,3.375Z" fill="#202536" fill-rule="evenodd"/>
+</svg>
+          </div>
+          <span class="grid-label">发薪账单</span>
+        </div>
+        <div class="grid-item">
+          <div class="grid-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="6.14 2.18 18 20.73" width="18" height="20.73">
+  <path d="M19.97140250631714,4.523084402105713L22.13636750631714,3.282790202105713L22.13841750631714,3.281615002105713L23.21769250631714,2.6633058221057127C23.62678050631714,2.4289422021057128,24.136365506317137,2.724290432105713,24.136365506317137,3.195754602105713L24.136365506317137,18.935064502105714C24.136365506317137,21.129858502105712,21.83382750631714,22.909090502105713,18.99350650631714,22.909090502105713L9.378993006317138,22.909090502105713C7.588138206317138,22.909090502105713,6.136363506317139,21.787264502105714,6.136363506317139,20.403423502105714L6.136363506317139,3.115960502105713C6.136363506317139,2.641889152105713,6.651030596317138,2.3468712021057128,7.060109736317139,2.5864499221057127L8.13362090631714,3.215155702105713L8.136363506317139,3.216761902105713L10.358560606317138,4.518199902105713C10.548569706317139,4.629479402105713,10.783635606317139,4.630420702105713,10.974529706317139,4.520666402105713L14.86000680631714,2.286715762105713C15.049380806317139,2.1778356121057127,15.28235770631714,2.177836622105713,15.471730706317139,2.2867185521057127L19.36050150631714,4.522609502105713C19.54958150631714,4.631322402105713,19.782154506317138,4.631503602105713,19.97140250631714,4.523084402105713Z
+M11.971405506317138,6.254517102105713L15.16585970631714,4.417869802105713L18.36361450631714,6.2564530021057125Q19.664025506317138,7.004136102105713,20.96559750631714,6.258474802105713L22.13636750631714,5.587748302105712L22.13636750631714,18.935064502105714Q22.13636750631714,19.599079502105713,21.40716350631714,20.162554502105714Q20.44105650631714,20.909090502105713,18.99350650631714,20.909090502105713L9.378993006317138,20.909090502105713Q8.136363506317139,20.909090502105713,8.136363506317139,20.403423502105714L8.136363506317139,5.5345111021057125L9.34783170631714,6.244011902105713Q10.656570906317139,7.0104804021057125,11.971405506317138,6.254517102105713Z" fill="#202536" fill-rule="evenodd"/>
+</svg>
+          </div>
+          <span class="grid-label">预支薪资</span>
+        </div>
+        <div class="grid-item">
+          <span class="grid-badge">海量简历</span>
+          <div class="grid-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0.12 0.01 23.89 24.96" width="23.89" height="24.96">
+  <path d="M22.74055810407715,39.19248170507812Q25.92627480407715,42.48352670507812,30.43947410407715,42.48352670507812Q34.952672804077146,42.483524705078125,38.13838780407715,39.19248170507812Q41.30895280407715,35.917092705078126,41.30895280407715,31.292489705078125Q41.30895280407715,26.667886705078125,38.13838780407715,23.392498505078123Q34.952669804077146,20.101454305078125,30.43947410407715,20.101454305078125Q25.92627480407715,20.101454305078125,22.74055810407715,23.392498505078123Q19.56999640407715,26.667885805078125,19.56999560407715,31.292490705078123Q19.569996004077147,35.917092705078126,22.74055810407715,39.19248170507812Z
+M36.49487580407715,37.60156870507812Q33.98334380407715,40.19613870507813,30.43947410407715,40.19613870507813Q26.895604104077147,40.19614070507812,24.38407040407715,37.60156870507812Q21.85738270407715,34.99134070507812,21.85738240407715,31.292490705078123Q21.85738320407715,27.593637505078124,24.38407090407715,24.983411805078124Q26.895604104077147,22.388840705078124,30.43947410407715,22.388841105078125Q33.98334180407715,22.388841105078125,36.49487580407715,24.983411805078124Q39.021564804077144,27.593638405078124,39.021564804077144,31.292489705078125Q39.021564804077144,34.99134070507812,36.49487580407715,37.60156870507812Z" fill="#202536" fill-rule="evenodd" transform="matrix(-1,0,0,-1,41.4273796081543,42.49029541015625)"/>
+  <path d="M10.23432110616455,10.106716866589355Q10.132976506164551,10.003041166589355,10.07825730616455,9.868783266589356Q10.02353790616455,9.734525146589355,10.02353760616455,9.589544296589356Q10.02353760616455,9.516675236589355,10.03775360616455,9.445206286589356Q10.05196950616455,9.373737336589356,10.07985520616455,9.306415136589356Q10.10774110616455,9.239092916589355,10.148225106164551,9.178504526589355Q10.18870880616455,9.117916106589355,10.240235106164551,9.066389906589356Q10.291761206164551,9.014863686589356,10.35234950616455,8.974379806589356Q10.41293790616455,8.933895930589355,10.48026010616455,8.906010154589355Q10.547582106164551,8.878124374589355,10.619051206164551,8.863908330589355Q10.69052030616455,8.849692285059355,10.763389606164552,8.849692285059355Q10.84882260616455,8.849692285059355,10.932006806164551,8.869162943589355Q11.01519110616455,8.888633601589355,11.091748706164552,8.926550097589356Q11.168306306164551,8.964466606589356,11.234208106164552,9.018833246589356Q11.30010990616455,9.073199896589356,11.351886306164552,9.141155156589356Q12.209012506164552,10.142222666589355,12.209012506164552,11.209175566589355Q12.209012506164552,12.276129466589357,11.351884406164551,13.277198266589355Q11.300107006164552,13.345152866589356,11.234205706164552,13.399519466589355Q11.168304406164552,13.453885566589356,11.09174730616455,13.491801766589354Q11.015189606164551,13.529717466589355,10.932005406164551,13.549188166589357Q10.84882160616455,13.568658866589356,10.763389606164552,13.568658866589356Q10.69052030616455,13.568658866589356,10.619051206164551,13.554442366589356Q10.547582106164551,13.540226466589356,10.480259906164552,13.512340566589355Q10.41293790616455,13.484454666589356,10.35234980616455,13.443970666589355Q10.29176140616455,13.403487166589356,10.24023530616455,13.351961166589355Q10.18870900616455,13.300435066589355,10.148225306164552,13.239846266589355Q10.10774130616455,13.179257866589356,10.079855406164551,13.111935566589356Q10.05196950616455,13.044613366589356,10.03775360616455,12.973144566589355Q10.02353760616455,12.901676166589356,10.02353760616455,12.828807066589356Q10.02353760616455,12.683826466589355,10.07825680616455,12.549568666589355Q10.13297630616455,12.415310366589356,10.234320906164552,12.311634766589355Q10.73212430616455,11.727989166589357,10.73212430616455,11.209175566589355Q10.73212430616455,10.690362066589355,10.23432110616455,10.106716866589355Z
+M6.967629906164551,10.106716866589355Q6.866285186164551,10.003041166589355,6.8115657791645505,9.868783266589356Q6.756846368314551,9.734525146589355,6.756846368314551,9.589544296589356Q6.756846368314551,9.516675236589355,6.77106241516455,9.445206286589356Q6.785278462164551,9.373737336589356,6.813164241164551,9.306415136589356Q6.841050021164551,9.239092916589355,6.881533906164551,9.178504526589355Q6.922017786164551,9.117916106589355,6.973543986164551,9.066389906589356Q7.025070186164551,9.014863686589356,7.085658606164551,8.974379806589356Q7.1462469961645505,8.933895930589355,7.213569226164551,8.906010154589355Q7.28089141616455,8.878124374589355,7.352360366164551,8.863908330589355Q7.4238292561645505,8.849692285059355,7.4966983761645505,8.849692285059355Q7.582131086164551,8.849692285059355,7.66531544616455,8.869162943589355Q7.748499806164551,8.888633601589355,7.825057506164551,8.926550097589356Q7.9016151061645505,8.964466606589356,7.967516706164551,9.018833246589356Q8.033418206164551,9.073199896589356,8.085194806164552,9.141155156589356Q8.942321306164551,10.142222666589355,8.942321306164551,11.209175566589355Q8.942321306164551,12.276129466589357,8.08519330616455,13.277198266589355Q8.033416506164551,13.345152866589356,7.96751500616455,13.399519466589355Q7.901613706164551,13.453885566589356,7.82505620616455,13.491801766589354Q7.748498676164551,13.529717466589355,7.6653146761645505,13.549188166589357Q7.5821306661645504,13.568658866589356,7.4966983761645505,13.568658866589356Q7.4238292561645505,13.568658866589356,7.352360366164551,13.554442366589356Q7.280891476164551,13.540226466589356,7.213569256164551,13.512340566589355Q7.14624702616455,13.484454666589356,7.085658606164551,13.443970666589355Q7.025070186164551,13.403487166589356,6.973544006164551,13.351961166589355Q6.922017796164551,13.300435066589355,6.881533906164551,13.239846266589355Q6.841050029164551,13.179257866589356,6.813164241164551,13.111935566589356Q6.785278462164551,13.044613366589356,6.77106241416455,12.973144566589355Q6.756846368314551,12.901676166589356,6.756846368314551,12.828807066589356Q6.756846368314551,12.683826466589355,6.811565708164551,12.549568666589355Q6.866285046164551,12.415310366589356,6.967629666164551,12.311634766589355Q7.465433116164551,11.727989166589357,7.465433116164551,11.209175566589355Q7.465433056164551,10.690362066589355,6.967629906164551,10.106716866589355Z
+M13.35249180616455,10.106716866589355Q13.251147306164551,10.003041166589355,13.19642830616455,9.868783266589356Q13.141708806164552,9.734525146589355,13.14170840616455,9.589544296589356Q13.14170840616455,9.516675236589355,13.15592430616455,9.445206286589356Q13.170140306164551,9.373737336589356,13.19802570616455,9.306415136589356Q13.225911106164551,9.239092916589355,13.26639460616455,9.178504526589355Q13.30687900616455,9.117916106589355,13.35840510616455,9.066389906589356Q13.40993120616455,9.014863686589356,13.47051910616455,8.974379806589356Q13.53110790616455,8.933895930589355,13.59843020616455,8.906010154589355Q13.66575240616455,8.878124374589355,13.73722170616455,8.863908330589355Q13.808691006164551,8.849692285059355,13.881560306164552,8.849692285059355Q13.96699330616455,8.849692285059355,14.050177606164551,8.869162943589355Q14.133361806164551,8.888633601589355,14.20991900616455,8.926550097589356Q14.28647710616455,8.964466606589356,14.35237840616455,9.018833246589356Q14.41828060616455,9.073199896589356,14.47005700616455,9.141155156589356Q15.32718280616455,10.142222666589355,15.32718280616455,11.209175566589355Q15.32718280616455,12.276129466589357,14.470055106164551,13.277198266589355Q14.41827770616455,13.345152866589356,14.352376906164551,13.399519466589355Q14.28647520616455,13.453885566589356,14.20991800616455,13.491801766589354Q14.13335990616455,13.529717466589355,14.05017610616455,13.549188166589357Q13.96699240616455,13.568658866589356,13.881560306164552,13.568658866589356Q13.808691006164551,13.568658866589356,13.73722170616455,13.554442366589356Q13.66575240616455,13.540226466589356,13.59843020616455,13.512340566589355Q13.53110790616455,13.484454666589356,13.47051950616455,13.443970666589355Q13.40993120616455,13.403487166589356,13.35840560616455,13.351961166589355Q13.30687900616455,13.300435066589355,13.266395106164552,13.239846266589355Q13.225911106164551,13.179257866589356,13.19802570616455,13.111935566589356Q13.170140306164551,13.044613366589356,13.15592430616455,12.973144566589355Q13.14170840616455,12.901676166589356,13.14170840616455,12.828807066589356Q13.14170840616455,12.683826466589355,13.19642780616455,12.549568666589355Q13.25114680616455,12.415310366589356,13.35249140616455,12.311634766589355Q13.850295106164552,11.727989166589357,13.850295106164552,11.209175566589355Q13.850295106164552,10.690362066589355,13.35249180616455,10.106716866589355Z" fill="#202536"/>
+  <path d="M18.27557874010254,18.095193863896483L23.599746730102538,22.940201293896486Q23.69640403010254,23.020778693896485,23.77325013010254,23.120427593896483Q23.85009673010254,23.220077493896483,23.903461930102537,23.334040193896485Q23.95682713010254,23.448002793896485,23.98416183010254,23.570836593896484Q24.01149703010254,23.693670293896485,24.01149703010254,23.819508593896487Q24.01149703010254,23.875747693896486,24.00598483010254,23.931715993896486Q24.00047203010254,23.987684293896486,23.98950003010254,24.042841893896483Q23.978528930102538,24.098000493896485,23.96220353010254,24.151818293896483Q23.945878030102538,24.205635593896485,23.924355530102538,24.257593193896483Q23.902834430102537,24.309551693896484,23.87632373010254,24.359149893896486Q23.84981253010254,24.408748593896483,23.818567230102538,24.455509193896486Q23.787323030102538,24.502270193896486,23.75164553010254,24.545743893896486Q23.71596813010254,24.589217193896484,23.676200830102538,24.628983993896483Q23.63643403010254,24.668750793896486,23.59296083010254,24.704428693896485Q23.54948713010254,24.740105593896484,23.50272603010254,24.771350393896483Q23.45596503010254,24.802595093896485,23.40636733010254,24.829106293896483Q23.35676863010254,24.855617493896485,23.30481053010254,24.877138593896483Q23.25285243010254,24.898660693896485,23.19903563010254,24.914986593896487Q23.145218330102537,24.931311593896485,23.09005973010254,24.942282693896484Q23.03490163010254,24.953254693896483,22.97893383010254,24.958766893896485Q22.92296503010254,24.964279693896486,22.86672593010254,24.964279693896486Q22.64011333010254,24.964279693896486,22.43059113010254,24.877944993896485Q22.22106883010254,24.791609793896484,22.06023983010254,24.631962293896486L16.736071650102538,19.786954883896485Q16.63941479010254,19.706377743896486,16.56256914010254,19.606728553896485Q16.485723500102537,19.507079423896485,16.43235883010254,19.393117013896486Q16.37899423010254,19.279154543896485,16.35165933010254,19.156321283896485Q16.324324330102538,19.033488023896485,16.32432423010254,18.907649993896484Q16.32432423010254,18.851411003896484,16.329836630102537,18.795442823896483Q16.33534913010254,18.739474643896486,16.34632073010254,18.684316273896485Q16.35729243010254,18.629157903896484,16.37361763010254,18.575340543896484Q16.38994303010254,18.521523173896483,16.41146483010254,18.469565153896486Q16.43298653010254,18.417607073896484,16.45949733010254,18.368008733896485Q16.486008230102538,18.318410333896484,16.51725304010254,18.271649363896483Q16.54849768010254,18.224888323896483,16.58417529010254,18.181414963896483Q16.61985290010254,18.137941653896483,16.65961993010254,18.098174693896485Q16.699386890102538,18.058407663896485,16.74286026010254,18.022730053896485Q16.786333560102538,17.987052443896484,16.83309466010254,17.955807803896484Q16.87985563010254,17.924563053896485,16.92945397010254,17.898052193896483Q16.97905231010254,17.871541293896485,17.03101039010254,17.850019693896485Q17.082968410102538,17.828497893896483,17.13678578010254,17.812172693896485Q17.19060314010254,17.795847193896485,17.24576151010254,17.784875593896484Q17.30091988010254,17.773903893896485,17.356888060102538,17.768391393896483Q17.41285624010254,17.762878993896486,17.46909523010254,17.762878993896486Q17.695706920102538,17.762879093896483,17.90522844010254,17.849213193896485Q18.11474997010254,17.935547473896484,18.27557874010254,18.095193863896483Z" fill="#202536"/>
+</svg>
+          </div>
+          <span class="grid-label">极速招聘</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 全部选择与筛选行 -->
+    <div class="company-filter-row">
+      <div class="filter-left-all" onclick="event.stopPropagation()">
+        <span class="all-text">全部</span>
+        <span class="all-arrow"></span>
+      </div>
+      <div class="filter-right-btn" onclick="event.stopPropagation()">
+        <span>筛选</span>
+        <span class="funnel-icon">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M2 3.5h12M4.5 8h7M7 12.5h2" stroke="#1F2329" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </div>
+    </div>
+
+    <!-- 搜索框 -->
+    <div class="search-bar">
+      <div class="search-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="5" stroke="#8C98A4" stroke-width="1.6"/>
+          <path d="M11 11l3.5 3.5" stroke="#8C98A4" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="search-placeholder">搜索</span>
+    </div>
+
+    <!-- 项目卡片列表 -->
+    <div class="project-card-list">
+      <!-- 卡片 1: 发薪-02 (需打卡) -->
+      <div class="project-card">
+        <div class="card-header">
+          <div class="header-left" onclick="window.location.href='project_detail.html'">
+            <span class="type-tag need-clock">需打卡</span>
+            <span class="project-title">发薪-02</span>
+          </div>
+          <div class="btn-more-dots" onclick="togglePopover(event, 'popover-1')">···</div>
+        </div>
+
+        <!-- 浮出菜单 -->
+        <div class="more-popover" id="popover-1">
+          <div class="popover-item" onclick="window.location.href='project_info.html'">
+            <span>项目设置</span>
+          </div>
+          <div class="popover-item" onclick="openInviteModal('发薪-02')">
+            <span>快捷邀请</span>
+          </div>
+          <div class="popover-item">
+            <span>项目归档</span>
+          </div>
+        </div>
+
+        <!-- 灰底信息框 -->
+        <div class="project-info-box" onclick="window.location.href='project_detail.html'">
+          <div class="info-row">
+            <span class="info-label">企&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：</span>
+            <span class="info-val">苏州蓝豚跃动信息科技有限公司</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">需&nbsp;&nbsp;报&nbsp;&nbsp;名：</span>
+            <span class="info-val" style="min-width: 60px;">10人</span>
+            <span class="info-label" style="margin-left: 20px;">已&nbsp;&nbsp;报&nbsp;&nbsp;名：</span>
+            <span class="info-val">0人</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">创建时间：</span>
+            <span class="info-val">2026-10-19 16:48:00</span>
+          </div>
+        </div>
+
+        <!-- 底部发起人与操作按钮 -->
+        <div class="card-bottom-row">
+          <div class="creator-box">
+            <img class="creator-avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" alt="唐宛丽">
+            <span class="creator-name">唐宛丽</span>
+            <span class="creator-role">(创建者)</span>
+          </div>
+          <div class="card-btns-wrap">
+            <button class="btn-pay-salary" onclick="window.location.href='pay_salary.html'">去发薪</button>
+            <button class="btn-fast-invite" onclick="openInviteModal('发薪-02')">快捷邀请</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 卡片 2: 发薪-01 (无打卡) -->
+      <div class="project-card">
+        <div class="card-header">
+          <div class="header-left" onclick="window.location.href='project_detail.html'">
+            <span class="type-tag no-clock">无打卡</span>
+            <span class="project-title">发薪-01</span>
+          </div>
+          <div class="btn-more-dots" onclick="togglePopover(event, 'popover-2')">···</div>
+        </div>
+
+        <!-- 浮出菜单 -->
+        <div class="more-popover" id="popover-2">
+          <div class="popover-item" onclick="window.location.href='project_info.html'">
+            <span>项目设置</span>
+          </div>
+          <div class="popover-item" onclick="openInviteModal('发薪-01')">
+            <span>快捷邀请</span>
+          </div>
+          <div class="popover-item">
+            <span>项目归档</span>
+          </div>
+        </div>
+
+        <!-- 灰底信息框 -->
+        <div class="project-info-box" onclick="window.location.href='project_detail.html'">
+          <div class="info-row">
+            <span class="info-label">企&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：</span>
+            <span class="info-val">苏州蓝豚跃动信息科技有限公司</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">需&nbsp;&nbsp;报&nbsp;&nbsp;名：</span>
+            <span class="info-val" style="min-width: 60px;">10人</span>
+            <span class="info-label" style="margin-left: 20px;">已&nbsp;&nbsp;报&nbsp;&nbsp;名：</span>
+            <span class="info-val">1人</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">创建时间：</span>
+            <span class="info-val">2026-10-19 16:27:04</span>
+          </div>
+        </div>
+
+        <!-- 底部发起人与操作按钮 -->
+        <div class="card-bottom-row">
+          <div class="creator-box">
+            <img class="creator-avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" alt="唐宛丽">
+            <span class="creator-name">唐宛丽</span>
+            <span class="creator-role">(创建者)</span>
+          </div>
+          <div class="card-btns-wrap">
+            <button class="btn-pay-salary" onclick="window.location.href='pay_salary.html'">去发薪</button>
+            <button class="btn-fast-invite" onclick="openInviteModal('发薪-01')">快捷邀请</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="1.04 1.94 23.91 22.56" width="23.91" height="22.56">
+  <defs><linearGradient id="grad_paint_9_07523" x1="0.5000" y1="-0.0000" x2="0.5000" y2="1.0000"><stop offset="0" stop-color="#00D679"/><stop offset="1" stop-color="#00D9B5"/></linearGradient></defs>
+  <path d="M2.4447571999999997,8.5368285C1.5510378500000002,9.1326413,1.044053227,10.1607981,1.1155024199999999,11.2325363L1.7510716899999998,20.766075C1.89115107,22.867266,3.6363568,24.5,5.7422123,24.5L20.257788,24.5C22.363644,24.5,24.108849,22.867266,24.248928,20.766075L24.884497,11.2325363C24.955946,10.1607981,24.448961,9.1326413,23.555243,8.5368285L14.664102,2.6094004C13.656404,1.93760151,12.343598,1.93760157,11.3359,2.6094003L2.4447571999999997,8.5368285Z" fill="url(#grad_paint_9_07523)"/>
+</svg>
+        </div>
+        <span class="nav-text">首页</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="8 8 10 15.8" width="10" height="15.8">
+  <path d="M16.99993896484375,22.19999999L8.99993896484375,22.19999999L8.99993896484375,22.20015997Q8.92116160684375,22.20016003,8.84389793484375,22.21552873Q8.76663427484375,22.23089743,8.69385349484375,22.26104426Q8.62107270484375,22.2911911,8.55557170484375,22.33495736Q8.49007070484375,22.37872374,8.43436670484375,22.43442774Q8.37866270484375,22.49013174,8.33489638484375,22.55563277Q8.29113006484375,22.62113374,8.26098322484375,22.69391453Q8.23083639484375,22.76669531,8.215467694843749,22.84395897Q8.20009899484375,22.921222642,8.20009893484375,23Q8.20009899484375,23.078777358,8.215467694843749,23.15604103Q8.23083639484375,23.23330469,8.26098322484375,23.30608547Q8.29113006484375,23.37886626,8.33489632484375,23.44436726Q8.37866270484375,23.50986826,8.43436670484375,23.56557226Q8.49007070484375,23.62127626,8.55557173484375,23.66504258Q8.62107270484375,23.7088089,8.69385349484375,23.73895574Q8.76663427484375,23.76910257,8.84389793484375,23.78447127Q8.92116160684375,23.79983997,8.99993896484375,23.79984003L8.99993896484375,23.80000001L16.99993896484375,23.80000001L16.99993896484375,23.79984003Q17.07871626484375,23.79983997,17.15597916484375,23.78447127Q17.23324296484375,23.76910257,17.30602356484375,23.73895574Q17.37880326484375,23.7088089,17.44430546484375,23.66504264Q17.50980566484375,23.62127626,17.56551076484375,23.56557226Q17.62121386484375,23.50986826,17.664979964843752,23.44436723Q17.70874596484375,23.37886626,17.73889346484375,23.30608547Q17.76904006484375,23.23330469,17.78440956484375,23.15604103Q17.79977796484375,23.078777358,17.79977896484375,23Q17.79977796484375,22.921222642,17.78440956484375,22.84395897Q17.76904006484375,22.76669531,17.73889346484375,22.69391453Q17.70874596484375,22.62113374,17.664979964843752,22.55563274Q17.62121386484375,22.49013174,17.56551076484375,22.43442774Q17.50980566484375,22.37872374,17.44430546484375,22.33495742Q17.37880326484375,22.2911911,17.30602356484375,22.26104426Q17.23324296484375,22.23089743,17.15597916484375,22.21552873Q17.07871626484375,22.20016003,16.99993896484375,22.20015997L16.99993896484375,22.19999999Z" fill="#565868"/>
+  <path d="M17.70702643515625,9.70696539Q17.847650535156248,9.56634116,17.923755635156247,9.38260686Q17.99986073515625,9.19887258,17.99986073515625,9Q17.99986073515625,8.901528291,17.98064993515625,8.8049487Q17.961439135156247,8.70836911,17.92375473515625,8.61739314Q17.886072135156247,8.52641714,17.83136363515625,8.44454092Q17.776655235156248,8.3626647,17.707025535156248,8.29303467Q17.637395835156248,8.223404649999999,17.55551913515625,8.16869676Q17.47364333515625,8.11398882,17.38266753515625,8.07630533Q17.291690835156253,8.03862178,17.19511223515625,8.01941091Q17.09853173515625,8.00020003,17.00006103515625,8.00019997Q16.80118803515625,8.00020003,16.61745353515625,8.07630527Q16.43371963515625,8.15241045,16.29309563515625,8.29303449L16.29295443515625,8.29289323L14.00006103515625,10.5857866L12.70716783515625,9.29289323Q12.63752363515625,9.22324929,12.55563113515625,9.1685304Q12.473738235156251,9.11381151,12.38274383515625,9.076120488Q12.29174943515625,9.038429465,12.19515083515625,9.019214747Q12.09855173515625,9.000000029802322,12.00006053515625,9.000000029802322Q11.901569135156251,9.000000029802322,11.80497023515625,9.019214747Q11.70837143515625,9.038429465,11.61737723515625,9.076120488Q11.52638293515625,9.11381151,11.44449043515625,9.1685304Q11.36259793515625,9.22324929,11.29295423515625,9.29289323L8.29295426515625,12.2928932L8.29309570515625,12.2930346Q8.15247154515625,12.4336586,8.07636630515625,12.617393Q8.00026100515625,12.8011274,8.00026100515625,13Q8.00026106515625,13.0984716,8.01947194515625,13.1950512Q8.03868281515625,13.291630699999999,8.07636630515625,13.3826065Q8.11404979515625,13.4735823,8.16875773515625,13.5554585Q8.223465685156249,13.6373348,8.29309570515625,13.706965Q8.36272573515625,13.7765946,8.44460195515625,13.8313026Q8.52647817515625,13.886010200000001,8.61745417515625,13.923694099999999Q8.70843014515625,13.961378100000001,8.80500973515625,13.9805889Q8.90158932615625,13.9997997,9.00006103515625,13.9998002Q9.19893369515625,13.9998002,9.38266804515625,13.923694600000001Q9.56640243515625,13.8475895,9.70702654515625,13.7069654L9.70716780515625,13.7071066L12.00006103515625,11.4142137L13.29295443515625,12.7071068Q13.43360663515625,12.847759,13.61737773515625,12.9238796Q13.80114843515625,13,14.00006103515625,13Q14.198973135156251,13,14.38274433515625,12.9238796Q14.566514935156249,12.8477592,14.70716763515625,12.7071068L17.70716763515625,9.70710677L17.70702643515625,9.70696539Z" fill="#9497B1"/>
+</svg>
+        </div>
+        <span class="nav-text">工作台</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="2.7 0.7 20.6 23.6" width="20.6" height="23.6">
+  <path d="M13.000001,2.30000007Q9.3963423,2.30000007,6.8481711999999995,4.8481711999999995Q4.30000007,7.3963423,4.30000007,11.000001Q4.30000007,16.300851,9.0107388,18.731482Q9.08076,18.767611,9.1423874,18.816706Q9.2040148,18.865801,9.2548809,18.925976Q9.3057461,18.986151,9.343893999999999,19.055094Q9.3820429,19.124035,9.406008199999999,19.199097Q9.4299736,19.274157,9.438834700000001,19.352449Q9.4476957,19.430744,9.441113,19.509262Q9.434529300000001,19.58778,9.4127545,19.663506Q9.390980200000001,19.739231,9.354851199999999,19.809252Q9.3076549,19.900721,9.2388411,19.977266Q8.314825500000001,21.005087,8.043108499999999,22.363682L8.0229163,22.464638Q8.0046515,22.555958,8.0636954,22.627979Q8.1227388,22.700001,8.215869399999999,22.700001L17.784132,22.700001Q17.877262,22.700001,17.936305,22.627979Q17.995348,22.555958,17.977083999999998,22.46464L17.956893,22.363684Q17.685174,21.005089,16.76116,19.977259Q16.708482,19.918663,16.668247,19.850914Q16.628014,19.783169,16.601770000000002,19.708874Q16.575526,19.634579,16.564281,19.556595Q16.553036,19.478607,16.55722,19.399927Q16.561405,19.321243,16.580859,19.24489Q16.600313999999997,19.168537,16.634290999999997,19.097446Q16.668267,19.026356,16.715460999999998,18.963259Q16.762653,18.900162,16.82125,18.847486Q16.897795000000002,18.778673,16.989264,18.731476Q21.700001,16.300851,21.700001,11.000001Q21.700001,7.3963418,19.151831,4.8481711999999995Q16.603659999999998,2.30000007,13.000001,2.30000007Z
+M13.000001,0.69999993Q17.266401000000002,0.70000023,20.283201,3.7168Q23.300001,6.7336001,23.300001,11.000001Q23.300001,17.275721,17.722920000000002,20.15336L17.356092,19.442419L17.951024,18.907578Q19.168127,20.261425,19.525822,22.049892L19.546013,22.15085Q19.71279,22.984724,19.173653,23.642365Q18.634518999999997,24.300001,17.784132,24.300001L8.215869399999999,24.300001Q7.3654828000000006,24.300001,6.826348299999999,23.642365Q6.2872124,22.984724,6.4539871,22.150852L6.474179299999999,22.049894Q6.831872499999999,20.261423,8.0489798,18.907579L8.6439104,19.442423L8.277082,20.153364Q2.69999993,17.275723,2.69999993,11.000001Q2.70000023,6.7336001,5.7168,3.7168Q8.7336001,0.69999993,13.000001,0.69999993Z" fill="#565868"/>
+  <path d="M6.33331298828125,12L6.33331298828125,10Q6.33331298828125,9.90150857,6.35252770628125,9.80490965Q6.37174242328125,9.70831072,6.40943344728125,9.61731648Q6.44712446828125,9.52632231,6.50184335828125,9.44442973Q6.55656224828125,9.36253715,6.62620618828125,9.2928932Q6.69585013828125,9.22324926,6.77774274828125,9.16853037Q6.85963529828125,9.11381148,6.9506294682812495,9.076120459Q7.04162370828125,9.038429435,7.13822263828125,9.019214718Q7.23482155828125,9,7.33331298828125,9L7.33331298828125,9Q7.43180428828125,9,7.52840318828125,9.019214718Q7.62500198828125,9.038429435,7.71599628828125,9.076120459Q7.80699038828125,9.11381148,7.88888288828125,9.16853037Q7.97077558828125,9.22324926,8.04041958828125,9.2928932Q8.110063388281251,9.36253715,8.16478228828125,9.44442976Q8.21950128828125,9.52632231,8.25719238828125,9.61731648Q8.29488338828125,9.70831072,8.31409808828125,9.80490965Q8.33331288828125,9.90150857,8.33331298828125,10L8.33331298828125,12Q8.33331288828125,12.0984912,8.31409808828125,12.1950901Q8.29488328828125,12.2916889,8.25719228828125,12.3826833Q8.21950128828125,12.4736774,8.16478228828125,12.5555701Q8.110063388281251,12.6374626,8.04041958828125,12.7071066Q7.97077558828125,12.7767506,7.88888288828125,12.8314693Q7.80699038828125,12.886188,7.71599628828125,12.9238791Q7.62500198828125,12.9615703,7.52840318828125,12.9807849Q7.43180428828125,12.9999998,7.33331298828125,13L7.33331298828125,13Q7.23482155828125,12.9999998,7.13822263828125,12.9807849Q7.04162370828125,12.9615703,6.9506294682812495,12.9238791Q6.85963529828125,12.886188,6.77774271828125,12.8314693Q6.69585013828125,12.7767506,6.62620618828125,12.7071066Q6.55656224828125,12.6374626,6.50184335828125,12.5555699Q6.44712446828125,12.4736774,6.40943344728125,12.3826833Q6.37174242328125,12.2916889,6.35252770628125,12.1950901Q6.33331298828125,12.0984912,6.33331298828125,12Z
+M11.33331298828125,12L11.33331298828125,10Q11.33331298828125,9.90150857,11.35252758828125,9.80490965Q11.37174228828125,9.70831072,11.40943338828125,9.61731648Q11.44712448828125,9.52632231,11.50184348828125,9.44442973Q11.55656238828125,9.36253715,11.62620638828125,9.2928932Q11.69585038828125,9.22324926,11.77774238828125,9.16853037Q11.85963538828125,9.11381148,11.950629188281251,9.076120459Q12.04162358828125,9.038429435,12.13822218828125,9.019214718Q12.23482128828125,9,12.33331298828125,9L12.33331298828125,9Q12.43180368828125,9,12.52840228828125,9.019214718Q12.62500138828125,9.038429435,12.715995788281251,9.076120459Q12.80698968828125,9.11381148,12.88888258828125,9.16853037Q12.97077508828125,9.22324926,13.04041908828125,9.2928932Q13.110063088281251,9.36253715,13.164781588281251,9.44442976Q13.21950058828125,9.52632231,13.25719168828125,9.61731648Q13.29488278828125,9.70831072,13.31409788828125,9.80490965Q13.333312488281251,9.90150857,13.33331298828125,10L13.33331298828125,12Q13.333312488281251,12.0984912,13.314097388281251,12.1950901Q13.29488278828125,12.2916889,13.25719168828125,12.3826833Q13.21950058828125,12.4736774,13.16478208828125,12.5555701Q13.11006358828125,12.6374626,13.04041958828125,12.7071066Q12.97077558828125,12.7767506,12.88888258828125,12.8314693Q12.80698968828125,12.886188,12.715995788281251,12.9238791Q12.62500138828125,12.9615703,12.52840278828125,12.9807849Q12.43180368828125,12.9999998,12.33331298828125,13L12.33331298828125,13Q12.23482128828125,12.9999998,12.13822268828125,12.9807849Q12.04162358828125,12.9615703,11.950629188281251,12.9238791Q11.85963538828125,12.886188,11.77774238828125,12.8314693Q11.69584988828125,12.7767506,11.62620588828125,12.7071066Q11.55656198828125,12.6374626,11.50184348828125,12.5555699Q11.44712448828125,12.4736774,11.40943338828125,12.3826833Q11.37174228828125,12.2916889,11.35252758828125,12.1950901Q11.33331298828125,12.0984912,11.33331298828125,12Z" fill="#9497B1"/>
+</svg>
+        </div>
+        <span class="nav-text">我的</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePopover(e, id) {
+      e.stopPropagation();
+      const popover = document.getElementById(id);
+      const isShow = popover.classList.contains('show');
+      document.querySelectorAll('.more-popover').forEach(p => p.classList.remove('show'));
+      if (!isShow) {
+        popover.classList.add('show');
+      }
+    }
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.more-popover').forEach(p => p.classList.remove('show'));
+    });
+
+    function openInviteModal(projectName) {
+      document.getElementById('modalProjectName').textContent = projectName || '项目';
+      document.getElementById('inviteModal').classList.add('active');
+      document.querySelectorAll('.more-popover').forEach(p => p.classList.remove('show'));
+    }
+
+    function closeInviteModal() {
+      document.getElementById('inviteModal').classList.remove('active');
+    }
+  </script>
+
+  <!-- 快捷邀请弹窗 (Modal) -->
+  <div id="inviteModal" class="invite-modal-overlay" onclick="closeInviteModal(event)">
+    <div class="invite-modal-card" onclick="event.stopPropagation()">
+      <div class="invite-modal-title">快捷邀请</div>
+      <div class="invite-modal-project" id="modalProjectName">发薪-02</div>
+      <div class="invite-qrcode-box">
+        <svg width="140" height="140" viewBox="0 0 100 100" fill="#202536">
+          <rect x="10" y="10" width="25" height="25" fill="#202536"/>
+          <rect x="15" y="15" width="15" height="15" fill="#FFFFFF"/>
+          <rect x="18" y="18" width="9" height="9" fill="#202536"/>
+          <rect x="65" y="10" width="25" height="25" fill="#202536"/>
+          <rect x="70" y="15" width="15" height="15" fill="#FFFFFF"/>
+          <rect x="73" y="18" width="9" height="9" fill="#202536"/>
+          <rect x="10" y="65" width="25" height="25" fill="#202536"/>
+          <rect x="15" y="70" width="15" height="15" fill="#FFFFFF"/>
+          <rect x="18" y="73" width="9" height="9" fill="#202536"/>
+          <rect x="42" y="15" width="6" height="16"/>
+          <rect x="52" y="25" width="6" height="10"/>
+          <rect x="15" y="42" width="16" height="6"/>
+          <rect x="25" y="52" width="10" height="6"/>
+          <rect x="42" y="42" width="16" height="16"/>
+          <rect x="65" y="42" width="8" height="18"/>
+          <rect x="78" y="42" width="12" height="6"/>
+          <rect x="80" y="55" width="10" height="15"/>
+          <rect x="42" y="65" width="15" height="8"/>
+          <rect x="65" y="70" width="10" height="18"/>
+          <rect x="80" y="75" width="10" height="15"/>
+          <rect x="42" y="80" width="15" height="10"/>
+        </svg>
+      </div>
+      <div class="invite-tip-text">微信扫描上方二维码，即刻填写报名加入项目</div>
+      <div class="invite-btns-bar">
+        <button class="invite-share-btn" onclick="closeInviteModal()">关闭</button>
+        <button class="invite-confirm-btn" onclick="closeInviteModal()">完成</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

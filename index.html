@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>子弹发薪 & CRM 原型演示导航</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #F0F4FF 0%, #F5F7FA 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      color: #1F2329;
+    }
+    .nav-card {
+      width: 100%;
+      max-width: 680px;
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 36px 32px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1F2329;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #8C98A4;
+    }
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .item-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      background: #F8F9FB;
+      border: 1px solid #ECEEF2;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.2s ease-in-out;
+    }
+    .item-card:hover {
+      background: #F0F6FF;
+      border-color: #1677FF;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(22, 119, 255, 0.1);
+    }
+    .item-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .item-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1F2329;
+    }
+    .item-desc {
+      font-size: 12px;
+      color: #8C98A4;
+    }
+    .item-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #E8F3FF;
+      color: #1677FF;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .section-divider {
+      margin: 24px 0 12px 0;
+      font-size: 13px;
+      color: #8C98A4;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #B4B9C2;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-card">
+    <div class="header">
+      <h1 class="title">子弹发薪与CRM系统 原型展示</h1>
+      <p class="subtitle">高保真像素级交互原型页面导航</p>
+    </div>
+
+    <div class="grid">
+      <div class="section-divider">📌 PC 端登录原型（本次核心）</div>
+
+      <!-- 页面 1 -->
+      <a href="login.html" class="item-card">
+        <div class="item-left">
+          <div class="item-title">子弹人力云 Web 端登录页面</div>
+          <div class="item-desc">对应原站：https://web.51zidan.com/#/login</div>
+        </div>
+        <span class="item-badge">点击进入</span>
+      </a>
+
+      <!-- 页面 2 -->
+      <a href="login_crm.html" class="item-card">
+        <div class="item-left">
+          <div class="item-title">子弹CRM 快捷登录页面</div>
+          <div class="item-desc">对应原站：https://yy.51zidan.com/#/login</div>
+        </div>
+        <span class="item-badge">点击进入</span>
+      </a>
+
+      <div class="section-divider">📱 移动端发薪全流程原型</div>
+
+      <a href="shouye.html" class="item-card">
+        <div class="item-left">
+          <div class="item-title">移动端首页 (项目列表 / 快捷邀请 / 筛选)</div>
+          <div class="item-desc">包含极速发薪、打卡与无打卡项目卡片、扫码海报弹窗</div>
+        </div>
+        <span class="item-badge">点击进入</span>
+      </a>
+
+      <a href="create_project.html" class="item-card">
+        <div class="item-left">
+          <div class="item-title">创建项目 (无打卡 / 需打卡双模式)</div>
+          <div class="item-desc">班次红星校验、压薪天数、人数封顶设定</div>
+        </div>
+        <span class="item-badge">点击进入</span>
+      </a>
+
+      <a href="project_detail.html" class="item-card">
+        <div class="item-left">
+          <div class="item-title">员工管理与项目详情</div>
+          <div class="item-desc">唐宛丽员工信息卡片、扫码/手动添加、发薪入口</div>
+        </div>
+        <span class="item-badge">点击进入</span>
+      </a>
+
+      <a href="pay_salary.html" class="item-card">
+        <div class="item-left">
+          <div class="item-title">我要发薪页面</div>
+          <div class="item-desc">转账人数金额核算、首字母索引筛选、调薪/确认发薪</div>
+        </div>
+        <span class="item-badge">点击进入</span>
+      </a>
+    </div>
+
+    <div class="footer">
+      子弹发薪产品原型 · 严禁任何 Toast 侵入提示 · 纯原生前端交互
+    </div>
+  </div>
+</body>
+</html>

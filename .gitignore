@@ -1,0 +1,12 @@
+# 临时中间脚本和日志
+*.txt
+*.json
+clean_all_toasts.js
+generate_shouye.js
+inject_svgs.js
+shouye_template.html
+
+# 外部工具包
+claude-skills-main/
+natural-chinese-protocol-main/
+.system_generated/

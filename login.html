@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://web.51zidan.com/favicon.ico">
+  <title>子弹人力云</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background-color: #FFFFFF;
+      color: #202536;
+      overflow-x: hidden;
+      margin: 0;
+    }
+    .container {
+      background: #FFFFFF;
+      display: flex;
+      width: 100vw;
+      min-height: 100vh;
+    }
+    /* 左侧品牌与插画展示区 */
+    .left {
+      width: 472px;
+      height: 100vh;
+      background-color: #F7F8FC;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .left-logo {
+      width: 120px;
+      margin: 38px 33px 0 33px;
+      display: block;
+    }
+    .left-bg {
+      width: 419px;
+      margin: 90px auto 0 auto;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* 右侧主登录表单区 */
+    .right {
+      flex: 1;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #FFFFFF;
+      position: relative;
+    }
+    .login-box {
+      width: 296px;
+      margin-top: -20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .login-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #202536;
+      line-height: 36px;
+      margin-bottom: 8px;
+    }
+
+    /* 表单控件样式 */
+    .form-item {
+      width: 295px;
+      margin-top: 24px;
+      position: relative;
+      text-align: left;
+    }
+    .form-input {
+      width: 100%;
+      height: 44px;
+      background: #FFFFFF;
+      border: 1px solid #DCDFE6;
+      border-radius: 4px;
+      padding: 0 14px;
+      font-size: 14px;
+      color: #606266;
+      outline: none;
+      transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+    .form-input::placeholder {
+      color: #C0C4CC;
+      font-size: 14px;
+    }
+    .form-input:focus {
+      border-color: #1989FA;
+    }
+    .form-input.is-error {
+      border-color: #F56C6C;
+    }
+
+    /* 图形验证码行 */
+    .captcha-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 295px;
+      margin-top: 24px;
+    }
+    .captcha-row .form-input {
+      flex: 1;
+      width: auto;
+    }
+    .captcha-canvas-wrap {
+      width: 96px;
+      height: 44px;
+      border: 1px solid #E4E7ED;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFF0F2;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .captcha-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* 短信验证码行 */
+    .sms-code-wrapper {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      margin-top: 24px;
+      width: 295px;
+    }
+    .sms-code-input {
+      flex: 1;
+    }
+    .send-sms-btn {
+      width: 110px;
+      height: 44px;
+      background-color: #1989FA;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 500;
+      box-sizing: border-box;
+      padding: 0;
+      border-radius: 4px;
+      border: none;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .send-sms-btn:hover {
+      background-color: #3b9cfb;
+    }
+    .send-sms-btn:disabled {
+      background-color: #C0C4CC;
+      border-color: #C0C4CC;
+      color: #FFFFFF;
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
+    /* 内联错误提示 */
+    .error-tip {
+      font-size: 12px;
+      color: #F56C6C;
+      margin-top: 4px;
+      line-height: 1;
+      height: 14px;
+      display: none;
+    }
+    .error-tip.show {
+      display: block;
+    }
+
+    /* 登录大按钮 */
+    .btn-login {
+      width: 294px;
+      height: 56px;
+      border-radius: 56px;
+      background-color: #1989FA;
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
+      border: none;
+      margin-top: 32px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(25, 137, 250, 0.28);
+      transition: all 0.2s ease-in-out;
+    }
+    .btn-login:hover {
+      background-color: #1377db;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(25, 137, 250, 0.38);
+    }
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    /* 第三方登录 */
+    .other-login-title {
+      font-size: 14px;
+      color: #9497B1;
+      margin-top: 36px;
+      width: 295px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .other-login-title::before,
+    .other-login-title::after {
+      content: "";
+      display: inline-block;
+      width: 98px;
+      height: 1px;
+      background-color: #E8E9EA;
+    }
+    .other-login-type {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .other-icon {
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .other-icon:hover {
+      transform: scale(1.08);
+    }
+
+    /* 微信扫码登录模式面板 */
+    .wx-login-panel {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      animation: fadeIn 0.25s ease-out;
+    }
+    .wx-login-panel.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .wx-close-btn {
+      position: absolute;
+      right: -30px;
+      top: -30px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #9497B1;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .wx-close-btn:hover {
+      color: #202536;
+    }
+    .wx-qr-box {
+      width: 200px;
+      height: 200px;
+      background: #FFFFFF;
+      border: 1px solid #E5E8EF;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 20px 0 16px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .wx-qr-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .wx-qr-tip {
+      font-size: 14px;
+      color: #565868;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    /* 响应式断点 (屏幕小于 1200px 隐藏左侧) */
+    @media screen and (max-width: 1200px) {
+      .left {
+        display: none;
+      }
+      .right {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 左侧品牌与科技插画展示区 -->
+    <div class="left">
+      <img src="https://web.51zidan.com/img/logo.822e59ab.png" class="left-logo" alt="子弹人力云">
+      <img src="https://web.51zidan.com/img/bg.b37b3ffd.png" class="left-bg" alt="子弹人力云智能化发薪服务">
+    </div>
+
+    <!-- 右侧登录表单与微信交互区 -->
+    <div class="right">
+      <!-- 手机号与验证码登录框 -->
+      <div class="login-box" id="smsLoginBox">
+        <h1 class="login-title">登录</h1>
+
+        <!-- 手机号 -->
+        <div class="form-item">
+          <input type="tel" id="phoneInput" class="form-input" placeholder="请输入手机号" maxlength="11" autocomplete="off">
+          <div class="error-tip" id="phoneError"></div>
+        </div>
+
+        <!-- 图形计算验证码 -->
+        <div class="captcha-row">
+          <input type="text" id="captchaInput" class="form-input" placeholder="请输入图形验证码" maxlength="4" autocomplete="off">
+          <div class="captcha-canvas-wrap" onclick="refreshCaptcha()" title="点击换一张">
+            <canvas id="captchaCanvas" class="captcha-canvas" width="96" height="44"></canvas>
+          </div>
+        </div>
+        <div class="error-tip" id="captchaError" style="width: 295px;"></div>
+
+        <!-- 短信验证码 -->
+        <div class="sms-code-wrapper">
+          <input type="text" id="smsInput" class="form-input sms-code-input" placeholder="请输入短信验证码" maxlength="6" autocomplete="off">
+          <button type="button" class="send-sms-btn" id="sendSmsBtn" onclick="handleSendSms()">发送验证码</button>
+        </div>
+        <div class="error-tip" id="smsError" style="width: 295px;"></div>
+
+        <!-- 登录按钮 -->
+        <button type="button" class="btn-login" id="loginBtn" onclick="handleLogin()">登录</button>
+
+        <!-- 第三方登录 -->
+        <div class="other-login-title">第三方登录</div>
+        <div class="other-login-type">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAAAXNSR0IArs4c6QAABN1JREFUWEfNmHtsU3UUx7/n3paxsek/KjFmgyxGkGB8RI2AEB+Brt3G2pk2kfj4BxZcFs2kRWBmqVGDa7tNxeCDGGPEkay6trK1m5BofIxgwMRAwvBBhGk0cQlmD9jae+8x97adpevtbXVLdv+8v3O+v8/93XPO7/x+hCKfxv7WakUwWQB+EESrwVwFoCIlMwGiS2AeAegbQZGG+uq6LxQzBRVi7Ox1iomKlS4oSguI1gEoyA8Ag/kEBOEt88SvvUFXUDaaz1DYMbR7MxTlTWasNhLLN06EEQjCsyGL71heO71BZ29rabxcfIOAHf8HJNuXgUNLJuXngq7uq7l0c66QM7r3xgQSUQD3zidMhtYpM8y2oG3/X9n6c4A0GJK+BvOqBYJJyhKdN7NpYzbUNUDqb0qUi18t4Mpkf+Mp86S8KfP3XQPUEHW/N98xY7TKakxFbIGmtN0skJpNLCufGwksxDiJwpZ09mlAap2RKlacLSC1J5gwIDINy1D+ICYBJFSClY0g1AAo+S/AakkwTVxcq9YpDcge8zwO5p48YhIIfkxLvrDj9b9z2SWTIeEFYycAoWgwom1hq/9ICsj9LRjrc4kwMA0S7RFrx1Ahk9gHPI+BlCMAmQuxn7UhDIetgQ2U3JvEn/W2AybsjFgD76qOjbE99ymceJLj7I/Yu0bVd1uP71suxhNeBkJhm1+LQXvU3QLgQFFAAAuKfCvZo55nAD6Yc3UII5GawBoQODXRIAALCPvD1sA+9V1D1OMmsB+M0+HaQLKQer2C/f7JMwDWFAdFzWSPuj8GsC2nY8bESSDPFhC2i4LS/qmlc0R9V3e09RaTKL5KIn0yBf6iTOZNzFRFAjnB/GhxQOghe8xzGsz35HIkAU2hmsAhI1HncGupNG7yKAovgUBDccU0Ul5aclWaulIJEz/CCjcXtFpE36srpO4nN+QEItobsvpfywfkPPbC9YmE9LIkKx399d2/58xAtayUV7UxyGvQuoypQNP69YP7w7bO+nxAjkFPu2l8qivoOjip2TEoHXPZfo6ou42BV/LozeQHYihkwp0hS+BsLhHHkHstJL45VNup9TjJ7KIXzZPLqoIub9wecz9EjMOKqKyLWLpGtUavfIUa7LfrQGlAur9MdVKraFyeWj9Q9/blbJGGQc/2iMX3Poi0LNwaff5ugcTasNWvrUJj/55qFqXdclzwfNbgm0hl5UsEbtcBGssb1BlO5+PMlmht58VMIcege0chQZ/pY4/tagKTVtfmPKmg1k/7DA9RptvuqFv2yw/Hr6y6bCr76cuHvVJjbFdz38mKd+D1KkaZmB5viLl9xPDo2PfkLYz/OtEZEPsIaEttwHEG/iRgKTE9Har1qwXT8Kk/2lQmChUXQLQ8tzE1G24dycRhJjWacj/nZjDzQMx2YNyIyB5zfwTGEzp2ya1Dy46Y/uZqNElq/KRkFl39mzsu6dk7op4PGfyUrh7zcLi2c0Oh7YchFwNTBHzAAiKyueQcCdMz4oxYDVlZOfrbeKiy8rrvANylK5TZfhTRoBmC6Rj8CMKYXoszp0FTRRZVCzubkoupyVehFt0xSINaTAfF9K9z9Llv4qUYWMADY+FH6TTUorpsyEzdRXMdkwk1e2EFbgGjuAsrwgmA5u/CKrvQLfSV3j+FA0a7C/PUewAAAABJRU5ErkJggg==" class="other-icon" alt="微信登录" title="微信登录" onclick="switchToWxLogin()">
+        </div>
+      </div>
+
+      <!-- 微信扫码登录面板 -->
+      <div class="wx-login-panel" id="wxLoginPanel">
+        <div class="wx-close-btn" onclick="switchToSmsLogin()" title="返回手机登录">×</div>
+        <h1 class="login-title">微信扫码登录</h1>
+        <div class="wx-qr-box">
+          <svg width="176" height="176" viewBox="0 0 100 100" fill="#202536">
+            <rect x="5" y="5" width="28" height="28" fill="#202536"/>
+            <rect x="9" y="9" width="20" height="20" fill="#FFFFFF"/>
+            <rect x="13" y="13" width="12" height="12" fill="#202536"/>
+            <rect x="67" y="5" width="28" height="28" fill="#202536"/>
+            <rect x="71" y="9" width="20" height="20" fill="#FFFFFF"/>
+            <rect x="75" y="13" width="12" height="12" fill="#202536"/>
+            <rect x="5" y="67" width="28" height="28" fill="#202536"/>
+            <rect x="9" y="71" width="20" height="20" fill="#FFFFFF"/>
+            <rect x="13" y="75" width="12" height="12" fill="#202536"/>
+            <rect x="40" y="8" width="8" height="20"/>
+            <rect x="52" y="18" width="8" height="14"/>
+            <rect x="8" y="40" width="20" height="8"/>
+            <rect x="18" y="52" width="14" height="8"/>
+            <rect x="40" y="40" width="20" height="20"/>
+            <rect x="68" y="40" width="10" height="22"/>
+            <rect x="82" y="40" width="12" height="8"/>
+            <rect x="84" y="56" width="10" height="18"/>
+            <rect x="40" y="68" width="18" height="10"/>
+            <rect x="68" y="72" width="12" height="22"/>
+            <rect x="84" y="78" width="10" height="16"/>
+            <rect x="40" y="84" width="18" height="10"/>
+          </svg>
+        </div>
+        <div class="wx-qr-tip">
+          请使用微信扫描二维码登录<br>
+          <span style="font-size: 12px; color: #9497B1;">安全便捷 免输验证码</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 算术图形验证码逻辑
+    let currentResult = 4;
+    function refreshCaptcha() {
+      const canvas = document.getElementById('captchaCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // 渐变背景
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#FFE8E8');
+      grad.addColorStop(0.5, '#F9E2F2');
+      grad.addColorStop(1, '#FFE9F3');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 干扰噪点
+      for (let i = 0; i < 30; i++) {
+        ctx.fillStyle = `rgba(${Math.floor(Math.random()*200)}, ${Math.floor(Math.random()*150)}, ${Math.floor(Math.random()*200)}, 0.4)`;
+        ctx.beginPath();
+        ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 干扰线
+      for (let i = 0; i < 3; i++) {
+        ctx.strokeStyle = `rgba(${Math.floor(Math.random()*200)}, ${Math.floor(Math.random()*150)}, ${Math.floor(Math.random()*200)}, 0.25)`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * w, Math.random() * h);
+        ctx.lineTo(Math.random() * w, Math.random() * h);
+        ctx.stroke();
+      }
+
+      // 随机生成 0~9 的加法题
+      const num1 = Math.floor(Math.random() * 8);
+      const num2 = Math.floor(Math.random() * 8);
+      currentResult = num1 + num2;
+      const text = `${num1} + ${num2} =`;
+
+      // 绘制算术字符
+      ctx.font = 'bold 22px PingFang SC, Microsoft YaHei, sans-serif';
+      ctx.textBaseline = 'middle';
+      
+      const colors = ['#E23E57', '#88304E', '#522546', '#FF5722', '#D83A56'];
+      let offsetX = 10;
+      for (let i = 0; i < text.length; i++) {
+        ctx.fillStyle = colors[i % colors.length];
+        const char = text[i];
+        const angle = (Math.random() - 0.5) * 0.2;
+        ctx.save();
+        ctx.translate(offsetX, h / 2);
+        ctx.rotate(angle);
+        ctx.fillText(char, 0, 0);
+        ctx.restore();
+        offsetX += ctx.measureText(char).width + 3;
+      }
+    }
+
+    // 短信发送倒计时
+    let countdownTimer = null;
+    let countdownSeconds = 60;
+    function handleSendSms() {
+      const phone = document.getElementById('phoneInput').value.trim();
+      const phoneError = document.getElementById('phoneError');
+      const phoneInput = document.getElementById('phoneInput');
+
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        phoneInput.classList.add('is-error');
+        phoneError.textContent = '请输入正确的11位手机号码';
+        phoneError.classList.add('show');
+        return;
+      }
+      phoneInput.classList.remove('is-error');
+      phoneError.classList.remove('show');
+
+      const sendBtn = document.getElementById('sendSmsBtn');
+      sendBtn.disabled = true;
+      countdownSeconds = 60;
+      sendBtn.textContent = `${countdownSeconds}s`;
+
+      if (countdownTimer) clearInterval(countdownTimer);
+      countdownTimer = setInterval(() => {
+        countdownSeconds--;
+        if (countdownSeconds <= 0) {
+          clearInterval(countdownTimer);
+          sendBtn.disabled = false;
+          sendBtn.textContent = '发送验证码';
+        } else {
+          sendBtn.textContent = `${countdownSeconds}s`;
+        }
+      }, 1000);
+    }
+
+    // 登录处理逻辑 (采用内联无侵入提示)
+    function handleLogin() {
+      const phone = document.getElementById('phoneInput').value.trim();
+      const captcha = document.getElementById('captchaInput').value.trim();
+      const sms = document.getElementById('smsInput').value.trim();
+
+      const phoneError = document.getElementById('phoneError');
+      const captchaError = document.getElementById('captchaError');
+      const smsError = document.getElementById('smsError');
+
+      let hasError = false;
+
+      // 手机号校验
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        document.getElementById('phoneInput').classList.add('is-error');
+        phoneError.textContent = '请输入正确的手机号码';
+        phoneError.classList.add('show');
+        hasError = true;
+      } else {
+        document.getElementById('phoneInput').classList.remove('is-error');
+        phoneError.classList.remove('show');
+      }
+
+      // 图形验证码校验
+      if (!captcha) {
+        document.getElementById('captchaInput').classList.add('is-error');
+        captchaError.textContent = '请输入图形验证码计算结果';
+        captchaError.classList.add('show');
+        hasError = true;
+      } else {
+        document.getElementById('captchaInput').classList.remove('is-error');
+        captchaError.classList.remove('show');
+      }
+
+      // 短信验证码校验
+      if (!sms) {
+        document.getElementById('smsInput').classList.add('is-error');
+        smsError.textContent = '请输入短信验证码';
+        smsError.classList.add('show');
+        hasError = true;
+      } else {
+        document.getElementById('smsInput').classList.remove('is-error');
+        smsError.classList.remove('show');
+      }
+
+      if (hasError) return;
+
+      // 验证通过，直接页面跳转闭环（至 shouye.html）
+      window.location.href = 'shouye.html';
+    }
+
+    // 微信登录面板切换
+    function switchToWxLogin() {
+      document.getElementById('smsLoginBox').style.display = 'none';
+      document.getElementById('wxLoginPanel').classList.add('active');
+    }
+    function switchToSmsLogin() {
+      document.getElementById('wxLoginPanel').classList.remove('active');
+      document.getElementById('smsLoginBox').style.display = 'flex';
+    }
+
+    // 页面初始化
+    window.addEventListener('DOMContentLoaded', () => {
+      refreshCaptcha();
+    });
+  </script>
+</body>
+</html>

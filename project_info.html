@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>项目详情</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background-color: #F8F9FB;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: #202536;
+    }
+    .phone-container {
+      width: 375px;
+      min-height: 100vh;
+      background: #F8F9FB;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      padding-bottom: 84px;
+    }
+
+    /* 顶部导航栏 (小程序风格) */
+    .nav-bar {
+      height: 48px;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid #F0F0F2;
+    }
+    .nav-back {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      cursor: pointer;
+    }
+    .nav-back svg {
+      width: 20px;
+      height: 20px;
+      stroke: #202536;
+    }
+    .nav-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #202536;
+      text-align: center;
+      flex: 1;
+      margin-left: 20px;
+    }
+    .capsule-menu {
+      width: 86px;
+      height: 32px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 6px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    .capsule-dots {
+      display: flex;
+      gap: 3px;
+    }
+    .capsule-dots span {
+      width: 3.5px;
+      height: 3.5px;
+      background: #000;
+      border-radius: 50%;
+    }
+    .capsule-divider {
+      width: 1px;
+      height: 14px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .capsule-circle {
+      width: 15px;
+      height: 15px;
+      border: 1.8px solid #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .capsule-circle-inner {
+      width: 5px;
+      height: 5px;
+      background: #000;
+      border-radius: 50%;
+    }
+
+    /* 顶部人员网格与名单整理区 */
+    .top-members-section {
+      background: #FFFFFF;
+      padding: 20px 16px 14px 16px;
+      margin-bottom: 10px;
+    }
+    .member-avatars-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .member-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .avatar-green {
+      width: 52px;
+      height: 52px;
+      background: #009944;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 6px rgba(0, 153, 68, 0.2);
+    }
+    .member-name {
+      font-size: 12px;
+      color: #565868;
+    }
+    .avatar-remove-btn {
+      width: 52px;
+      height: 52px;
+      background: #F7F8FA;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px dashed #E0E2E8;
+    }
+    .avatar-remove-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: #A6AAB8;
+      stroke-width: 2.5;
+    }
+    .tidy-list-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 14px;
+      color: #565868;
+      cursor: pointer;
+      padding-top: 4px;
+    }
+    .tidy-list-link svg {
+      width: 14px;
+      height: 14px;
+      stroke: #A6AAB8;
+      stroke-width: 2;
+    }
+
+    /* 管理人员卡片区 */
+    .manager-section {
+      background: #FFFFFF;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .manager-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .manager-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #202536;
+    }
+    .manager-sub {
+      font-size: 12px;
+      color: #9497B1;
+    }
+    .manager-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .creator-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .creator-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #F0F2F5;
+    }
+    .creator-tag {
+      position: absolute;
+      bottom: 16px;
+      background: #E8F8F0;
+      color: #00B96B;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #C6EED8;
+      white-space: nowrap;
+    }
+    .creator-name {
+      font-size: 11px;
+      color: #565868;
+      margin-top: 4px;
+    }
+    .add-manager-btn {
+      width: 48px;
+      height: 48px;
+      background: #F7F8FA;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px dashed #D5D8E2;
+    }
+    .add-manager-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: #A6AAB8;
+      stroke-width: 2;
+    }
+    .arrow-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: #C2C5D6;
+      stroke-width: 2;
+    }
+
+    /* 通用列表卡片 */
+    .card-box {
+      background: #FFFFFF;
+      padding: 0 16px;
+      margin-bottom: 10px;
+    }
+    .row-item {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #F0F0F2;
+    }
+    .row-item:last-child {
+      border-bottom: none;
+    }
+    .row-label {
+      font-size: 15px;
+      color: #202536;
+      font-weight: 500;
+    }
+    .row-value {
+      font-size: 14px;
+      color: #202536;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .row-value.muted {
+      color: #565868;
+    }
+    .row-value svg {
+      width: 14px;
+      height: 14px;
+      stroke: #C2C5D6;
+      stroke-width: 2;
+    }
+
+    /* 白夜班单选组 */
+    .shift-radios {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .radio-unit {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .radio-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid #D1D5DF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .radio-unit.checked .radio-dot {
+      background: #00D679;
+      border-color: #00D679;
+    }
+    .radio-dot svg {
+      width: 10px;
+      height: 10px;
+      stroke: #FFFFFF;
+      stroke-width: 2.5;
+      display: none;
+    }
+    .radio-unit.checked .radio-dot svg {
+      display: block;
+    }
+    .radio-label {
+      font-size: 14px;
+      color: #202536;
+    }
+
+    /* 需求人数卡片 */
+    .demand-section {
+      background: #FFFFFF;
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+    .demand-title {
+      font-size: 14px;
+      color: #202536;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .demand-input-row {
+      height: 48px;
+      background: #F5F6F8;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+    .demand-input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 15px;
+      color: #202536;
+      font-weight: 500;
+      width: 80%;
+    }
+    .demand-unit {
+      font-size: 14px;
+      color: #6B6B86;
+    }
+    .checkbox-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      cursor: pointer;
+    }
+    .check-circle {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid #C4C8D4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .checkbox-line.checked .check-circle {
+      background: #00D679;
+      border-color: #00D679;
+    }
+    .check-circle svg {
+      width: 9px;
+      height: 9px;
+      stroke: #FFFFFF;
+      stroke-width: 2.5;
+      display: none;
+    }
+    .checkbox-line.checked .check-circle svg {
+      display: block;
+    }
+    .check-text {
+      font-size: 13.5px;
+      color: #565868;
+    }
+
+    /* 底部保存修改按钮 */
+    .footer-bar {
+      position: fixed;
+      bottom: 0;
+      width: 375px;
+      height: 72px;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
+      z-index: 30;
+    }
+    .btn-save {
+      width: 100%;
+      height: 46px;
+      background: #00D679;
+      border: none;
+      border-radius: 23px;
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-save:active {
+      transform: scale(0.99);
+      background: #00BF6C;
+    }
+
+    </style>
+</head>
+<body>
+  <div class="phone-container">
+    <!-- 顶部导航栏 -->
+    <div class="nav-bar">
+      <div class="nav-back" onclick="window.location.href='project_detail.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </div>
+      <div class="nav-title">项目详情</div>
+      <div class="capsule-menu">
+        <div class="capsule-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="capsule-divider"></div>
+        <div class="capsule-circle">
+          <div class="capsule-circle-inner"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 顶部人员头像卡片与名单整理 (图 1) -->
+    <div class="top-members-section">
+      <div class="member-avatars-row">
+        <!-- 成员头像卡片 -->
+        <div class="member-item">
+          <div class="avatar-green">宛丽</div>
+          <span class="member-name">唐宛丽</span>
+        </div>
+        <!-- 移除/减号按钮 -->
+        <div class="member-item" onclick="removeMember()">
+          <div class="avatar-remove-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 名单整理链接 -->
+      <div class="tidy-list-link" onclick="openTidyList()">
+        <span>名单整理（1）</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 管理人员卡片 (图 1 / 图 2) -->
+    <div class="manager-section">
+      <div class="manager-left">
+        <span class="manager-title">管理人员</span>
+        <span class="manager-sub">邀请项目管理员</span>
+      </div>
+      <div class="manager-right">
+        <!-- 创建人头像 -->
+        <div class="creator-box">
+          <img class="creator-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="创建人">
+          <span class="creator-tag">创建人</span>
+          <span class="creator-name">唐宛丽</span>
+        </div>
+        <!-- 添加管理员按钮 -->
+        <div class="add-manager-btn" onclick="addManager()">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </div>
+        <div class="arrow-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 项目基本信息卡片 (图 2) -->
+    <div class="card-box">
+      <div class="row-item" onclick="modifyProjectName()">
+        <span class="row-label">项目名</span>
+        <span class="row-value" id="val-pname">发薪-01</span>
+      </div>
+      <div class="row-item">
+        <span class="row-label">派遣企业</span>
+        <span class="row-value muted">苏州蓝豚跃动信息科技有限公司</span>
+      </div>
+      <div class="row-item">
+        <span class="row-label">创建时间</span>
+        <span class="row-value muted">2026-10-19 16:27:04</span>
+      </div>
+    </div>
+
+    <!-- 班次与年龄设置卡片 -->
+    <div class="card-box">
+      <div class="row-item">
+        <span class="row-label">白夜班</span>
+        <div class="shift-radios">
+          <div class="radio-unit checked" id="shift-day" onclick="toggleShift('day')">
+            <div class="radio-dot">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="radio-label">白班</span>
+          </div>
+          <div class="radio-unit" id="shift-night" onclick="toggleShift('night')">
+            <div class="radio-dot">
+              <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span class="radio-label">夜班</span>
+          </div>
+        </div>
+      </div>
+      <div class="row-item" onclick="modifyAge()">
+        <span class="row-label">年龄设置</span>
+        <div class="row-value">
+          <span id="val-age">18-65</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 需求人数卡片 -->
+    <div class="demand-section">
+      <div class="demand-title">需求人数</div>
+      <div class="demand-input-row">
+        <input type="number" class="demand-input" id="demandCount" value="10">
+        <span class="demand-unit">人</span>
+      </div>
+      <div class="checkbox-line checked" id="limitBox" onclick="toggleDemandLimit()">
+        <div class="check-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <span class="check-text">实际报名人数不超过需求人数</span>
+      </div>
+    </div>
+
+    <!-- 底部固定保存修改按钮 -->
+    <div class="footer-bar">
+      <button class="btn-save" onclick="saveProjectChanges()">保存修改</button>
+    </div>
+
+
+    
+  </div>
+
+  <script>
+    function toggleShift(type) {
+      const day = document.getElementById('shift-day');
+      const night = document.getElementById('shift-night');
+      if (type === 'day') {
+        day.classList.add('checked');
+        night.classList.remove('checked');
+      } else {
+        day.classList.remove('checked');
+        night.classList.add('checked');
+      }
+    }
+
+    function toggleDemandLimit() {
+      const box = document.getElementById('limitBox');
+      box.classList.toggle('checked');
+    }
+
+    function removeMember() {
+      if (confirm('确认将 唐宛丽 从本项目名单中移除吗？')) {
+        document.querySelector('.member-avatars-row').style.display = 'none';
+        document.querySelector('.tidy-list-link span').innerText = '名单整理（0）';
+        
+      }
+    }
+
+    function openTidyList() {
+      alert('【名单整理】\\n当前名单（1人）：唐宛丽\\n支持批量备注、删除人员、加入黑名单等操作。');
+    }
+
+    function addManager() {
+      const name = prompt('请输入要邀请的项目管理员姓名：', '李经理');
+      if (name) {
+        
+      }
+    }
+
+    function modifyProjectName() {
+      const name = prompt('修改项目名称：', document.getElementById('val-pname').innerText);
+      if (name) {
+        document.getElementById('val-pname').innerText = name;
+      }
+    }
+
+    function modifyAge() {
+      const age = prompt('修改年龄限制：', document.getElementById('val-age').innerText);
+      if (age) {
+        document.getElementById('val-age').innerText = age;
+      }
+    }
+
+    function saveProjectChanges() {
+      window.location.href = "project_detail.html";
+    }, 1000);
+    }
+
+    function  {
+
+
+
+
+    }
+  </script>
+</body>
+</html>

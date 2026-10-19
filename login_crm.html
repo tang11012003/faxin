@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="https://yy.51zidan.com/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>子弹CRM</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background-color: #F5F7FA;
+    }
+    
+    /* 全屏科技背景容器 */
+    .crm-login-container {
+      width: 100vw;
+      height: 100vh;
+      min-width: 720px;
+      background-image: url('https://yy.51zidan.com/assets/bg-image-TZg82j53.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+
+    /* 左上角官方 Logo */
+    .crm-logo-wrap {
+      position: absolute;
+      top: 24px;
+      left: 28px;
+      z-index: 10;
+    }
+    .crm-logo {
+      height: 34px;
+      display: block;
+      user-select: none;
+    }
+
+    /* 右侧固定快捷登录卡片 */
+    .login-card-wrap {
+      position: fixed;
+      right: 120px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 530px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.06);
+      padding: 36px 40px 42px 40px;
+      z-index: 20;
+    }
+
+    /* 快捷登录标题 */
+    .card-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1D2129;
+      margin-bottom: 26px;
+      letter-spacing: 0.5px;
+    }
+
+    /* 表单项 */
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .crm-input {
+      width: 100%;
+      height: 44px;
+      background: #FFFFFF;
+      border: 1px solid #DCDFE6;
+      border-radius: 4px;
+      padding: 0 16px;
+      font-size: 14px;
+      color: #333333;
+      outline: none;
+      transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+    .crm-input::placeholder {
+      color: #C0C4CC;
+      font-size: 14px;
+    }
+    .crm-input:focus {
+      border-color: #1677FF;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+    }
+    .crm-input.is-error {
+      border-color: #F56C6C !important;
+    }
+
+    /* 图形验证码组合行 */
+    .captcha-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .captcha-row .crm-input {
+      flex: 1;
+    }
+    .captcha-canvas-wrap {
+      width: 120px;
+      height: 44px;
+      border: 1px solid #E4E7ED;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFF0F2;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .captcha-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* 短信验证码组合行 (复合输入框) */
+    .sms-row {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid #DCDFE6;
+      border-radius: 4px;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    .sms-row:focus-within {
+      border-color: #1677FF;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+    }
+    .sms-row.is-error {
+      border-color: #F56C6C !important;
+    }
+    .sms-input {
+      flex: 1;
+      height: 44px;
+      border: none;
+      outline: none;
+      padding: 0 16px;
+      font-size: 14px;
+      color: #333333;
+    }
+    .sms-input::placeholder {
+      color: #C0C4CC;
+      font-size: 14px;
+    }
+    .btn-get-sms {
+      width: 130px;
+      height: 44px;
+      background-color: #1677FF;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 0.2s;
+    }
+    .btn-get-sms:hover {
+      background-color: #3b8cff;
+    }
+    .btn-get-sms:disabled {
+      background-color: #C0C4CC;
+      cursor: not-allowed;
+    }
+
+    /* 错误提示文字 (非弹窗内联提示) */
+    .error-msg {
+      font-size: 12px;
+      color: #F56C6C;
+      margin-top: 5px;
+      line-height: 14px;
+      display: none;
+    }
+    .error-msg.show {
+      display: block;
+    }
+
+    /* 登录大按钮 */
+    .btn-submit {
+      width: 100%;
+      height: 46px;
+      background-color: #1677FF;
+      border-radius: 4px;
+      color: #FFFFFF;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 2px 8px rgba(22, 119, 255, 0.25);
+      transition: all 0.2s;
+    }
+    .btn-submit:hover {
+      background-color: #1366db;
+      box-shadow: 0 4px 12px rgba(22, 119, 255, 0.35);
+    }
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    /* 响应式调整 */
+    @media screen and (max-width: 1366px) {
+      .login-card-wrap {
+        right: 60px;
+        width: 480px;
+      }
+    }
+    @media screen and (max-width: 900px) {
+      .login-card-wrap {
+        position: relative;
+        right: auto;
+        top: 50%;
+        transform: translateY(-50%);
+        margin: 0 auto;
+        width: 90%;
+        max-width: 460px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="crm-login-container">
+    <!-- 左上角子弹CRM Logo -->
+    <div class="crm-logo-wrap">
+      <img src="https://yy.51zidan.com/assets/logo-DieKWCU2.png" class="crm-logo" alt="子弹CRM">
+    </div>
+
+    <!-- 右侧固定快捷登录卡片 -->
+    <div class="login-card-wrap">
+      <div class="card-title">快捷登录</div>
+
+      <!-- 手机号 -->
+      <div class="form-group">
+        <input type="tel" id="crmPhone" class="crm-input" placeholder="请输入手机号" maxlength="11" autocomplete="off">
+        <div class="error-msg" id="phoneError"></div>
+      </div>
+
+      <!-- 图形验证码 -->
+      <div class="form-group">
+        <div class="captcha-row">
+          <input type="text" id="crmCaptcha" class="crm-input" placeholder="请输入图形验证码" maxlength="4" autocomplete="off">
+          <div class="captcha-canvas-wrap" onclick="refreshCrmCaptcha()" title="看不清？点击换一张">
+            <canvas id="crmCaptchaCanvas" class="captcha-canvas" width="120" height="44"></canvas>
+          </div>
+        </div>
+        <div class="error-msg" id="captchaError"></div>
+      </div>
+
+      <!-- 短信验证码 (复合挂件输入框) -->
+      <div class="form-group">
+        <div class="sms-row" id="smsBox">
+          <input type="text" id="crmSms" class="sms-input" placeholder="请输入短信验证码" maxlength="6" autocomplete="off">
+          <button type="button" class="btn-get-sms" id="getSmsBtn" onclick="handleGetSms()">获取验证码</button>
+        </div>
+        <div class="error-msg" id="smsError"></div>
+      </div>
+
+      <!-- 登录提交按钮 -->
+      <button type="button" class="btn-submit" id="submitBtn" onclick="handleCrmLogin()">登 录</button>
+    </div>
+  </div>
+
+  <script>
+    // 图形算术验证码生成
+    let captchaAns = 13;
+    function refreshCrmCaptcha() {
+      const canvas = document.getElementById('crmCaptchaCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // 柔和暖粉噪点背景
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#FFE8EA');
+      grad.addColorStop(0.5, '#FDE3EE');
+      grad.addColorStop(1, '#FFEAF2');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 干扰随机噪点
+      for (let i = 0; i < 40; i++) {
+        ctx.fillStyle = `rgba(${Math.floor(Math.random()*220)}, ${Math.floor(Math.random()*160)}, ${Math.floor(Math.random()*220)}, 0.45)`;
+        ctx.beginPath();
+        ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 干扰波浪线
+      for (let i = 0; i < 4; i++) {
+        ctx.strokeStyle = `rgba(${Math.floor(Math.random()*200)}, ${Math.floor(Math.random()*150)}, ${Math.floor(Math.random()*200)}, 0.3)`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * w, Math.random() * h);
+        ctx.bezierCurveTo(Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h);
+        ctx.stroke();
+      }
+
+      // 随机生成一位数或两位数算术加法题
+      const n1 = Math.floor(Math.random() * 9) + 1;
+      const n2 = Math.floor(Math.random() * 9) + 1;
+      captchaAns = n1 + n2;
+      const formula = `${n1} + ${n2} =`;
+
+      ctx.font = 'bold 24px PingFang SC, Microsoft YaHei, sans-serif';
+      ctx.textBaseline = 'middle';
+      
+      const charColors = ['#D32F2F', '#7B1FA2', '#C2185B', '#E64A19', '#512DA8'];
+      let posX = 14;
+      for (let i = 0; i < formula.length; i++) {
+        ctx.fillStyle = charColors[i % charColors.length];
+        const char = formula[i];
+        const rotate = (Math.random() - 0.5) * 0.25;
+        ctx.save();
+        ctx.translate(posX, h / 2);
+        ctx.rotate(rotate);
+        ctx.fillText(char, 0, 0);
+        ctx.restore();
+        posX += ctx.measureText(char).width + 4;
+      }
+    }
+
+    // 获取短信验证码 (60s 倒计时)
+    let countdownSec = 60;
+    let timer = null;
+    function handleGetSms() {
+      const phoneInput = document.getElementById('crmPhone');
+      const phoneError = document.getElementById('phoneError');
+      const phone = phoneInput.value.trim();
+
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        phoneInput.classList.add('is-error');
+        phoneError.textContent = '请输入正确的11位手机号码';
+        phoneError.classList.add('show');
+        return;
+      }
+      phoneInput.classList.remove('is-error');
+      phoneError.classList.remove('show');
+
+      const btn = document.getElementById('getSmsBtn');
+      btn.disabled = true;
+      countdownSec = 60;
+      btn.textContent = `${countdownSec}秒后重新获取`;
+
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => {
+        countdownSec--;
+        if (countdownSec <= 0) {
+          clearInterval(timer);
+          btn.disabled = false;
+          btn.textContent = '获取验证码';
+        } else {
+          btn.textContent = `${countdownSec}秒后重新获取`;
+        }
+      }, 1000);
+    }
+
+    // 快捷登录校验 (采用内联无侵入提示，严禁弹窗)
+    function handleCrmLogin() {
+      const phoneInput = document.getElementById('crmPhone');
+      const captchaInput = document.getElementById('crmCaptcha');
+      const smsBox = document.getElementById('smsBox');
+      const smsInput = document.getElementById('crmSms');
+
+      const phoneError = document.getElementById('phoneError');
+      const captchaError = document.getElementById('captchaError');
+      const smsError = document.getElementById('smsError');
+
+      const phone = phoneInput.value.trim();
+      const captcha = captchaInput.value.trim();
+      const sms = smsInput.value.trim();
+
+      let hasError = false;
+
+      // 手机号检查
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        phoneInput.classList.add('is-error');
+        phoneError.textContent = '请输入正确的手机号码';
+        phoneError.classList.add('show');
+        hasError = true;
+      } else {
+        phoneInput.classList.remove('is-error');
+        phoneError.classList.remove('show');
+      }
+
+      // 图形验证码检查
+      if (!captcha) {
+        captchaInput.classList.add('is-error');
+        captchaError.textContent = '请输入图形验证码计算结果';
+        captchaError.classList.add('show');
+        hasError = true;
+      } else {
+        captchaInput.classList.remove('is-error');
+        captchaError.classList.remove('show');
+      }
+
+      // 短信验证码检查
+      if (!sms) {
+        smsBox.classList.add('is-error');
+        smsError.textContent = '请输入短信验证码';
+        smsError.classList.add('show');
+        hasError = true;
+      } else {
+        smsBox.classList.remove('is-error');
+        smsError.classList.remove('show');
+      }
+
+      if (hasError) return;
+
+      // 登录验证通过，直接跳转或进入主页
+      window.location.href = 'shouye.html';
+    }
+
+    // 回车键快捷提交
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        handleCrmLogin();
+      }
+    });
+
+    // 初始化
+    window.addEventListener('DOMContentLoaded', () => {
+      refreshCrmCaptcha();
+    });
+  </script>
+</body>
+</html>
