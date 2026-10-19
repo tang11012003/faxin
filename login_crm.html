@@ -5,6 +5,71 @@
   <link rel="icon" href="https://yy.51zidan.com/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>子弹CRM</title>
+  <script id="prototypeAnnotationData" type="application/json">
+  {
+    "prototypeId": "login_crm",
+    "version": 1,
+    "globalMeta": {
+      "name": "子弹CRM - 快捷登录",
+      "version": "V1.0",
+      "updatedAt": "2026-10-19"
+    },
+    "globalSections": [
+      {
+        "id": "sec_crm_overview",
+        "title": "1. CRM系统定位与业务场景",
+        "content": "子弹CRM系统是为企业销售团队、客户经理与商务总监打造的客户全生命周期管理系统。支持商机漏斗跟踪、客户跟进记录、业绩看板与合同签约。本页面为科技感全屏快捷登录工作台。"
+      },
+      {
+        "id": "sec_crm_security",
+        "title": "2. 身份认证与权限隔离",
+        "content": "1. **双重安全验证**：必须输入图形算术验证码及手机短信验证码完成双重鉴权。\n2. **多角色权限管控**：登录后依据账号部门及岗位配置，精准分配商机池、公海客户与私海客户访问权限。\n3. **单点登录互通**：支持与子弹人力云统一账号体系打通，实现一账号多系统免密切换。"
+      }
+    ],
+    "annotations": [
+      {
+        "id": "note_crm_phone",
+        "title": "企业销售人员手机号校验",
+        "content": "校验标准 11 位企业认证手机号。失焦或提交时做正则校验，不合规时红框高亮警示。",
+        "target": "#crmPhone",
+        "scope": "page:login_crm",
+        "type": "modify",
+        "x": 30,
+        "y": 20
+      },
+      {
+        "id": "note_crm_captcha",
+        "title": "Canvas 算术防刷验证码",
+        "content": "内置高对比度科技粉蓝渐变 Canvas 算术防刷验证码，随机生成 10 以内加法计算题，点击图片直接重新生成计算表达式与干扰点阵。",
+        "target": "#crmCaptchaCanvas",
+        "scope": "page:login_crm",
+        "type": "add",
+        "x": 40,
+        "y": 15
+      },
+      {
+        "id": "note_crm_sms",
+        "title": "短信动态码下发与倒计时",
+        "content": "算术验证通过后允许下发短信验证码，启动 60 秒冷却计时器，保证短信接口安全性。",
+        "target": "#getSmsBtn",
+        "scope": "page:login_crm",
+        "type": "rule",
+        "x": 45,
+        "y": 20
+      },
+      {
+        "id": "note_crm_submit",
+        "title": "登录鉴权并跳转工作台",
+        "content": "点击立即登录后校验全部字段合法性，通过后安全进入主工作台页面。",
+        "target": "#submitBtn",
+        "scope": "page:login_crm",
+        "type": "modify",
+        "x": 50,
+        "y": 20
+      }
+    ]
+  }
+  </script>
   <style>
     * {
       box-sizing: border-box;
@@ -231,9 +296,15 @@
         max-width: 460px;
       }
     }
+    #app {
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
+    }
   </style>
 </head>
-<body>
+<body data-proto-platform="web">
+  <div id="app" data-proto-app data-proto-platform="web" data-proto-scope="page:login_crm">
   <div class="crm-login-container">
     <!-- 左上角子弹CRM Logo -->
     <div class="crm-logo-wrap">
@@ -438,5 +509,7 @@
       refreshCrmCaptcha();
     });
   </script>
+  </div>
+  <div id="protoWebReviewWorkspace" hidden></div>
 </body>
 </html>

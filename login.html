@@ -6,6 +6,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="https://web.51zidan.com/favicon.ico">
   <title>子弹人力云</title>
+  <script id="prototypeAnnotationData" type="application/json">
+  {
+    "prototypeId": "login",
+    "version": 1,
+    "globalMeta": {
+      "name": "子弹人力云 - 登录与认证",
+      "version": "V1.0",
+      "updatedAt": "2026-10-19"
+    },
+    "globalSections": [
+      {
+        "id": "sec_overview",
+        "title": "1. 业务背景与系统定位",
+        "content": "子弹人力云是面向企业HR、薪酬专员及管理层的一站式数字化人力资源管理平台，涵盖发薪、考勤、项目花名册与社保核算。本登录页面作为全平台统一入口，提供短信快捷登录与密码安全登录双模切换，并支持企业微信/微信扫码快速认证。"
+      },
+      {
+        "id": "sec_auth_rules",
+        "title": "2. 登录鉴权与安全规则",
+        "content": "1. **手机号校验**：必须符合国内11位手机号标准（13/14/15/16/17/18/19开头）。\n2. **算术防刷验证码**：点击获取短信验证码前，需输入由动态 Canvas 生成的十以内加法验证码，输入正确后触发短信发送。\n3. **短信倒计时**：短信发送成功后触发 60s 倒计时锁定，期间不可重复点击。\n4. **新用户流转**：未注册的企业手机号验证通过后，将引导至企业认证或新员工入职绑定流程。"
+      },
+      {
+        "id": "sec_account_perm",
+        "title": "3. 账号权限与多端协同",
+        "content": "1. **主账号/管理员**：具备全企业薪酬核算、发薪审批、银行打款权限。\n2. **子账号/项目经理**：仅可查看其负责项目内的考勤打卡与待发薪列表。\n3. **微信快捷登录**：支持绑定微信OpenID，免密一键扫码登录进入系统。"
+      }
+    ],
+    "annotations": [
+      {
+        "id": "note_phone",
+        "title": "手机号输入规范与格式校验",
+        "content": "支持标准11位手机号。失焦或提交时自动做正则匹配校验，输入不合法时输入框高亮红色警示边框并提示错误。",
+        "target": "#phoneInput",
+        "scope": "page:login",
+        "type": "modify",
+        "x": 30,
+        "y": 20
+      },
+      {
+        "id": "note_math_captcha",
+        "title": "动态算术人机验证机制",
+        "content": "采用 Canvas 客户端随机生成 10 以内加法计算题，附带随机干扰点与旋转弧度。点击右侧验证码图片即可无缝刷新题目，防止脚本暴力撞库与恶意盗刷短信通道。",
+        "target": "#captchaCanvas",
+        "scope": "page:login",
+        "type": "add",
+        "x": 40,
+        "y": 15
+      },
+      {
+        "id": "note_sms_code",
+        "title": "短信获取与防刷保护机制",
+        "content": "仅当手机号格式正确且算术验证码计算正确时，获取验证码按钮方可触发。成功后按钮进入 60 秒冷却倒计时，倒计时结束前禁止重复请求。",
+        "target": "#sendSmsBtn",
+        "scope": "page:login",
+        "type": "rule",
+        "x": 45,
+        "y": 20
+      },
+      {
+        "id": "note_login_action",
+        "title": "登录鉴权并跳转发薪首页",
+        "content": "点击登录后校验手机号格式、算术答案与短信动态码（原型默认6位任意码均可），校验通过后自动跳转至发薪首页 shouye.html。",
+        "target": "#loginBtn",
+        "scope": "page:login",
+        "type": "modify",
+        "x": 50,
+        "y": 20
+      }
+    ]
+  }
+  </script>
   <style>
     * {
       box-sizing: border-box;
@@ -308,9 +378,15 @@
         width: 100%;
       }
     }
+    #app {
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
+    }
   </style>
 </head>
-<body>
+<body data-proto-platform="web">
+  <div id="app" data-proto-app data-proto-platform="web" data-proto-scope="page:login">
   <div class="container">
     <!-- 左侧品牌与科技插画展示区 -->
     <div class="left">
@@ -555,5 +631,7 @@
       refreshCaptcha();
     });
   </script>
+  </div>
+  <div id="protoWebReviewWorkspace" hidden></div>
 </body>
 </html>
