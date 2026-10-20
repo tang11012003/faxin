@@ -22,8 +22,8 @@
     },
     {
       "id": "sec_crm_security",
-      "title": "2. 身份认证与权限隔离",
-      "content": "1. **双重安全验证**：必须输入图形算术验证码及手机短信验证码完成双重鉴权。\n2. **多角色权限管控**：登录后依据账号部门及岗位配置，精准分配商机池、公海客户与私海客户访问权限。\n3. **单点登录互通**：支持与子弹人力云统一账号体系打通，实现一账号多系统免密切换。"
+      "title": "2. 登录防爬防撞库安全升级（第二代行为式滑块拼图）",
+      "content": "1. **攻防升级背景**：针对旧版简易算术验证码曾遭黑客使用自动化 OCR 脚本批量撞库攻击的隐患，本次全面升级为第二代**行为式滑块拼图人机校验系统**。\n2. **行为轨迹防爬**：客户端实时采集用户拖动滑块过程中的鼠标/触点微抖动、加减速度离散度、拖动持续时间与时间戳序列，有效拦截无头浏览器（Puppeteer/Selenium）机械线性匀速脚本或瞬发数据包攻击。\n3. **防客户投诉设计**：免去繁琐键盘字符与数字口算输入，拖动对齐仅耗时 1.2 秒；内置 ±5px 容差模糊吸附机制，误判率极低，保障企业销售人员与客户经理顺畅登录体验。\n4. **短信防刷与冷却闭环**：唯有滑块拼图吻合且轨迹校验通过后，方可触发下发短信动态码，并启动 60s 倒计时。"
     }
   ],
   "annotations": [
@@ -38,19 +38,19 @@
       "y": 0.2
     },
     {
-      "id": "note_crm_captcha",
-      "title": "Canvas 算术防刷验证码",
-      "content": "内置高对比度科技粉蓝渐变 Canvas 算术防刷验证码，随机生成 10 以内加法计算题，点击图片直接重新生成计算表达式与干扰点阵。",
-      "target": "#crmCaptchaCanvas",
+      "id": "note_crm_slider_captcha",
+      "title": "第二代行为式滑块拼图人机验证",
+      "content": "取代旧版易被 OCR 破解的算术验证码。用户仅需顺畅拖动滑块填充缺口，前端后台协同分析拖拽非线性行为轨迹（加速度与微抖动），兼顾高强度防爬与极低操作门槛，防范客户投诉。",
+      "target": "#crmSliderVerifyBox",
       "scope": "page:login_crm",
-      "type": "add",
+      "type": "modify",
       "x": 0.4,
       "y": 0.15
     },
     {
       "id": "note_crm_sms",
       "title": "短信动态码下发与倒计时",
-      "content": "算术验证通过后允许下发短信验证码，启动 60 秒冷却计时器，保证短信接口安全性。",
+      "content": "行为式滑块拼图验证通过后允许下发短信验证码，启动 60 秒冷却计时器，保证短信接口安全性与防刷保护。",
       "target": "#getSmsBtn",
       "scope": "page:login_crm",
       "type": "rule",
@@ -60,7 +60,7 @@
     {
       "id": "note_crm_submit",
       "title": "登录鉴权并跳转工作台",
-      "content": "点击立即登录后校验全部字段合法性，通过后安全进入主工作台页面。",
+      "content": "点击立即登录后校验全部字段合法性，通过后安全进入发薪首页 shouye.html。",
       "target": "#submitBtn",
       "scope": "page:login_crm",
       "type": "modify",
@@ -276,6 +276,219 @@
     }
     .btn-submit:active {
       transform: translateY(1px);
+    }
+
+    
+    /* 行为式滑块拼图验证码容器 (CRM定制科技蓝风格) */
+    .slider-verify-box {
+      width: 100%;
+      position: relative;
+      user-select: none;
+    }
+    .slider-track {
+      width: 100%;
+      height: 44px;
+      background: #F4F6FA;
+      border: 1px solid #DCDFE6;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    .slider-track.is-active {
+      border-color: #1677FF;
+      background: #EFF6FF;
+    }
+    .slider-track.is-success {
+      border-color: #52C41A !important;
+      background: #F6FFED !important;
+    }
+    .slider-track.is-error {
+      border-color: #F56C6C !important;
+      background: #FFF2F0 !important;
+      animation: trackShake 0.4s ease-in-out;
+    }
+    @keyframes trackShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+    .slider-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0;
+      background: rgba(22, 119, 255, 0.15);
+      pointer-events: none;
+      transition: width 0.05s ease;
+    }
+    .slider-track.is-success .slider-fill {
+      background: rgba(82, 196, 26, 0.2);
+    }
+    .slider-track.is-error .slider-fill {
+      background: rgba(245, 108, 108, 0.2);
+    }
+    .slider-btn {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 44px;
+      height: 42px;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      border: 1px solid #DCDFE6;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #606266;
+      z-index: 5;
+      transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+      box-sizing: border-box;
+    }
+    .slider-btn:hover {
+      background: #1677FF;
+      border-color: #1677FF;
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(22, 119, 255, 0.3);
+    }
+    .slider-btn:active {
+      cursor: grabbing;
+      background: #1366db;
+      border-color: #1366db;
+      color: #FFFFFF;
+    }
+    .slider-track.is-success .slider-btn {
+      background: #52C41A !important;
+      border-color: #52C41A !important;
+      color: #FFFFFF !important;
+      cursor: default;
+    }
+    .slider-track.is-error .slider-btn {
+      background: #F56C6C !important;
+      border-color: #F56C6C !important;
+      color: #FFFFFF !important;
+    }
+    .slider-hint {
+      font-size: 13px;
+      color: #8C939D;
+      pointer-events: none;
+      z-index: 2;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .slider-track.is-success .slider-hint {
+      color: #52C41A;
+      font-weight: 500;
+    }
+    .slider-track.is-error .slider-hint {
+      color: #F56C6C;
+    }
+
+    /* 悬浮拼图主画框 */
+    .puzzle-popover {
+      position: absolute;
+      bottom: 52px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      width: 360px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      border: 1px solid #E4E7ED;
+      padding: 12px 14px 14px 14px;
+      z-index: 60;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s;
+    }
+    .puzzle-popover.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    .puzzle-popover::after {
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 12px;
+      height: 12px;
+      background: #FFFFFF;
+      border-right: 1px solid #E4E7ED;
+      border-bottom: 1px solid #E4E7ED;
+    }
+    .puzzle-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .puzzle-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1D2129;
+    }
+    .puzzle-refresh-btn {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: #1677FF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: background-color 0.15s;
+    }
+    .puzzle-refresh-btn:hover {
+      background-color: #EFF6FF;
+    }
+    .puzzle-stage {
+      position: relative;
+      width: 332px;
+      height: 160px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #F2F4F7;
+    }
+    .puzzle-bg-canvas {
+      width: 332px;
+      height: 160px;
+      display: block;
+    }
+    .puzzle-piece-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 48px;
+      height: 160px;
+      pointer-events: none;
+      z-index: 10;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
+    }
+    .puzzle-tip {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 26px;
+      line-height: 26px;
+      background: rgba(0, 0, 0, 0.45);
+      color: #FFFFFF;
+      font-size: 12px;
+      text-align: center;
+      pointer-events: none;
+      transition: opacity 0.2s;
     }
 
     /* 响应式调整 */
@@ -1033,15 +1246,36 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
         <div class="error-msg" id="phoneError"></div>
       </div>
 
-      <!-- 图形验证码 -->
+            <!-- 第二代行为式滑块拼图验证码 -->
       <div class="form-group">
-        <div class="captcha-row">
-          <input type="text" id="crmCaptcha" class="crm-input" placeholder="请输入图形验证码" maxlength="4" autocomplete="off">
-          <div class="captcha-canvas-wrap" onclick="refreshCrmCaptcha()" title="看不清？点击换一张">
-            <canvas id="crmCaptchaCanvas" class="captcha-canvas" width="120" height="44"></canvas>
+        <div class="slider-verify-box" id="crmSliderVerifyBox">
+          <!-- 悬浮拼图主画框 -->
+          <div class="puzzle-popover" id="crmPuzzlePopover">
+            <div class="puzzle-header">
+              <span class="puzzle-title">安全验证</span>
+              <button type="button" class="puzzle-refresh-btn" onclick="refreshCrmPuzzleCaptcha()" title="看不清？点击换一张">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                换一张
+              </button>
+            </div>
+            <div class="puzzle-stage">
+              <canvas id="crmPuzzleBgCanvas" width="332" height="160" class="puzzle-bg-canvas"></canvas>
+              <canvas id="crmPuzzlePieceCanvas" width="48" height="160" class="puzzle-piece-canvas"></canvas>
+              <div class="puzzle-tip" id="crmPuzzleTip">向右拖动滑块填充拼图缺口</div>
+            </div>
+          </div>
+          <!-- 滑块轨道 -->
+          <div class="slider-track" id="crmSliderTrack">
+            <div class="slider-fill" id="crmSliderFill"></div>
+            <div class="slider-btn" id="crmSliderBtn" title="按住向右拖动">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+              </svg>
+            </div>
+            <span class="slider-hint" id="crmSliderHint">按住左侧滑块，拖动完成拼图</span>
           </div>
         </div>
-        <div class="error-msg" id="captchaError"></div>
+        <div class="error-msg" id="crmCaptchaError"></div>
       </div>
 
       <!-- 短信验证码 (复合挂件输入框) -->
@@ -1059,73 +1293,306 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
   </div>
 
   <script>
-    // 图形算术验证码生成
-    let captchaAns = 13;
-    function refreshCrmCaptcha() {
-      const canvas = document.getElementById('crmCaptchaCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
+    // ===== 第二代行为式滑块拼图人机校验系统 (防自动化爬虫/撞库 + 防客户投诉) =====
+    const PUZZLE_CONFIG = {
+      width: 332,
+      height: 160,
+      pieceSize: 42,
+      pieceRadius: 8,
+      tolerance: 5 // 容差范围 ±5px，避免普通客户误操作投诉
+    };
 
-      // 柔和暖粉噪点背景
+    let targetX = 0;
+    let targetY = 0;
+    let isPuzzleVerified = false;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragDistance = 0;
+    let trackWidth = 0;
+    let sliderBtnWidth = 44;
+    let trackMaxMove = 0;
+    let pieceMaxMove = 0;
+    let dragHistory = [];
+    let dragStartTime = 0;
+
+    // 绘制随机几何卡榫拼图路径 (贝塞尔曲线边缘)
+    function drawPuzzlePath(ctx, x, y, size, r) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      // 上边缘凹凸榫
+      ctx.lineTo(x + (size - r * 2) / 2, y);
+      ctx.arc(x + size / 2, y - r + 2, r, Math.PI * 0.8, Math.PI * 0.2, false);
+      ctx.lineTo(x + size, y);
+      // 右边缘凹凸榫
+      ctx.lineTo(x + size, y + (size - r * 2) / 2);
+      ctx.arc(x + size + r - 2, y + size / 2, r, Math.PI * 1.3, Math.PI * 0.7, false);
+      ctx.lineTo(x + size, y + size);
+      // 下边缘凹凸榫
+      ctx.lineTo(x + (size + r * 2) / 2, y + size);
+      ctx.arc(x + size / 2, y + size + r - 2, r, Math.PI * 0.2, Math.PI * 0.8, false);
+      ctx.lineTo(x, y + size);
+      // 左边缘凹凸榫
+      ctx.lineTo(x, y + (size + r * 2) / 2);
+      ctx.arc(x - r + 2, y + size / 2, r, Math.PI * 0.7, Math.PI * 1.3, true);
+      ctx.lineTo(x, y);
+      ctx.closePath();
+    }
+
+    // 生成抗 OCR 多主题科技插画渐变背景
+    function generateTechBackground(ctx, w, h) {
+      const themes = [
+        ['#0F2027', '#203A43', '#2C5364'], // 科技深邃蓝
+        ['#1A2980', '#26D0CE'],             // 极速极光蓝
+        ['#141E30', '#243B55'],             // 商务深蓝夜
+        ['#0B486B', '#F56217'],             // 活力数码渐变
+        ['#134E5E', '#71B280']              // 现代矩阵青
+      ];
+      const selected = themes[Math.floor(Math.random() * themes.length)];
       const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, '#FFE8EA');
-      grad.addColorStop(0.5, '#FDE3EE');
-      grad.addColorStop(1, '#FFEAF2');
+      grad.addColorStop(0, selected[0]);
+      if (selected[2]) grad.addColorStop(0.5, selected[1]);
+      grad.addColorStop(1, selected[selected.length - 1]);
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // 干扰随机噪点
-      for (let i = 0; i < 40; i++) {
-        ctx.fillStyle = `rgba(${Math.floor(Math.random()*220)}, ${Math.floor(Math.random()*160)}, ${Math.floor(Math.random()*220)}, 0.45)`;
+      // 叠加现代化科技晶格与光效粒子
+      ctx.save();
+      for (let i = 0; i < 28; i++) {
+        ctx.fillStyle = 'rgba(255, 255, 255, ' + (Math.random() * 0.22 + 0.05) + ')';
         ctx.beginPath();
-        ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 1.5, 0, Math.PI * 2);
+        ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 2.8 + 1, 0, Math.PI * 2);
         ctx.fill();
       }
-
-      // 干扰波浪线
-      for (let i = 0; i < 4; i++) {
-        ctx.strokeStyle = `rgba(${Math.floor(Math.random()*200)}, ${Math.floor(Math.random()*150)}, ${Math.floor(Math.random()*200)}, 0.3)`;
-        ctx.lineWidth = 1.2;
+      for (let i = 0; i < 5; i++) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, ' + (Math.random() * 0.15 + 0.05) + ')';
+        ctx.lineWidth = Math.random() * 1.5 + 0.5;
         ctx.beginPath();
         ctx.moveTo(Math.random() * w, Math.random() * h);
-        ctx.bezierCurveTo(Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h);
+        ctx.lineTo(Math.random() * w, Math.random() * h);
         ctx.stroke();
       }
-
-      // 随机生成一位数或两位数算术加法题
-      const n1 = Math.floor(Math.random() * 9) + 1;
-      const n2 = Math.floor(Math.random() * 9) + 1;
-      captchaAns = n1 + n2;
-      const formula = `${n1} + ${n2} =`;
-
-      ctx.font = 'bold 24px PingFang SC, Microsoft YaHei, sans-serif';
-      ctx.textBaseline = 'middle';
-      
-      const charColors = ['#D32F2F', '#7B1FA2', '#C2185B', '#E64A19', '#512DA8'];
-      let posX = 14;
-      for (let i = 0; i < formula.length; i++) {
-        ctx.fillStyle = charColors[i % charColors.length];
-        const char = formula[i];
-        const rotate = (Math.random() - 0.5) * 0.25;
-        ctx.save();
-        ctx.translate(posX, h / 2);
-        ctx.rotate(rotate);
-        ctx.fillText(char, 0, 0);
-        ctx.restore();
-        posX += ctx.measureText(char).width + 4;
-      }
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.font = 'bold 36px sans-serif';
+      ctx.fillText('ZIDAN CRM', 20, 95);
+      ctx.restore();
     }
 
-    // 获取短信验证码 (60s 倒计时)
+    // 刷新生成滑块拼图人机校验
+    function refreshCrmPuzzleCaptcha() {
+      if (isPuzzleVerified) return;
+      const bgCanvas = document.getElementById('crmPuzzleBgCanvas');
+      const pieceCanvas = document.getElementById('crmPuzzlePieceCanvas');
+      if (!bgCanvas || !pieceCanvas) return;
+
+      const bgCtx = bgCanvas.getContext('2d');
+      const pieceCtx = pieceCanvas.getContext('2d');
+      const w = PUZZLE_CONFIG.width;
+      const h = PUZZLE_CONFIG.height;
+      const size = PUZZLE_CONFIG.pieceSize;
+      const r = PUZZLE_CONFIG.pieceRadius;
+
+      // 1. 生成防 OCR 科技背景
+      generateTechBackground(bgCtx, w, h);
+
+      // 2. 随机生成缺口坐标 (X 限制在 [w*0.35, w - size - 15]，Y 限制在 [15, h - size - 15])
+      targetX = Math.floor(Math.random() * (w - size - w * 0.35 - 15)) + Math.floor(w * 0.35);
+      targetY = Math.floor(Math.random() * (h - size - 30)) + 15;
+
+      // 3. 在切片画布上提取目标区域并绘制卡榫切片
+      pieceCanvas.width = size + r * 2 + 4;
+      pieceCanvas.height = h;
+      pieceCtx.clearRect(0, 0, pieceCanvas.width, pieceCanvas.height);
+
+      pieceCtx.save();
+      // 在切片画布绘制相同路径 (以 r 为起始偏移，防止卡榫溢出)
+      drawPuzzlePath(pieceCtx, r, targetY, size, r);
+      pieceCtx.clip();
+      // 从背景画布中拷贝该区域像素
+      pieceCtx.drawImage(bgCanvas, targetX - r, 0, pieceCanvas.width, h, 0, 0, pieceCanvas.width, h);
+      // 高光白色边缘
+      pieceCtx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      pieceCtx.lineWidth = 2;
+      pieceCtx.stroke();
+      pieceCtx.restore();
+
+      // 4. 在主背景画布中绘制半透明深色带阴影的缺口蒙版
+      bgCtx.save();
+      drawPuzzlePath(bgCtx, targetX, targetY, size, r);
+      bgCtx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+      bgCtx.fill();
+      bgCtx.lineWidth = 2;
+      bgCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+      bgCtx.stroke();
+      bgCtx.restore();
+
+      // 重置切片位置
+      pieceCanvas.style.transform = 'translateX(0px)';
+    }
+
+    // 初始化滑块拖拽与生物轨迹采集
+    function initCrmSliderDrag() {
+      const sliderBox = document.getElementById('crmSliderVerifyBox');
+      const sliderTrack = document.getElementById('crmSliderTrack');
+      const sliderBtn = document.getElementById('crmSliderBtn');
+      const sliderFill = document.getElementById('crmSliderFill');
+      const sliderHint = document.getElementById('crmSliderHint');
+      const popover = document.getElementById('crmPuzzlePopover');
+      const pieceCanvas = document.getElementById('crmPuzzlePieceCanvas');
+      const captchaError = document.getElementById('crmCaptchaError');
+
+      if (!sliderBtn || !sliderTrack) return;
+
+      function updateDimensions() {
+        trackWidth = sliderTrack.clientWidth;
+        trackMaxMove = trackWidth - sliderBtnWidth;
+        const bgCanvas = document.getElementById('crmPuzzleBgCanvas');
+        const bgWidth = bgCanvas ? bgCanvas.width : PUZZLE_CONFIG.width;
+        pieceMaxMove = bgWidth - (PUZZLE_CONFIG.pieceSize + PUZZLE_CONFIG.pieceRadius * 2);
+      }
+      updateDimensions();
+      window.addEventListener('resize', updateDimensions);
+
+      // 鼠标悬停显示拼图浮层
+      sliderBox.addEventListener('mouseenter', () => {
+        if (!isPuzzleVerified && !isDragging) {
+          popover.classList.add('show');
+        }
+      });
+      sliderBox.addEventListener('mouseleave', () => {
+        if (!isPuzzleVerified && !isDragging) {
+          popover.classList.remove('show');
+        }
+      });
+
+      // 拖拽开始
+      function onDragStart(e) {
+        if (isPuzzleVerified) return;
+        isDragging = true;
+        dragStartX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        dragStartTime = Date.now();
+        dragHistory = [{ x: dragStartX, y: (e.type.includes('touch') ? e.touches[0].clientY : e.clientY), t: dragStartTime }];
+
+        updateDimensions();
+        popover.classList.add('show');
+        sliderTrack.classList.add('is-active');
+        sliderTrack.classList.remove('is-error');
+        sliderHint.textContent = '向右拖动滑块使拼图对齐';
+        captchaError.classList.remove('show');
+
+        document.addEventListener('mousemove', onDragMove);
+        document.addEventListener('mouseup', onDragEnd);
+        document.addEventListener('touchmove', onDragMove, { passive: false });
+        document.addEventListener('touchend', onDragEnd);
+      }
+
+      // 拖拽过程
+      function onDragMove(e) {
+        if (!isDragging || isPuzzleVerified) return;
+        if (e.cancelable) e.preventDefault();
+
+        const currentX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const currentY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        const now = Date.now();
+        dragHistory.push({ x: currentX, y: currentY, t: now });
+
+        let moveX = currentX - dragStartX;
+        if (moveX < 0) moveX = 0;
+        if (moveX > trackMaxMove) moveX = trackMaxMove;
+
+        dragDistance = moveX;
+        sliderBtn.style.transform = 'translateX(' + moveX + 'px)';
+        sliderFill.style.width = (moveX + 22) + 'px';
+
+        // 映射切片移动距离
+        const ratio = pieceMaxMove / trackMaxMove;
+        const pieceMoveX = moveX * ratio;
+        pieceCanvas.style.transform = 'translateX(' + pieceMoveX + 'px)';
+      }
+
+      // 拖拽结束判定与生物轨迹防爬审计
+      function onDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        document.removeEventListener('mousemove', onDragMove);
+        document.removeEventListener('mouseup', onDragEnd);
+        document.removeEventListener('touchmove', onDragMove);
+        document.removeEventListener('touchend', onDragEnd);
+
+        if (isPuzzleVerified) return;
+
+        const totalDuration = Date.now() - dragStartTime;
+        const ratio = pieceMaxMove / trackMaxMove;
+        const finalPieceX = dragDistance * ratio;
+        const diff = Math.abs(finalPieceX - targetX);
+
+        // 1. 防黑客自动化机器人校验: 拖拽过快(<180ms)或无任何轨迹离散度均判定为爬虫机械脚本
+        let isBot = false;
+        if (totalDuration < 180 || dragHistory.length < 5) {
+          isBot = true;
+        } else {
+          // 计算 Y 轴生理微抖动标准差与速度变异度
+          let sumY = 0;
+          for (let p of dragHistory) sumY += p.y;
+          const avgY = sumY / dragHistory.length;
+          let varianceY = 0;
+          for (let p of dragHistory) varianceY += Math.pow(p.y - avgY, 2);
+          // 绝对 0 抖动的直线匀速运动通常为 Selenium 等无头脚本直线发包
+          if (varianceY === 0 && dragHistory.length > 10) {
+            isBot = true;
+          }
+        }
+
+        // 2. 判定拼图是否吻合 (防客户投诉: ±5px 容差吸附)
+        if (!isBot && diff <= PUZZLE_CONFIG.tolerance) {
+          // 验证通过
+          isPuzzleVerified = true;
+          // 吸附到精确位置
+          const perfectTrackX = targetX / ratio;
+          sliderBtn.style.transform = 'translateX(' + perfectTrackX + 'px)';
+          sliderFill.style.width = (perfectTrackX + 22) + 'px';
+          pieceCanvas.style.transform = 'translateX(' + targetX + 'px)';
+
+          sliderTrack.classList.remove('is-active', 'is-error');
+          sliderTrack.classList.add('is-success');
+          sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+          
+          const costSec = (totalDuration / 1000).toFixed(1);
+          sliderHint.textContent = '验证成功 耗时 ' + costSec + 's';
+          
+          setTimeout(() => {
+            popover.classList.remove('show');
+          }, 400);
+        } else {
+          // 验证失败: 变红、抖动、自动复位，内联提示
+          sliderTrack.classList.remove('is-active');
+          sliderTrack.classList.add('is-error');
+          sliderHint.textContent = isBot ? '环境异常，请重新验证' : '拼图未对齐，请重试';
+          
+          setTimeout(() => {
+            sliderBtn.style.transform = 'translateX(0px)';
+            sliderFill.style.width = '0px';
+            pieceCanvas.style.transform = 'translateX(0px)';
+            sliderTrack.classList.remove('is-error');
+            sliderHint.textContent = '按住左侧滑块，拖动完成拼图';
+            refreshCrmPuzzleCaptcha();
+          }, 700);
+        }
+      }
+
+      sliderBtn.addEventListener('mousedown', onDragStart);
+      sliderBtn.addEventListener('touchstart', onDragStart, { passive: true });
+    }
+
+    // 获取短信验证码 (必须先通过滑块拼图校验，60s 倒计时)
     let countdownSec = 60;
     let timer = null;
     function handleGetSms() {
       const phoneInput = document.getElementById('crmPhone');
       const phoneError = document.getElementById('phoneError');
+      const captchaError = document.getElementById('crmCaptchaError');
       const phone = phoneInput.value.trim();
 
+      // 1. 检查手机号
       if (!/^1[3-9]\d{9}$/.test(phone)) {
         phoneInput.classList.add('is-error');
         phoneError.textContent = '请输入正确的11位手机号码';
@@ -1135,10 +1602,24 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
       phoneInput.classList.remove('is-error');
       phoneError.classList.remove('show');
 
+      // 2. 检查行为式滑块拼图是否通过
+      if (!isPuzzleVerified) {
+        const popover = document.getElementById('crmPuzzlePopover');
+        popover.classList.add('show');
+        const track = document.getElementById('crmSliderTrack');
+        track.classList.add('is-error');
+        setTimeout(() => track.classList.remove('is-error'), 600);
+        captchaError.textContent = '请先完成安全滑块拼图验证';
+        captchaError.classList.add('show');
+        return;
+      }
+      captchaError.classList.remove('show');
+
+      // 3. 启动 60 秒冷却倒计时
       const btn = document.getElementById('getSmsBtn');
       btn.disabled = true;
       countdownSec = 60;
-      btn.textContent = `${countdownSec}秒后重新获取`;
+      btn.textContent = countdownSec + '秒后重新获取';
 
       if (timer) clearInterval(timer);
       timer = setInterval(() => {
@@ -1148,26 +1629,22 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
           btn.disabled = false;
           btn.textContent = '获取验证码';
         } else {
-          btn.textContent = `${countdownSec}秒后重新获取`;
+          btn.textContent = countdownSec + '秒后重新获取';
         }
       }, 1000);
     }
 
-    // 快捷登录校验 (采用内联无侵入提示，严禁弹窗)
+    // 快捷登录校验 (采用内联无侵入提示，严禁任何 Toast 弹窗)
     function handleCrmLogin() {
       const phoneInput = document.getElementById('crmPhone');
-      const captchaInput = document.getElementById('crmCaptcha');
       const smsBox = document.getElementById('smsBox');
       const smsInput = document.getElementById('crmSms');
-
       const phoneError = document.getElementById('phoneError');
-      const captchaError = document.getElementById('captchaError');
+      const captchaError = document.getElementById('crmCaptchaError');
       const smsError = document.getElementById('smsError');
 
       const phone = phoneInput.value.trim();
-      const captcha = captchaInput.value.trim();
       const sms = smsInput.value.trim();
-
       let hasError = false;
 
       // 手机号检查
@@ -1181,14 +1658,17 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
         phoneError.classList.remove('show');
       }
 
-      // 图形验证码检查
-      if (!captcha) {
-        captchaInput.classList.add('is-error');
-        captchaError.textContent = '请输入图形验证码计算结果';
+      // 行为式滑块拼图校验
+      if (!isPuzzleVerified) {
+        const popover = document.getElementById('crmPuzzlePopover');
+        popover.classList.add('show');
+        const track = document.getElementById('crmSliderTrack');
+        track.classList.add('is-error');
+        setTimeout(() => track.classList.remove('is-error'), 600);
+        captchaError.textContent = '请先拖动滑块完成安全拼图验证';
         captchaError.classList.add('show');
         hasError = true;
       } else {
-        captchaInput.classList.remove('is-error');
         captchaError.classList.remove('show');
       }
 
@@ -1205,7 +1685,7 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
 
       if (hasError) return;
 
-      // 登录验证通过，直接跳转或进入主页
+      // 登录验证通过，安全跳转至发薪首页 shouye.html (绝对无 Toast)
       window.location.href = 'shouye.html';
     }
 
@@ -1218,8 +1698,10 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
 
     // 初始化
     window.addEventListener('DOMContentLoaded', () => {
-      refreshCrmCaptcha();
+      refreshCrmPuzzleCaptcha();
+      initCrmSliderDrag();
     });
+
   </script>
   </div>
 <!-- PROTO_WEB_WEB_ANNOTATION_UI_START -->

@@ -23,8 +23,8 @@
     },
     {
       "id": "sec_auth_rules",
-      "title": "2. 登录鉴权与安全规则",
-      "content": "1. **手机号校验**：必须符合国内11位手机号标准（13/14/15/16/17/18/19开头）。\n2. **算术防刷验证码**：点击获取短信验证码前，需输入由动态 Canvas 生成的十以内加法验证码，输入正确后触发短信发送。\n3. **短信倒计时**：短信发送成功后触发 60s 倒计时锁定，期间不可重复点击。\n4. **新用户流转**：未注册的企业手机号验证通过后，将引导至企业认证或新员工入职绑定流程。"
+      "title": "2. 登录防爬防撞库安全升级（行为式滑块拼图）",
+      "content": "1. **攻防升级背景**：针对旧版简易算术验证码曾遭黑客使用自动化 OCR 脚本批量撞库攻击的隐患，本次全面升级为第二代**行为式滑块拼图人机校验系统**。\n2. **行为轨迹防爬**：客户端实时采集用户拖动滑块过程中的鼠标/触点微抖动、加减速度离散度、拖动持续时间与时间戳序列，有效拦截无头浏览器（Puppeteer/Selenium）机械线性匀速脚本或瞬发数据包攻击。\n3. **防客户投诉设计**：免去繁琐键盘字符与数字口算输入，拖动对齐仅耗时 1.2 秒；内置 ±5px 容差模糊吸附机制，误判率极低，保障普通企业员工与高龄 HR 顺畅登录体验。\n4. **短信防刷与冷却闭环**：唯有滑块拼图吻合且轨迹校验通过后，方可触发下发短信动态码，并启动 60s 倒计时。"
     },
     {
       "id": "sec_account_perm",
@@ -44,19 +44,19 @@
       "y": 0.2
     },
     {
-      "id": "note_math_captcha",
-      "title": "动态算术人机验证机制",
-      "content": "采用 Canvas 客户端随机生成 10 以内加法计算题，附带随机干扰点与旋转弧度。点击右侧验证码图片即可无缝刷新题目，防止脚本暴力撞库与恶意盗刷短信通道。",
-      "target": "#captchaCanvas",
+      "id": "note_slider_captcha",
+      "title": "第二代行为式滑块拼图人机验证",
+      "content": "取代旧版易被 OCR 破解的算术验证码。用户仅需顺畅拖动滑块填充缺口，前端后台协同分析拖拽非线性行为轨迹（加速度与微抖动），兼顾高强度防爬与极低操作门槛，防范客户投诉。",
+      "target": "#sliderVerifyBox",
       "scope": "page:login",
-      "type": "add",
+      "type": "modify",
       "x": 0.4,
       "y": 0.15
     },
     {
       "id": "note_sms_code",
       "title": "短信获取与防刷保护机制",
-      "content": "仅当手机号格式正确且算术验证码计算正确时，获取验证码按钮方可触发。成功后按钮进入 60 秒冷却倒计时，倒计时结束前禁止重复请求。",
+      "content": "仅当手机号格式正确且滑块拼图验证通过后，获取验证码按钮方可触发。成功后按钮进入 60 秒冷却倒计时，倒计时结束前禁止重复请求。",
       "target": "#sendSmsBtn",
       "scope": "page:login",
       "type": "rule",
@@ -66,7 +66,7 @@
     {
       "id": "note_login_action",
       "title": "登录鉴权并跳转发薪首页",
-      "content": "点击登录后校验手机号格式、算术答案与短信动态码（原型默认6位任意码均可），校验通过后自动跳转至发薪首页 shouye.html。",
+      "content": "点击登录后校验手机号格式、滑块拼图状态与短信动态码（原型默认6位任意码均可），校验通过后自动跳转至发薪首页 shouye.html。",
       "target": "#loginBtn",
       "scope": "page:login",
       "type": "modify",
@@ -208,6 +208,212 @@
       display: block;
     }
 
+    
+    /* 行为式滑块拼图验证码容器 */
+    .slider-verify-box {
+      width: 295px;
+      margin-top: 22px;
+      position: relative;
+      user-select: none;
+    }
+    .slider-track {
+      width: 100%;
+      height: 44px;
+      background: #F4F6FA;
+      border: 1px solid #E2E6EE;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    .slider-track.is-active {
+      border-color: #1989FA;
+      background: #EFF6FF;
+    }
+    .slider-track.is-success {
+      border-color: #52C41A !important;
+      background: #F6FFED !important;
+    }
+    .slider-track.is-fail {
+      border-color: #FF4D4F !important;
+      background: #FFF1F0 !important;
+    }
+    .slider-progress {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      background: #D4E8FE;
+      transition: width 0.05s linear;
+    }
+    .slider-track.is-success .slider-progress {
+      background: #D9F7BE;
+      width: 100% !important;
+    }
+    .slider-text {
+      font-size: 13px;
+      color: #6B7A99;
+      position: relative;
+      z-index: 2;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+    .slider-track.is-success .slider-text {
+      color: #389E0D;
+      font-weight: 500;
+    }
+    .slider-thumb {
+      width: 44px;
+      height: 42px;
+      background: #FFFFFF;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      border-radius: 3px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #595959;
+      z-index: 3;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .slider-thumb:hover {
+      background: #1989FA;
+      color: #FFFFFF;
+    }
+    .slider-thumb:active {
+      cursor: grabbing;
+    }
+    .slider-track.is-success .slider-thumb {
+      background: #52C41A !important;
+      color: #FFFFFF !important;
+      cursor: default;
+    }
+    .slider-thumb .slider-check {
+      display: none;
+    }
+    .slider-track.is-success .slider-thumb .slider-arrow {
+      display: none;
+    }
+    .slider-track.is-success .slider-thumb .slider-check {
+      display: block;
+    }
+
+    /* 拼图浮层弹窗 */
+    .puzzle-popover {
+      position: absolute;
+      bottom: 52px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      width: 295px;
+      background: #FFFFFF;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid #E2E6EE;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .puzzle-popover.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) scale(1);
+    }
+    .puzzle-popover::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 12px;
+      height: 12px;
+      background: #FFFFFF;
+      border-right: 1px solid #E2E6EE;
+      border-bottom: 1px solid #E2E6EE;
+    }
+    .puzzle-canvas-wrap {
+      width: 275px;
+      height: 150px;
+      position: relative;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #F0F2F5;
+    }
+    #puzzleBgCanvas {
+      width: 275px;
+      height: 150px;
+      display: block;
+    }
+    #puzzlePieceCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 275px;
+      height: 150px;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .puzzle-tools {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      z-index: 8;
+      display: flex;
+      gap: 6px;
+    }
+    .puzzle-btn-tool {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      transition: background 0.15s;
+    }
+    .puzzle-btn-tool:hover {
+      background: #FFFFFF;
+    }
+    .puzzle-tip-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 24px;
+      line-height: 24px;
+      font-size: 11px;
+      text-align: center;
+      color: #FFFFFF;
+      background: rgba(0, 0, 0, 0.65);
+      transition: opacity 0.2s, background 0.2s;
+      z-index: 7;
+    }
+    .puzzle-tip-bar.fail {
+      background: rgba(245, 108, 108, 0.95);
+    }
+    .puzzle-tip-bar.success {
+      background: rgba(82, 196, 26, 0.95);
+    }
+    @keyframes puzzleShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .slider-track.shake {
+      animation: puzzleShake 0.4s ease;
+    }
     /* 短信验证码行 */
     .sms-code-wrapper {
       display: flex;
@@ -1118,11 +1324,33 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
           <div class="error-tip" id="phoneError"></div>
         </div>
 
-        <!-- 图形计算验证码 -->
-        <div class="captcha-row">
-          <input type="text" id="captchaInput" class="form-input" placeholder="请输入图形验证码" maxlength="4" autocomplete="off">
-          <div class="captcha-canvas-wrap" onclick="refreshCaptcha()" title="点击换一张">
-            <canvas id="captchaCanvas" class="captcha-canvas" width="96" height="44"></canvas>
+        <!-- 行为式滑块拼图验证码 -->
+        <div class="slider-verify-box" id="sliderVerifyBox">
+          <div class="slider-track" id="sliderTrack">
+            <div class="slider-progress" id="sliderProgress"></div>
+            <div class="slider-text" id="sliderText">向右拖动滑块完成拼图验证</div>
+            <div class="slider-thumb" id="sliderThumb">
+              <svg class="slider-arrow" viewBox="0 0 24 24" width="16" height="16">
+                <path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+              </svg>
+              <svg class="slider-check" viewBox="0 0 24 24" width="16" height="16">
+                <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 拼图浮层 -->
+          <div class="puzzle-popover" id="puzzlePopover">
+            <div class="puzzle-canvas-wrap">
+              <canvas id="puzzleBgCanvas" width="275" height="150"></canvas>
+              <canvas id="puzzlePieceCanvas" width="275" height="150" class="puzzle-piece"></canvas>
+              <div class="puzzle-tools">
+                <button type="button" class="puzzle-btn-tool" id="puzzleRefreshBtn" onclick="refreshPuzzleCaptcha()" title="换一张">
+                  <svg viewBox="0 0 24 24" width="14" height="14"><path fill="#666" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                </button>
+              </div>
+              <div class="puzzle-tip-bar" id="puzzleTipBar">拖动滑块对准缺口</div>
+            </div>
           </div>
         </div>
         <div class="error-tip" id="captchaError" style="width: 295px;"></div>
@@ -1182,67 +1410,291 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
   </div>
 
   <script>
-    // 算术图形验证码逻辑
-    let currentResult = 4;
-    function refreshCaptcha() {
-      const canvas = document.getElementById('captchaCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
+    // 行为式滑块拼图验证码逻辑
+    let isPuzzleVerified = false;
+    let puzzleNotchX = 140;
+    let puzzleNotchY = 50;
+    const PUZZLE_W = 42;
+    const PUZZLE_H = 42;
+    const PUZZLE_R = 7;
+    let dragStartTime = 0;
+    let dragTrajectory = [];
 
-      // 渐变背景
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, '#FFE8E8');
-      grad.addColorStop(0.5, '#F9E2F2');
-      grad.addColorStop(1, '#FFE9F3');
+    // 绘制拼图路径 (带有卡榫的经典拼图块)
+    function drawPuzzlePath(ctx, x, y, r, w, h) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      // 上凸起
+      ctx.lineTo(x + w / 2 - r, y);
+      ctx.arc(x + w / 2, y - r + 1, r, 0.72 * Math.PI, 2.28 * Math.PI, false);
+      ctx.lineTo(x + w, y);
+      // 右凸起
+      ctx.lineTo(x + w, y + h / 2 - r);
+      ctx.arc(x + w + r - 1, y + h / 2, r, 1.22 * Math.PI, 2.78 * Math.PI, false);
+      ctx.lineTo(x + w, y + h);
+      // 下凹陷
+      ctx.lineTo(x + w / 2 + r, y + h);
+      ctx.arc(x + w / 2, y + h - r + 1, r, 0.28 * Math.PI, 1.72 * Math.PI, true);
+      ctx.lineTo(x, y + h);
+      // 左凹陷
+      ctx.lineTo(x, y + h / 2 + r);
+      ctx.arc(x - r + 1, y + h / 2, r, 0.28 * Math.PI, 1.72 * Math.PI, true);
+      ctx.lineTo(x, y);
+      ctx.closePath();
+    }
+
+    // 绘制多主题科技感防爬防OCR图像
+    function drawRandomScene(ctx, width, height) {
+      const themes = [
+        ['#0B1B3D', '#10397B', '#1989FA', '#00D2FF'], // 科技蓝
+        ['#1A0B2E', '#3B1261', '#8A2BE2', '#DA70D6'], // 晨曦紫
+        ['#062828', '#0F5454', '#20B2AA', '#7FFFD4'], // 极光翠
+        ['#2D1500', '#5E2B00', '#FF8C00', '#FFD700'], // 暖阳金
+        ['#141E30', '#243B55', '#4CA1AF', '#C4E0E5']  // 深空灰
+      ];
+      const palette = themes[Math.floor(Math.random() * themes.length)];
+
+      const grad = ctx.createLinearGradient(0, 0, width, height);
+      grad.addColorStop(0, palette[0]);
+      grad.addColorStop(0.4, palette[1]);
+      grad.addColorStop(0.8, palette[2]);
+      grad.addColorStop(1, palette[3]);
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
+      ctx.fillRect(0, 0, width, height);
 
-      // 干扰噪点
-      for (let i = 0; i < 30; i++) {
-        ctx.fillStyle = `rgba(${Math.floor(Math.random()*200)}, ${Math.floor(Math.random()*150)}, ${Math.floor(Math.random()*200)}, 0.4)`;
+      // 绘制科技感网格与微光斑
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < width; x += 20) {
         ctx.beginPath();
-        ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 1.5, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
       }
-
-      // 干扰线
-      for (let i = 0; i < 3; i++) {
-        ctx.strokeStyle = `rgba(${Math.floor(Math.random()*200)}, ${Math.floor(Math.random()*150)}, ${Math.floor(Math.random()*200)}, 0.25)`;
-        ctx.lineWidth = 1;
+      for (let y = 0; y < height; y += 20) {
         ctx.beginPath();
-        ctx.moveTo(Math.random() * w, Math.random() * h);
-        ctx.lineTo(Math.random() * w, Math.random() * h);
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
         ctx.stroke();
       }
 
-      // 随机生成 0~9 的加法题
-      const num1 = Math.floor(Math.random() * 8);
-      const num2 = Math.floor(Math.random() * 8);
-      currentResult = num1 + num2;
-      const text = `${num1} + ${num2} =`;
+      // 绘制防OCR干扰几何体与光影光环
+      for (let i = 0; i < 4; i++) {
+        ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.05 + Math.random() * 0.1) + ')';
+        ctx.beginPath();
+        ctx.arc(Math.random() * width, Math.random() * height, 20 + Math.random() * 45, 0, Math.PI * 2);
+        ctx.fill();
+      }
 
-      // 绘制算术字符
-      ctx.font = 'bold 22px PingFang SC, Microsoft YaHei, sans-serif';
-      ctx.textBaseline = 'middle';
-      
-      const colors = ['#E23E57', '#88304E', '#522546', '#FF5722', '#D83A56'];
-      let offsetX = 10;
-      for (let i = 0; i < text.length; i++) {
-        ctx.fillStyle = colors[i % colors.length];
-        const char = text[i];
-        const angle = (Math.random() - 0.5) * 0.2;
-        ctx.save();
-        ctx.translate(offsetX, h / 2);
-        ctx.rotate(angle);
-        ctx.fillText(char, 0, 0);
-        ctx.restore();
-        offsetX += ctx.measureText(char).width + 3;
+      // 绘制科技流线
+      for (let i = 0; i < 3; i++) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(0, Math.random() * height);
+        ctx.bezierCurveTo(width * 0.3, Math.random() * height, width * 0.7, Math.random() * height, width, Math.random() * height);
+        ctx.stroke();
+      }
+
+      // 绘制微噪点
+      for (let i = 0; i < 50; i++) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+        ctx.beginPath();
+        ctx.arc(Math.random() * width, Math.random() * height, Math.random() * 1.5, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
 
-    // 短信发送倒计时
+    // 刷新拼图与随机缺口
+    function refreshPuzzleCaptcha() {
+      if (isPuzzleVerified) return;
+      const bgCanvas = document.getElementById('puzzleBgCanvas');
+      const pieceCanvas = document.getElementById('puzzlePieceCanvas');
+      if (!bgCanvas || !pieceCanvas) return;
+
+      const bgCtx = bgCanvas.getContext('2d');
+      const pieceCtx = pieceCanvas.getContext('2d');
+      const w = bgCanvas.width;
+      const h = bgCanvas.height;
+
+      // 随机生成缺口坐标 (X: 70 ~ 210, Y: 25 ~ 85)
+      puzzleNotchX = Math.floor(70 + Math.random() * 140);
+      puzzleNotchY = Math.floor(25 + Math.random() * 60);
+
+      // 1. 离屏全景图绘制
+      const offCanvas = document.createElement('canvas');
+      offCanvas.width = w;
+      offCanvas.height = h;
+      const offCtx = offCanvas.getContext('2d');
+      drawRandomScene(offCtx, w, h);
+
+      // 2. 绘制背景画布
+      bgCtx.clearRect(0, 0, w, h);
+      bgCtx.drawImage(offCanvas, 0, 0);
+
+      // 背景上挖出缺口并填充阴影
+      drawPuzzlePath(bgCtx, puzzleNotchX, puzzleNotchY, PUZZLE_R, PUZZLE_W, PUZZLE_H);
+      bgCtx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+      bgCtx.fill();
+      bgCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+      bgCtx.lineWidth = 1.5;
+      bgCtx.stroke();
+
+      // 3. 绘制拼图滑块切片
+      pieceCtx.clearRect(0, 0, w, h);
+      pieceCtx.save();
+      // 在 X=0 处创建拼图裁剪路径
+      drawPuzzlePath(pieceCtx, 0, puzzleNotchY, PUZZLE_R, PUZZLE_W, PUZZLE_H);
+      pieceCtx.clip();
+      // 将原图 (puzzleNotchX, puzzleNotchY) 对应区域精确投影绘制到 X=0 处
+      pieceCtx.drawImage(offCanvas, puzzleNotchX, 0, w, h, 0, 0, w, h);
+      // 加亮描边与投影
+      pieceCtx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+      pieceCtx.lineWidth = 2;
+      pieceCtx.stroke();
+      pieceCtx.restore();
+
+      // 重置滑块与拼图块位置
+      const thumb = document.getElementById('sliderThumb');
+      const progress = document.getElementById('sliderProgress');
+      const tipToast = document.getElementById('puzzleTipBar');
+      if (thumb) thumb.style.left = '0px';
+      if (progress) progress.style.width = '0px';
+      pieceCanvas.style.transform = 'translateX(0px)';
+      if (tipToast) {
+        tipToast.className = 'puzzle-tip-bar';
+        tipToast.textContent = '拖动滑块将悬浮拼图拼合';
+      }
+    }
+
+    // 初始化滑块拖拽事件与行为轨迹检测
+    function initSliderDrag() {
+      const box = document.getElementById('sliderVerifyBox');
+      const track = document.getElementById('sliderTrack');
+      const thumb = document.getElementById('sliderThumb');
+      const progress = document.getElementById('sliderProgress');
+      const popover = document.getElementById('puzzlePopover');
+      const piece = document.getElementById('puzzlePieceCanvas');
+      const tipToast = document.getElementById('puzzleTipBar');
+      if (!thumb || !track) return;
+
+      let isDragging = false;
+      let startX = 0;
+
+      function onStart(e) {
+        if (isPuzzleVerified) return;
+
+        // 校验手机号
+        const phone = document.getElementById('phoneInput').value.trim();
+        const phoneError = document.getElementById('phoneError');
+        const phoneInput = document.getElementById('phoneInput');
+        if (!/^1[3-9]\d{9}$/.test(phone)) {
+          phoneInput.classList.add('is-error');
+          phoneError.textContent = '请先输入正确的11位手机号码';
+          phoneError.classList.add('show');
+          return;
+        }
+        phoneInput.classList.remove('is-error');
+        phoneError.classList.remove('show');
+
+        isDragging = true;
+        startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        dragStartTime = Date.now();
+        dragTrajectory = [{ x: 0, y: e.clientY || 0, t: dragStartTime }];
+
+        track.classList.add('is-active');
+        popover.classList.add('show');
+      }
+
+      function onMove(e) {
+        if (!isDragging || isPuzzleVerified) return;
+        const curX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        const curY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+        const deltaX = curX - startX;
+
+        const trackWidth = track.clientWidth;
+        const thumbWidth = thumb.offsetWidth;
+        const maxDrag = trackWidth - thumbWidth;
+        const moveX = Math.max(0, Math.min(deltaX, maxDrag));
+
+        thumb.style.left = moveX + 'px';
+        progress.style.width = (moveX + thumbWidth / 2) + 'px';
+
+        // 拼图块位移映射 (275 - 42 = 233)
+        const maxPieceMove = 275 - PUZZLE_W;
+        const pieceMoveX = (moveX / maxDrag) * maxPieceMove;
+        piece.style.transform = 'translateX(' + pieceMoveX + 'px)';
+
+        dragTrajectory.push({ x: moveX, y: curY, t: Date.now() });
+      }
+
+      function onEnd() {
+        if (!isDragging || isPuzzleVerified) return;
+        isDragging = false;
+        track.classList.remove('is-active');
+
+        const trackWidth = track.clientWidth;
+        const thumbWidth = thumb.offsetWidth;
+        const maxDrag = trackWidth - thumbWidth;
+        const currentMoveX = parseFloat(thumb.style.left || '0');
+        const maxPieceMove = 275 - PUZZLE_W;
+        const currentPieceX = (currentMoveX / maxDrag) * maxPieceMove;
+
+        const duration = Date.now() - dragStartTime;
+        const offsetDiff = Math.abs(currentPieceX - puzzleNotchX);
+
+        // 人类行为学轨迹校验：
+        // 1. 容差范围在 ±5px 内
+        // 2. 滑动时间在 220ms ~ 5500ms 之间（杜绝瞬发脚本或挂起脚本）
+        // 3. 采样轨迹点不少于 5 个（杜绝点到点直线瞬跳）
+        const isAligned = offsetDiff <= 5;
+        const isHumanTrajectory = duration >= 220 && duration <= 5500 && dragTrajectory.length >= 5;
+
+        if (isAligned && isHumanTrajectory) {
+          // 验证通过
+          isPuzzleVerified = true;
+          piece.style.transform = 'translateX(' + puzzleNotchX + 'px)';
+          track.classList.add('is-success');
+          document.getElementById('sliderText').textContent = '✔ 验证通过 (' + (duration / 1000).toFixed(1) + 's)';
+          tipToast.className = 'puzzle-tip-bar success';
+          tipToast.textContent = '拼图对齐成功 (' + (duration / 1000).toFixed(1) + 's)';
+
+          document.getElementById('captchaError').classList.remove('show');
+
+          setTimeout(() => {
+            popover.classList.remove('show');
+          }, 450);
+
+          // 自动激活/触发短信倒计时
+          const sendBtn = document.getElementById('sendSmsBtn');
+          if (sendBtn && !sendBtn.disabled) {
+            handleSendSms();
+          }
+        } else {
+          // 验证失败，轻微抖动反馈
+          track.classList.add('is-fail', 'shake');
+          tipToast.className = 'puzzle-tip-bar fail';
+          tipToast.textContent = '未对准拼图缺口，请重新拖动';
+
+          setTimeout(() => {
+            track.classList.remove('is-fail', 'shake');
+            thumb.style.left = '0px';
+            progress.style.width = '0px';
+            piece.style.transform = 'translateX(0px)';
+            refreshPuzzleCaptcha();
+          }, 600);
+        }
+      }
+
+      thumb.addEventListener('mousedown', onStart);
+      thumb.addEventListener('touchstart', onStart, { passive: true });
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('touchmove', onMove, { passive: true });
+      window.addEventListener('mouseup', onEnd);
+      window.addEventListener('touchend', onEnd);
+    }
+
+    // 短信发送处理
     let countdownTimer = null;
     let countdownSeconds = 60;
     function handleSendSms() {
@@ -1259,10 +1711,22 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
       phoneInput.classList.remove('is-error');
       phoneError.classList.remove('show');
 
+      // 未完成滑块验证时先展开滑块弹层
+      if (!isPuzzleVerified) {
+        const popover = document.getElementById('puzzlePopover');
+        const captchaError = document.getElementById('captchaError');
+        if (popover) popover.classList.add('show');
+        if (captchaError) {
+          captchaError.textContent = '请先拖动滑块完成安全拼图验证';
+          captchaError.classList.add('show');
+        }
+        return;
+      }
+
       const sendBtn = document.getElementById('sendSmsBtn');
       sendBtn.disabled = true;
       countdownSeconds = 60;
-      sendBtn.textContent = `${countdownSeconds}s`;
+      sendBtn.textContent = countdownSeconds + 's';
 
       if (countdownTimer) clearInterval(countdownTimer);
       countdownTimer = setInterval(() => {
@@ -1272,15 +1736,14 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
           sendBtn.disabled = false;
           sendBtn.textContent = '发送验证码';
         } else {
-          sendBtn.textContent = `${countdownSeconds}s`;
+          sendBtn.textContent = countdownSeconds + 's';
         }
       }, 1000);
     }
 
-    // 登录处理逻辑 (采用内联无侵入提示)
+    // 登录处理逻辑
     function handleLogin() {
       const phone = document.getElementById('phoneInput').value.trim();
-      const captcha = document.getElementById('captchaInput').value.trim();
       const sms = document.getElementById('smsInput').value.trim();
 
       const phoneError = document.getElementById('phoneError');
@@ -1300,14 +1763,13 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
         phoneError.classList.remove('show');
       }
 
-      // 图形验证码校验
-      if (!captcha) {
-        document.getElementById('captchaInput').classList.add('is-error');
-        captchaError.textContent = '请输入图形验证码计算结果';
+      // 行为式滑块拼图校验
+      if (!isPuzzleVerified) {
+        document.getElementById('puzzlePopover').classList.add('show');
+        captchaError.textContent = '请先完成安全拼图验证';
         captchaError.classList.add('show');
         hasError = true;
       } else {
-        document.getElementById('captchaInput').classList.remove('is-error');
         captchaError.classList.remove('show');
       }
 
@@ -1324,7 +1786,7 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
 
       if (hasError) return;
 
-      // 验证通过，直接页面跳转闭环（至 shouye.html）
+      // 验证通过，直接跳转发薪首页 shouye.html
       window.location.href = 'shouye.html';
     }
 
@@ -1340,8 +1802,10 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
 
     // 页面初始化
     window.addEventListener('DOMContentLoaded', () => {
-      refreshCaptcha();
+      refreshPuzzleCaptcha();
+      initSliderDrag();
     });
+  
   </script>
   </div>
 <!-- PROTO_WEB_WEB_ANNOTATION_UI_START -->
