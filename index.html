@@ -4,6 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>子弹发薪 & CRM 原型演示导航</title>
+  <script>
+    (function() {
+      var hash = window.location.hash || '';
+      if (hash.indexOf('page=login_crm') !== -1) {
+        window.location.replace('login_crm.html');
+      } else if (hash.indexOf('page=login') !== -1) {
+        window.location.replace('login.html');
+      } else if (hash.indexOf('page=shouye') !== -1) {
+        window.location.replace('shouye.html');
+      }
+    })();
+  </script>
   <style>
     * {
       box-sizing: border-box;
