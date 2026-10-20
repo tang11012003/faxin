@@ -199,211 +199,285 @@
     }
 
     
-    /* 行为式滑块拼图验证码容器 */
-    .slider-verify-box {
-      width: 295px;
-      margin-top: 22px;
+    /* 极验标准模态弹窗式人机验证 (点击获取验证码触发) */
+    .captcha-modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    .captcha-modal-mask.show {
+      display: flex;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .captcha-modal-box {
+      width: 320px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+      padding: 16px;
       position: relative;
       user-select: none;
-    }
-    .slider-track {
-      width: 100%;
-      height: 44px;
-      background: #F4F6FA;
-      border: 1px solid #E2E6EE;
-      border-radius: 4px;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       box-sizing: border-box;
-      transition: border-color 0.2s, background-color 0.2s;
+      animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .slider-track.is-active {
-      border-color: #1989FA;
-      background: #EFF6FF;
+    @keyframes modalScaleUp {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
-    .slider-track.is-success {
-      border-color: #52C41A !important;
-      background: #F6FFED !important;
-    }
-    .slider-track.is-fail {
-      border-color: #FF4D4F !important;
-      background: #FFF1F0 !important;
-    }
-    .slider-progress {
+    .modal-close-btn {
       position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 0;
-      background: #D4E8FE;
-      transition: width 0.05s linear;
-    }
-    .slider-track.is-success .slider-progress {
-      background: #D9F7BE;
-      width: 100% !important;
-    }
-    .slider-text {
-      font-size: 13px;
-      color: #6B7A99;
-      position: relative;
-      z-index: 2;
-      pointer-events: none;
-      transition: color 0.2s;
-    }
-    .slider-track.is-success .slider-text {
-      color: #389E0D;
-      font-weight: 500;
-    }
-    .slider-thumb {
-      width: 44px;
-      height: 42px;
-      background: #FFFFFF;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
-      border-radius: 3px;
-      position: absolute;
-      left: 0;
-      top: 0;
-      cursor: grab;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #595959;
-      z-index: 3;
-      transition: background-color 0.2s, color 0.2s;
-    }
-    .slider-thumb:hover {
-      background: #1989FA;
-      color: #FFFFFF;
-    }
-    .slider-thumb:active {
-      cursor: grabbing;
-    }
-    .slider-track.is-success .slider-thumb {
-      background: #52C41A !important;
-      color: #FFFFFF !important;
-      cursor: default;
-    }
-    .slider-thumb .slider-check {
-      display: none;
-    }
-    .slider-track.is-success .slider-thumb .slider-arrow {
-      display: none;
-    }
-    .slider-track.is-success .slider-thumb .slider-check {
-      display: block;
-    }
-
-    /* 拼图浮层弹窗 */
-    .puzzle-popover {
-      position: absolute;
-      bottom: 52px;
-      left: 50%;
-      transform: translateX(-50%) scale(0.95);
-      width: 295px;
-      background: #FFFFFF;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.08);
-      border: 1px solid #E2E6EE;
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-    }
-    .puzzle-popover.show {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateX(-50%) scale(1);
-    }
-    .puzzle-popover::after {
-      content: '';
-      position: absolute;
-      bottom: -6px;
-      left: 50%;
-      transform: translateX(-50%) rotate(45deg);
-      width: 12px;
-      height: 12px;
-      background: #FFFFFF;
-      border-right: 1px solid #E2E6EE;
-      border-bottom: 1px solid #E2E6EE;
-    }
-    .puzzle-canvas-wrap {
-      width: 275px;
-      height: 150px;
-      position: relative;
-      border-radius: 6px;
-      overflow: hidden;
-      background: #F0F2F5;
-    }
-    #puzzleBgCanvas {
-      width: 275px;
-      height: 150px;
-      display: block;
-    }
-    #puzzlePieceCanvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 275px;
-      height: 150px;
-      pointer-events: none;
-      z-index: 5;
-    }
-    .puzzle-tools {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      z-index: 8;
-      display: flex;
-      gap: 6px;
-    }
-    .puzzle-btn-tool {
+      top: 12px;
+      right: 12px;
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.85);
-      border: none;
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-      transition: background 0.15s;
+      color: #8C939D;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      transition: all 0.2s;
     }
-    .puzzle-btn-tool:hover {
-      background: #FFFFFF;
+    .modal-close-btn:hover {
+      background: #F2F4F7;
+      color: #1D2129;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1D2129;
+    }
+    .modal-badge {
+      font-size: 11px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: #F0F5FF;
+      color: #1677FF;
+      font-weight: 500;
+    }
+    .modal-badge.secondary {
+      background: #FFF7E6;
+      color: #D46B08;
+    }
+    .modal-refresh-btn {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: #1677FF;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: auto;
+      margin-right: 20px;
+      padding: 2px 4px;
+    }
+    .modal-stage {
+      position: relative;
+      width: 288px;
+      height: 150px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #F2F4F7;
+      margin: 0 auto 14px auto;
+    }
+    .stage-view {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .stage-click {
+      cursor: crosshair;
+    }
+    .puzzle-bg-canvas, .click-bg-canvas {
+      width: 288px;
+      height: 150px;
+      display: block;
+    }
+    .puzzle-piece-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 46px;
+      height: 150px;
+      pointer-events: none;
+      z-index: 10;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
     }
     .puzzle-tip-bar {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 24px;
-      line-height: 24px;
-      font-size: 11px;
-      text-align: center;
+      height: 26px;
+      line-height: 26px;
+      background: rgba(0, 0, 0, 0.55);
       color: #FFFFFF;
-      background: rgba(0, 0, 0, 0.65);
-      transition: opacity 0.2s, background 0.2s;
-      z-index: 7;
+      font-size: 12px;
+      text-align: center;
+      pointer-events: none;
+      transition: background-color 0.2s;
     }
-    .puzzle-tip-bar.fail {
-      background: rgba(245, 108, 108, 0.95);
+    .puzzle-tip-bar.success { background: rgba(82, 196, 26, 0.9); }
+    .puzzle-tip-bar.fail { background: rgba(245, 108, 108, 0.9); }
+    .puzzle-tip-bar.warn { background: rgba(250, 140, 22, 0.95); }
+
+    /* 模态弹窗内的滑轨 */
+    .slider-track {
+      width: 288px;
+      height: 42px;
+      background: #F4F6FA;
+      border: 1px solid #DCDFE6;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-sizing: border-box;
+      transition: border-color 0.2s, background-color 0.2s;
     }
-    .puzzle-tip-bar.success {
-      background: rgba(82, 196, 26, 0.95);
+    .slider-track.is-active {
+      border-color: #1677FF;
+      background: #EFF6FF;
     }
-    @keyframes puzzleShake {
+    .slider-track.is-success {
+      border-color: #52C41A !important;
+      background: #F6FFED !important;
+    }
+    .slider-track.is-error {
+      border-color: #F56C6C !important;
+      background: #FFF2F0 !important;
+      animation: trackShake 0.4s ease-in-out;
+    }
+    @keyframes trackShake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
     }
-    .slider-track.shake {
-      animation: puzzleShake 0.4s ease;
+    .slider-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0;
+      background: rgba(22, 119, 255, 0.15);
+      pointer-events: none;
+      transition: width 0.05s ease;
     }
+    .slider-track.is-success .slider-fill { background: rgba(82, 196, 26, 0.2); }
+    .slider-track.is-error .slider-fill { background: rgba(245, 108, 108, 0.2); }
+    .slider-btn {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 44px;
+      height: 40px;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      border: 1px solid #DCDFE6;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #606266;
+      z-index: 5;
+      transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+      box-sizing: border-box;
+    }
+    .slider-btn:hover {
+      background: #1677FF;
+      border-color: #1677FF;
+      color: #FFFFFF;
+    }
+    .slider-btn:active {
+      cursor: grabbing;
+      background: #1366db;
+      border-color: #1366db;
+      color: #FFFFFF;
+    }
+    .slider-track.is-success .slider-btn {
+      background: #52C41A !important;
+      border-color: #52C41A !important;
+      color: #FFFFFF !important;
+      cursor: default;
+    }
+    .slider-track.is-error .slider-btn {
+      background: #F56C6C !important;
+      border-color: #F56C6C !important;
+      color: #FFFFFF !important;
+    }
+    .slider-hint {
+      font-size: 13px;
+      color: #8C939D;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .slider-track.is-success .slider-hint { color: #52C41A; font-weight: 500; }
+    .slider-track.is-error .slider-hint { color: #F56C6C; }
+
+    /* 点选标记气泡 */
+    .click-markers-container { position: absolute; inset: 0; pointer-events: none; }
+    .click-marker {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #1677FF;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 20;
+    }
+    /* 兜底通道条 */
+    .fallback-channel-bar {
+      margin-top: 10px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFF7E6;
+      border: 1px dashed #FFD591;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #D46B08;
+    }
+    .fallback-channel-bar.show { display: flex; }
+    .fallback-link {
+      color: #1677FF;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: underline;
+    }
+
+    
     /* 短信验证码行 */
     .sms-code-wrapper {
       display: flex;
@@ -8409,7 +8483,9 @@ globalThis["mermaid"] = globalThis.__esbuild_esm_mermaid_nm["mermaid"].default;<
 </script>
 <!-- PROTO_WEB_WEB_ANNOTATION_RUNTIME_END -->
 
-  <!-- 极验标准发送短信场景模态弹窗 (点击发送验证码触发) -->
+  
+  
+<!-- 极验标准发送短信场景模态弹窗 (点击发送验证码触发) -->
   <div class="captcha-modal-mask" id="captchaModal">
     <div class="captcha-modal-box">
       <div class="modal-close-btn" onclick="closeCaptchaModal('')" title="关闭">✕</div>
@@ -8454,6 +8530,5 @@ globalThis["mermaid"] = globalThis.__esbuild_esm_mermaid_nm["mermaid"].default;<
       </div>
     </div>
   </div>
-  
 </body>
 </html>
