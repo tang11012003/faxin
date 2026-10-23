@@ -1430,11 +1430,11 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
     
     if (type === 'contract') {
       title.textContent = '电子合同暂未开通';
-      desc.textContent = '当前企业暂未开通【电子用工合同】服务。开通后支持向员工手机端一键推送协议并实名签署。如需开通，请联系企业主管理员。';
+      desc.textContent = '当前企业暂未开通【电子合同】服务。如需开通，请联系管理员。';
       if (iconWrap) iconWrap.style.background = '#E6F4FF';
     } else if (type === 'insurance') {
       title.textContent = '投保服务暂未开通';
-      desc.textContent = '当前企业暂未开通【灵活用工意外险】服务。开通后支持按天灵活加保，对冲用工意外风险。如需开通，请联系企业主管理员。';
+      desc.textContent = '当前企业暂未开通【保险】服务。如需开通，请联系管理员。';
       if (iconWrap) iconWrap.style.background = '#FFF7E6';
     } else {
       title.textContent = '功能暂未开通';
@@ -1888,7 +1888,7 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
           </svg>
         </div>
         <div class="fne-title" id="fneTitle">功能暂未开通</div>
-        <div class="fne-desc" id="fneDesc">当前企业暂未开通该服务。如需使用，请联系企业主管理员配置开通。</div>
+        <div class="fne-desc" id="fneDesc">当前企业暂未开通该服务。如需开通，请联系管理员。</div>
         <button class="fne-btn" type="button" onclick="closeFeatureNotEnabledModal()">我知道了</button>
       </div>
     </div>
