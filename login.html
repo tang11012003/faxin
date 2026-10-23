@@ -11,6 +11,10 @@
 {
   "prototypeId": "login",
   "version": 7,
+    "review": {
+      "designWidth": 375,
+      "designHeight": 812
+    },
   "globalMeta": {
     "name": "子弹人力云 - 登录与认证",
     "version": "V1.0",
@@ -1898,18 +1902,20 @@
     }
 
     .protoWeb-review-prototype-frame {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 1920px;
-      height: 1080px;
-      overflow: hidden;
-      background: #FFFFFF;
-      box-shadow: 0 0 0 1px rgba(34, 51, 85, .12), 0 12px 32px rgba(8, 17, 38, .18);
-      transform-origin: 0 0;
-      will-change: transform;
-      pointer-events: auto;
-    }
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 375px;
+  height: 812px;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  border-radius: 36px;
+  border: 8px solid #1F2329;
+  transform-origin: 0 0;
+  will-change: transform;
+  pointer-events: auto;
+}
 
     .protoWeb-review-prototype-frame>[data-proto-app] {
       width: 100% !important;
@@ -2222,7 +2228,7 @@
         { text: '星', icon: '★' },
         { text: '云', icon: '☁' },
         { text: '月', icon: '☽' },
-        { text: '盾', icon: '🛡' },
+        { text: '盾', icon: '' },
         { text: '智', icon: '⚡' },
         { text: '舟', icon: '⛵' }
       ];
@@ -2770,7 +2776,19 @@
 
         if (hasError) return;
 
-        window.location.href = 'shouye.html';
+        // 原型仅展示登录页交互，不跳转至其他页面
+        const loginBtn = document.getElementById('loginBtn');
+        if (loginBtn) {
+          const originalText = loginBtn.textContent;
+          loginBtn.textContent = '登录成功';
+          loginBtn.style.opacity = '0.85';
+          loginBtn.disabled = true;
+          setTimeout(() => {
+            loginBtn.textContent = originalText;
+            loginBtn.style.opacity = '1';
+            loginBtn.disabled = false;
+          }, 1500);
+        }
       }
 
       window.addEventListener('DOMContentLoaded', () => {
@@ -8051,8 +8069,8 @@ A`, s, s, 0, a.large ? 1 : 0, a.sweep ? 1 : 0, n(a.p1.x), n(a.p1.y))
       const storageKey = `protoWeb-ui:${annotationData.prototypeId || "prototype"}`;
       const reviewStorageKey = `protoWeb-review:${annotationData.prototypeId || "prototype"}`;
       const reviewOptions = annotationData.review && typeof annotationData.review === "object" ? annotationData.review : {};
-      const reviewDesignWidth = Number(reviewOptions.designWidth) > 0 ? Number(reviewOptions.designWidth) : 1920;
-      const reviewDesignHeight = Number(reviewOptions.designHeight) > 0 ? Number(reviewOptions.designHeight) : 1080;
+      const reviewDesignWidth = Number(reviewOptions.designWidth) > 0 ? Number(reviewOptions.designWidth) : 375;
+    const reviewDesignHeight = Number(reviewOptions.designHeight) > 0 ? Number(reviewOptions.designHeight) : 812;
       const reviewCanvasMargin = 16;
       const reviewPlacementAnchors = new Map();
       let enabled = false;
@@ -8109,7 +8127,7 @@ A`, s, s, 0, a.large ? 1 : 0, a.sweep ? 1 : 0, n(a.p1.x), n(a.p1.y))
       }
 
       function savePreferences() {
-        if (isReviewMode()) return;
+        if (isReviewMode() && reviewPrototypeFrame && reviewPrototypeFrame.children.length > 0) return;
         clearTimeout(saveTimer);
         saveTimer = window.setTimeout(() => {
           const launcherRect = launcher.getBoundingClientRect();
@@ -8719,6 +8737,8 @@ A`, s, s, 0, a.large ? 1 : 0, a.sweep ? 1 : 0, n(a.p1.x), n(a.p1.y))
       }
 
       function getReviewBusinessNodes() {
+    const phone = document.querySelector(".phone-container");
+    if (phone) return [phone];
         const explicitNodes = Array.from(document.querySelectorAll("[data-proto-app], [data-proto-portal]"))
           .filter(node => !root.contains(node));
         if (explicitNodes.length) return explicitNodes;
@@ -8983,7 +9003,7 @@ A`, s, s, 0, a.large ? 1 : 0, a.sweep ? 1 : 0, n(a.p1.x), n(a.p1.y))
       }
 
       function enterReviewMode() {
-        if (isReviewMode()) return;
+        if (isReviewMode() && reviewPrototypeFrame && reviewPrototypeFrame.children.length > 0) return;
         reviewContextSignature = "";
         reviewPendingSignature = "";
         captureLauncherPlacement();

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>首页-改版</title>
+  <title>发薪管理-小程序首页</title>
   <style>
     * {
       box-sizing: border-box;
@@ -13,1068 +13,3306 @@
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background-color: #FAFAFC;
+      background-color: #E2E6EC;
       display: flex;
       justify-content: center;
       min-height: 100vh;
-      color: #202536;
+      color: #111827;
     }
     .phone-container {
       width: 375px;
-      min-height: 1026px;
-      background: #FAFAFC;
+      min-height: 100vh;
+      background: #F4F6F9;
       position: relative;
-      overflow-x: hidden;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-    }
-    /* 背景渐变和背景图 */
-    .bg-gradient {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 375px;
-      height: 816px;
-      background: linear-gradient(180deg, #EFF2F9 0%, #FAFAFC 100%);
-      z-index: 0;
-      pointer-events: none;
-    }
-    .bg-pattern {
-      position: absolute;
-      top: -77px;
-      left: -274px;
-      width: 672px;
-      height: 317px;
-      opacity: 0.5;
-      z-index: 1;
-      pointer-events: none;
-      background-image: url('https://image-resource.mastergo.com/55295699515657/55295699515659/c3329ea3f18f5e6690b0d14ebc8053b0.png');
-      background-size: cover;
-      background-repeat: no-repeat;
+      overflow-x: hidden;
+      padding-bottom: 70px; /* 留出 TabBar 空间 */
     }
 
-    /* 顶部状态栏 */
-    .status-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 375px;
-      height: 44px;
+    /* 顶部小程序胶囊状态栏 */
+    .mp-navbar {
+      height: 48px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 0 21px 0 21px;
+      justify-content: flex-end;
+      padding: 0 12px;
+      position: relative;
       z-index: 10;
     }
-    .status-time {
-      font-size: 14px;
-      font-weight: 600;
-      color: #000000;
-      letter-spacing: -0.28px;
-    }
-    .status-icons {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .status-cellular {
-      display: flex;
-      align-items: flex-end;
-      gap: 1.5px;
-      height: 11px;
-    }
-    .status-cellular span {
-      width: 3px;
-      background-color: #000;
-      border-radius: 1px;
-    }
-    .status-cellular span:nth-child(1) { height: 4px; }
-    .status-cellular span:nth-child(2) { height: 6px; }
-    .status-cellular span:nth-child(3) { height: 8px; }
-    .status-cellular span:nth-child(4) { height: 11px; }
-    .status-wifi {
-      width: 15px;
-      height: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .status-battery {
-      width: 22px;
-      height: 11.3px;
-      border: 1px solid rgba(0, 0, 0, 0.35);
-      border-radius: 2.7px;
-      padding: 1px;
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    .status-battery::after {
-      content: '';
-      position: absolute;
-      right: -3px;
-      top: 3px;
-      width: 1.3px;
-      height: 4px;
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 0 1px 1px 0;
-    }
-    .battery-level {
-      width: 16px;
-      height: 7.3px;
-      background: #000;
-      border-radius: 1.3px;
-    }
-
-    /* 顶部 Banner 区域 (组 5559) */
-    .banner-container {
-      position: absolute;
-      top: 71px;
-      left: 12px;
-      width: 351px;
-      height: 275px;
-      z-index: 2;
-    }
-    .banner-bg-svg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 351px;
-      height: 275px;
-    }
-    .banner-text-1 {
-      position: absolute;
-      top: 21px;
-      left: 18px;
-      font-size: 18px;
-      font-weight: 900;
-      color: #003D54;
-      line-height: 16px;
-      letter-spacing: 0.5px;
-    }
-    .banner-text-2 {
-      position: absolute;
-      top: 44px;
-      left: 18px;
-      font-size: 18px;
-      font-weight: 900;
-      color: #003D54;
-      line-height: 16px;
-      letter-spacing: 0.5px;
-    }
-    .banner-illustration {
-      position: absolute;
-      top: -17px;
-      right: -4px;
+    .mp-capsule {
       width: 86px;
-      height: 91px;
-      pointer-events: none;
-    }
-
-    /* 核心入口双卡片 */
-    .cards-row {
-      position: absolute;
-      top: 77px;
-      left: 9px;
-      width: 333px;
-      display: flex;
-      justify-content: space-between;
-      z-index: 3;
-    }
-    .entry-card {
-      width: 162px;
-      height: 115px;
-      border-radius: 8px;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .entry-card.pay {
-      background: linear-gradient(180deg, #F0F9F4 5%, rgba(244, 255, 248, 0.75) 100%);
-      box-shadow: inset 1px 1px 3px 0px #FFFFFF;
-    }
-    .entry-card.manage {
-      background: linear-gradient(91deg, #CDECD2 1%, #F0FAF4 87%, #D0EFE9 103%);
-      box-shadow: inset 1px 1px 3px 0px #FFFFFF;
-    }
-    .card-title-row {
+      height: 32px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
       display: flex;
       align-items: center;
-      margin: 12px 0 0 12px;
-      gap: 4px;
+      justify-content: space-around;
+      padding: 0 6px;
     }
-    .card-main-title {
-      font-size: 13px;
-      font-weight: 900;
-      color: #202536;
-      line-height: 13px;
+    .capsule-dots {
+      display: flex;
+      gap: 3px;
     }
-    .tag-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      height: 11px;
-      background: #F9CBB3;
-      border-radius: 2px;
-      padding: 0 3px;
-      font-size: 7px;
-      color: #844B2E;
-      line-height: 10px;
+    .capsule-dots span {
+      width: 3.5px;
+      height: 3.5px;
+      background: #000000;
+      border-radius: 50%;
     }
-    .card-subtitle {
-      font-size: 10px;
-      color: #565868;
-      margin: 4px 0 0 12px;
-      line-height: 10px;
+    .capsule-sep {
+      width: 1px;
+      height: 14px;
+      background: rgba(0, 0, 0, 0.12);
     }
-    .card-btn {
-      position: absolute;
-      left: 12px;
-      top: 51px;
-      width: 72px;
-      height: 30px;
-      background: linear-gradient(270deg, #00A887 0%, #6ED2A6 100%);
-      border-radius: 15px;
+    .capsule-circle {
+      width: 15px;
+      height: 15px;
+      border: 1.8px solid #000000;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #FFFFFF;
-      font-size: 12px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
     }
-    .entry-card.manage .card-btn {
-      background: linear-gradient(180deg, #00B493 0%, #60E8AD 100%);
-    }
-    .card-art-pay {
-      position: absolute;
-      right: 8px;
-      top: 25px;
-      width: 53px;
-      height: 90px;
-      pointer-events: none;
-    }
-    .card-art-manage {
-      position: absolute;
-      right: 8px;
-      top: 25px;
-      width: 53px;
-      height: 90px;
-      pointer-events: none;
+    .capsule-circle-dot {
+      width: 5px;
+      height: 5px;
+      background: #000000;
+      border-radius: 50%;
     }
 
-    /* 金刚区 (4大功能金刚位) */
-    .grid-menu {
-      position: absolute;
-      top: 212px;
-      left: 12px;
-      width: 327px;
+    /* 顶部高保真运营大卡片 (流式布局，绝不绝对定位) */
+    .banner-card {
+      margin: 0 12px 14px 12px;
+      background: linear-gradient(135deg, #78E5D5 0%, #A6F3DD 55%, #C9FAE9 100%);
+      border-radius: 18px;
+      padding: 16px 14px 14px 14px;
+      box-shadow: 0 4px 16px rgba(120, 229, 213, 0.25);
+    }
+    .banner-top-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      z-index: 3;
+      margin-bottom: 12px;
+    }
+    .banner-titles {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .banner-t1 {
+      font-size: 19px;
+      font-weight: 900;
+      color: #0E444B;
+      letter-spacing: 0.5px;
+      line-height: 24px;
+    }
+    .banner-t2 {
+      font-size: 18px;
+      font-weight: 900;
+      color: #0E444B;
+      letter-spacing: 0.5px;
+      line-height: 24px;
+    }
+    .robot-avatar-box {
+      width: 82px;
+      height: 76px;
+      position: relative;
+      margin-top: -10px;
+      margin-right: -4px;
+      flex-shrink: 0;
+    }
+
+    /* 双白底卡片 */
+    .cards-row {
+      display: flex;
+      gap: 9px;
+      margin-bottom: 14px;
+    }
+    .entry-card {
+      flex: 1;
+      height: 122px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 10px 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+    .card-title-line {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 3px;
+    }
+    .card-title-text {
+      font-size: 14px;
+      font-weight: 800;
+      color: #111827;
+      line-height: 18px;
+    }
+    .tag-orange-resident {
+      background: #FFF0E6;
+      color: #FF5E2A;
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 1px 4px;
+      border-radius: 3px;
+      line-height: 13px;
+      white-space: nowrap;
+    }
+    .card-subtitle-line {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-sub-text {
+      font-size: 10.5px;
+      color: #718096;
+      line-height: 14px;
+    }
+    .tag-pink-beta {
+      background: #FFF1EA;
+      color: #FF6634;
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 0.5px 4px;
+      border-radius: 3px;
+      line-height: 13px;
+    }
+    .card-mint-btn {
+      width: 74px;
+      height: 28px;
+      background: #E6F9F2;
+      color: #00BA88;
+      border: none;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+    }
+    .card-illu {
+      position: absolute;
+      right: -2px;
+      bottom: -4px;
+      width: 70px;
+      height: 70px;
+      pointer-events: none;
+      z-index: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    /* 金刚区 4 大金刚位 */
+    .grid-menu {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-top: 4px;
     }
     .grid-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 62px;
       position: relative;
       cursor: pointer;
+      width: 65px;
     }
     .grid-icon-wrap {
-      width: 27px;
-      height: 27px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
+      position: relative;
+    }
+    .grid-icon-wrap svg {
+      width: 24px;
+      height: 24px;
     }
     .grid-label {
       font-size: 12px;
-      color: #202536;
-      line-height: 12px;
+      font-weight: 600;
+      color: #0E444B;
+      line-height: 16px;
       text-align: center;
     }
-    .grid-badge {
+    .grid-badge-tag {
       position: absolute;
-      top: 0;
-      right: -2px;
-      background: #F9CBB3;
-      color: #844B2E;
-      font-size: 7px;
-      padding: 0.5px 3px;
-      border-radius: 2px;
-      line-height: 10px;
+      top: -4px;
+      right: -8px;
+      background: #FFEFE6;
+      color: #FF5A26;
+      border: 1px solid rgba(255, 90, 38, 0.2);
+      font-size: 9px;
+      font-weight: 600;
+      padding: 0.5px 4px;
+      border-radius: 8px;
+      line-height: 12px;
       white-space: nowrap;
+      z-index: 2;
     }
 
-    /* 全部下拉与筛选行 */
-    .company-filter-row {
-      position: absolute;
-      top: 366px;
-      left: 16px;
-      width: 343px;
+    /* 筛选行 */
+    .filter-row {
+      padding: 0 16px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      z-index: 3;
     }
-    .filter-left-all {
+    .filter-left {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #111827;
       cursor: pointer;
     }
-    .all-text {
-      font-size: 19px;
-      font-weight: 700;
-      color: #1F2329;
-      line-height: 22px;
-      letter-spacing: -0.3px;
+    .filter-left-arrow {
+      font-size: 11px;
+      color: #111827;
     }
-    .all-arrow {
-      width: 0;
-      height: 0;
-      border-left: 4.5px solid transparent;
-      border-right: 4.5px solid transparent;
-      border-top: 5.5px solid #1F2329;
-      margin-top: 2px;
-    }
-    .filter-right-btn {
+    .filter-right {
       display: flex;
       align-items: center;
       gap: 4px;
-      font-size: 15px;
-      font-weight: 600;
-      color: #1F2329;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1F2937;
       cursor: pointer;
     }
-    .funnel-icon {
-      width: 15px;
-      height: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .filter-right svg {
+      width: 17px;
+      height: 17px;
+      stroke: #1F2937;
+      stroke-width: 2.2;
     }
 
-    /* 搜索框 */
-    .search-bar {
-      position: absolute;
-      top: 406px;
-      left: 16px;
-      width: 343px;
-      height: 38px;
-      background: #F4F5F7;
-      border-radius: 19px;
+    /* 药丸搜索框 */
+    .search-box-wrap {
+      margin: 0 12px 14px 12px;
+      height: 40px;
+      background: #FFFFFF;
+      border-radius: 20px;
       display: flex;
       align-items: center;
-      padding: 0 14px;
+      padding: 0 16px;
       gap: 8px;
-      z-index: 3;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
     }
-    .search-icon {
-      width: 16px;
-      height: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #8C98A4;
+    .search-box-wrap svg {
+      width: 17px;
+      height: 17px;
+      stroke: #9CA3AF;
+      stroke-width: 2.2;
     }
-    .search-placeholder {
+    .search-input {
+      border: none;
+      background: transparent;
+      outline: none;
       font-size: 15px;
-      color: #8C98A4;
-      font-weight: 400;
+      color: #111827;
+      width: 100%;
+    }
+    .search-input::placeholder {
+      color: #9CA3AF;
+      font-size: 15px;
     }
 
-    /* 项目卡片列表 */
-    .project-card-list {
-      position: absolute;
-      top: 456px;
-      left: 16px;
-      width: 343px;
-      z-index: 3;
+    
+    /* 项目卡片列表 (MasterGo 740:112487 首页-改版 1:1 像素级还原) */
+    .cards-list {
+      padding: 0 12px;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      padding-bottom: 110px;
+      padding-bottom: 20px;
     }
     .project-card {
-      width: 343px;
       background: #FFFFFF;
       border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+      padding: 16px 14px 14px 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
       position: relative;
     }
-    .card-header {
+    .card-top-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 24px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .type-tag {
-      padding: 2px 7px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 16px;
-    }
-    .type-tag.need-clock {
-      background: #FFF0ED;
-      color: #FF6A53;
-    }
-    .type-tag.no-clock {
-      background: #E8F8F0;
-      color: #00B96B;
-    }
-    .project-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #1F2329;
-      line-height: 22px;
-      cursor: pointer;
-    }
-    .btn-more-dots {
-      font-size: 20px;
-      font-weight: 900;
-      color: #8C98A4;
-      letter-spacing: 2px;
-      line-height: 1;
-      cursor: pointer;
-      padding: 4px 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* 灰色内嵌信息框 */
-    .project-info-box {
-      background: #F7F8FA;
-      border-radius: 8px;
-      padding: 11px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      margin-bottom: 14px;
-    }
-    .info-row {
-      display: flex;
-      align-items: center;
-      font-size: 13px;
-      line-height: 18px;
-    }
-    .info-label {
-      color: #8C98A4;
-      white-space: nowrap;
-    }
-    .info-val {
-      color: #1F2329;
-      font-weight: 500;
-    }
-
-    /* 卡片底部发起人和双按钮 */
-    .card-bottom-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .creator-box {
+    .card-title-group {
       display: flex;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
+      min-width: 0;
+      flex: 1;
     }
-    .creator-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .creator-name {
-      font-size: 14px;
+    .badge-clock-orange {
+      background: #FFF2EF;
+      color: #FF7E68;
+      font-size: 11px;
       font-weight: 600;
-      color: #1F2329;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
     }
-    .creator-role {
-      font-size: 12px;
-      color: #8C98A4;
+    .badge-clock-green {
+      background: #E8F7ED;
+      color: #009944;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
     }
-    .card-btns-wrap {
+    .card-project-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #202536;
+      line-height: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .card-more-action {
+      color: #9497B1;
+      font-size: 18px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      padding: 2px 4px;
+      margin-left: 8px;
+    }
+
+    /* 负责人与创建时间行 */
+    .card-creator-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #565868;
+      margin-bottom: 10px;
+    }
+    .creator-left-box {
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .btn-pay-salary {
-      padding: 7px 15px;
-      background: #F4F5F7;
-      border: none;
+    .creator-avatar-sm {
+      width: 24px;
+      height: 24px;
       border-radius: 6px;
+      object-fit: cover;
+    }
+    .creator-name-txt {
+      font-size: 13.5px;
+      color: #202536;
+      font-weight: 500;
+    }
+    .create-date-txt {
       font-size: 13px;
+      color: #9497B1;
+    }
+
+    /* 灰色内嵌全流程指标矩阵 (MasterGo 组 3938) */
+    .metrics-gray-box {
+      background: #FAFAFC;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .metrics-company-line {
+      font-size: 13px;
+      color: #6B6B86;
+      line-height: 18px;
+    }
+    .metrics-company-val {
+      color: #202536;
+      font-weight: 500;
+    }
+    .metrics-data-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .metrics-row-flex {
+      display: flex;
+      align-items: center;
+      font-size: 12.5px;
+      color: #6B6B86;
+      line-height: 16px;
+    }
+    .metric-cell {
+      min-width: 90px;
+      flex: 1;
+    }
+    .metric-cell strong {
+      color: #202536;
+      font-weight: 700;
+      margin-left: 1px;
+    }
+    .metric-cell.highlight strong {
+      color: #009944;
+    }
+
+    /* 底部 4 大一站式操作按钮组 (MasterGo 组 3935) */
+    .card-action-bar-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding-top: 2px;
+    }
+    .btn-step-gray {
+      height: 32px;
+      background: #F4F4F7;
+      color: #202536;
+      border: none;
+      border-radius: 8px;
+      font-size: 12.5px;
       font-weight: 600;
-      color: #1F2329;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: background 0.15s;
     }
-    .btn-pay-salary:hover {
-      background: #ECEEF2;
+    .btn-step-gray:hover {
+      background: #EAEBF0;
     }
-    .btn-fast-invite {
-      padding: 7px 15px;
+    .btn-step-gray:active {
+      background: #DFE1E8;
+    }
+    .btn-step-green {
+      height: 32px;
       background: #00D679;
-      border: none;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
       color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0, 214, 121, 0.25);
       transition: background 0.15s;
     }
-    .btn-fast-invite:hover {
-      background: #00C46F;
+    .btn-step-green:active {
+      background: #00BF6C;
     }
 
-    /* 快捷邀请模态弹窗 */
-    .invite-modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.45);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    .invite-modal-overlay.active {
-      display: flex;
-    }
-    .invite-modal-card {
-      width: 300px;
-      background: #FFFFFF;
-      border-radius: 16px;
-      padding: 24px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-      animation: popIn 0.2s ease-out;
-    }
-    @keyframes popIn {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .invite-modal-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: #1F2329;
-      margin-bottom: 4px;
-    }
-    .invite-modal-project {
-      font-size: 13px;
-      color: #00B96B;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-    .invite-qrcode-box {
-      width: 170px;
-      height: 170px;
-      background: #F8F9FA;
-      border: 1px solid #ECEEF2;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-      padding: 8px;
-    }
-    .invite-qr-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    .invite-tip-text {
-      font-size: 12px;
-      color: #8C98A4;
-      text-align: center;
-      margin-bottom: 20px;
-      line-height: 16px;
-    }
-    .invite-btns-bar {
-      display: flex;
-      width: 100%;
-      gap: 10px;
-    }
-    .invite-share-btn {
-      flex: 1;
-      height: 40px;
-      background: #F4F5F7;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #1F2329;
-      cursor: pointer;
-    }
-    .invite-confirm-btn {
-      flex: 1;
-      height: 40px;
-      background: #00D679;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #FFFFFF;
-      cursor: pointer;
-    }
-
-    /* 底部导航栏 (菜单栏) */
-    .bottom-nav {
+    .mp-tabbar {
       position: fixed;
       bottom: 0;
       width: 375px;
-      height: 83px;
-      z-index: 50;
+      height: 56px;
+      background: #FFFFFF;
+      border-top: 1px solid #E5E7EB;
       display: flex;
       justify-content: space-around;
-      align-items: flex-start;
-      padding-top: 10px;
-      background: #FFFFFF;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      align-items: center;
+      z-index: 50;
     }
-    .nav-bg-svg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 375px;
-      height: 83px;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .nav-item {
+    .tab-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
       cursor: pointer;
       width: 70px;
     }
-    .nav-icon {
+    .tab-icon {
       width: 24px;
       height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-bottom: 2px;
     }
-    .nav-text {
+    .tab-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+    .tab-label {
       font-size: 10px;
-      color: #9497B1;
-      line-height: 12px;
+      color: #8A92A0;
+      font-weight: 500;
     }
-    .nav-item.active .nav-text {
-      color: #00D679;
-      font-weight: 600;
+    .tab-item.active .tab-label {
+      color: #00C261;
+      font-weight: 700;
+    }
+
+    /* 快捷邀请模态框 */
+    .invite-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .invite-card {
+      width: 310px;
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .invite-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 12px;
+    }
+    .qr-box {
+      width: 160px;
+      height: 160px;
+      background: #F8F9FB;
+      border: 1px dashed #CBD5E1;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .invite-close-btn {
+      width: 100%;
+      height: 40px;
+      background: #00C261;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 20px;
+      font-weight: 700;
+      cursor: pointer;
     }
   </style>
-</head>
-<body>
-  <div class="phone-container">
-    <!-- 渐变底色与图案 -->
-    <div class="bg-gradient"></div>
-    <div class="bg-pattern"></div>
+  <style id="protoWebAnnotationCss">
+.protoWeb-root {
+  --protoWeb-layer-root: 2147483000;
+  --protoWeb-accent: #3388FF;
+  --protoWeb-accent-dark: #2167D9;
+  --protoWeb-accent-soft: #F0F9FF;
+  --protoWeb-ink: #223355;
+  --protoWeb-muted: #6B7A99;
+  position: fixed;
+  inset: 0;
+  z-index: var(--protoWeb-layer-root);
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+.protoWeb-root::backdrop { background: transparent; pointer-events: none; }
+.protoWeb-marker-layer { position: fixed; inset: 0; pointer-events: none; z-index: 15; }
+.protoWeb-marker {
+  position: fixed;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  background: var(--protoWeb-accent);
+  color: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(33,103,217,.72), 0 5px 14px rgba(33,103,217,.32);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  z-index: 2;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.protoWeb-marker:hover,
+.protoWeb-marker.is-active {
+  background: var(--protoWeb-accent-dark);
+  box-shadow: 0 0 0 3px rgba(255,255,255,.95), 0 0 0 6px rgba(51,136,255,.28), 0 7px 18px rgba(33,103,217,.36);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+.protoWeb-launcher,
+.protoWeb-menu,
+.protoWeb-panel,
+.protoWeb-review-mode-group {
+  display: none !important;
+}
+.protoWeb-launcher {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 2px solid var(--protoWeb-accent);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--protoWeb-accent), var(--protoWeb-accent-dark));
+  color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(33,103,217,.34), 0 0 0 3px rgba(255,255,255,.92);
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  z-index: 30;
+  cursor: grab;
+}
+.protoWeb-launcher:active { cursor: grabbing; }
+.protoWeb-launcher:hover { background: linear-gradient(135deg, #4795FF, #1B58C0); }
+.protoWeb-launcher.is-active {
+  background: var(--protoWeb-accent);
+  border-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(51,136,255,.24), 0 9px 26px rgba(33,103,217,.38);
+}
+.protoWeb-launcher-symbol { font-size: 17px; font-weight: 700; line-height: 1; }
+.protoWeb-launcher-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border: 2px solid #FFFFFF;
+  border-radius: 11px;
+  background: var(--protoWeb-accent);
+  color: #FFFFFF;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+.protoWeb-menu {
+  position: fixed;
+  width: 264px;
+  padding: 6px;
+  border: 1px solid rgba(51,136,255,.28);
+  border-radius: 6px;
+  background: #FFFFFF;
+  box-shadow: 0 16px 40px rgba(33,103,217,.22), 0 4px 12px rgba(8,17,38,.12);
+  display: none;
+  pointer-events: auto;
+  z-index: 40;
+}
+.protoWeb-menu.is-open { display: block; }
+.protoWeb-menu-row,
+.protoWeb-menu-link {
+  min-height: 54px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: #FFFFFF;
+  color: var(--protoWeb-ink);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+.protoWeb-menu-row { justify-content: space-between; }
+.protoWeb-menu-link { width: 100%; cursor: pointer; }
+.protoWeb-menu-link:hover { background: var(--protoWeb-accent-soft); }
+.protoWeb-menu-mode { padding: 8px 10px 10px; border-bottom: 1px solid #E9ECF2; }
+.protoWeb-menu-mode-label { display: block; margin-bottom: 7px; color: var(--protoWeb-muted); font-size: 12px; line-height: 1.4; }
+.protoWeb-menu-mode-group {
+  height: 34px;
+  padding: 2px;
+  border: 1px solid #DDE1EB;
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #F5F7FA;
+}
+.protoWeb-menu-mode-group button {
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--protoWeb-muted);
+  font-size: 13px;
+}
+.protoWeb-menu-mode-group button.is-active {
+  background: #FFFFFF;
+  color: var(--protoWeb-accent-dark);
+  box-shadow: 0 1px 4px rgba(8,17,38,.12);
+  font-weight: 600;
+}
+.protoWeb-menu-copy { min-width: 0; flex: 1; }
+.protoWeb-menu-copy strong { display: block; font-size: 14px; font-weight: 600; line-height: 1.5; }
+.protoWeb-menu-copy small { display: block; margin-top: 2px; color: var(--protoWeb-muted); font-size: 12px; line-height: 1.4; }
+.protoWeb-menu-arrow { color: var(--protoWeb-accent); font-size: 22px; line-height: 1; }
+.protoWeb-toggle {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  padding: 0;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 11px;
+  background: #C9CFDA;
+  transition: background .18s ease;
+}
+.protoWeb-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(8,17,38,.2);
+  transition: transform .18s ease;
+}
+.protoWeb-toggle[aria-checked="true"] { background: var(--protoWeb-accent); }
+.protoWeb-toggle[aria-checked="true"]::after { transform: translateX(16px); }
+.protoWeb-panel {
+  position: fixed;
+  left: max(24px, calc(100vw - 530px));
+  top: 92px;
+  width: 440px;
+  height: 460px;
+  min-width: 320px;
+  min-height: 220px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  border: 1px solid rgba(51,136,255,.36);
+  border-top: 3px solid var(--protoWeb-accent);
+  border-radius: 6px;
+  background: #FFFFFF;
+  box-shadow: 0 20px 58px rgba(33,103,217,.24), 0 5px 16px rgba(8,17,38,.14);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: auto;
+  z-index: 20;
+}
+.protoWeb-panel.is-open { display: flex; }
+.protoWeb-panel.is-collapsed { width: 360px; height: 50px !important; min-height: 50px; }
+.protoWeb-panel.is-collapsed .protoWeb-panel-body,
+.protoWeb-panel.is-collapsed .protoWeb-panel-footer,
+.protoWeb-panel.is-collapsed .protoWeb-resize-handle { display: none; }
+.protoWeb-panel-header,
+.protoWeb-docs-header {
+  height: 48px;
+  min-height: 48px;
+  padding: 0 10px 0 14px;
+  background: linear-gradient(90deg, var(--protoWeb-accent-dark), var(--protoWeb-accent));
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+.protoWeb-panel-header { cursor: move; touch-action: none; }
+.protoWeb-panel-heading,
+.protoWeb-docs-title {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+}
+.protoWeb-panel-tools { display: flex; align-items: center; gap: 2px; }
+.protoWeb-icon-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: rgba(255,255,255,.82);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  line-height: 1;
+}
+.protoWeb-icon-button:hover { background: rgba(255,255,255,.12); color: #FFFFFF; }
+.protoWeb-panel-body {
+  flex: 1;
+  min-height: 0;
+  padding: 18px 20px 20px;
+  overflow: auto;
+  color: #353B47;
+  background: #FFFFFF;
+}
+.protoWeb-content h1,
+.protoWeb-content h2,
+.protoWeb-content h3 {
+  margin: 20px 0 10px;
+  color: var(--protoWeb-ink);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.protoWeb-content > :first-child { margin-top: 0; }
+.protoWeb-content h4 { margin: 16px 0 8px; color: var(--protoWeb-ink); font-size: 14px; }
+.protoWeb-content p { margin: 0 0 10px; line-height: 1.75; }
+.protoWeb-content ul,
+.protoWeb-content ol { margin: 8px 0 12px; padding-left: 22px; line-height: 1.75; }
+.protoWeb-content strong { color: var(--protoWeb-ink); }
+.protoWeb-content em { color: var(--protoWeb-muted); }
+.protoWeb-content a { color: var(--protoWeb-accent); text-decoration: none; }
+.protoWeb-content a:hover { text-decoration: underline; }
+.protoWeb-content blockquote {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--protoWeb-accent);
+  background: var(--protoWeb-accent-soft);
+  color: #52617A;
+}
+.protoWeb-content blockquote p:last-child { margin-bottom: 0; }
+.protoWeb-content hr { margin: 18px 0; border: 0; border-top: 1px solid #DDE1EB; }
+.protoWeb-content code {
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: #F1F3F6;
+  color: #A34800;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 12px;
+}
+.protoWeb-content pre {
+  margin: 12px 0 16px;
+  padding: 14px 16px;
+  overflow: auto;
+  border: 1px solid #253552;
+  border-radius: 4px;
+  background: #172033;
+  color: #E8EEF8;
+  line-height: 1.65;
+  tab-size: 2;
+}
+.protoWeb-content pre code { padding: 0; background: transparent; color: inherit; white-space: pre; }
+.protoWeb-content img {
+  display: block;
+  max-width: 100%;
+  max-height: 560px;
+  height: auto;
+  margin: 12px auto 8px;
+  border: 1px solid #DDE1EB;
+  border-radius: 4px;
+  background: #F5F7FA;
+  object-fit: contain;
+}
+.protoWeb-content table {
+  width: 100%;
+  margin: 12px 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+.protoWeb-content th,
+.protoWeb-content td {
+  padding: 8px 10px;
+  border: 1px solid #DDE1EB;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.55;
+  word-break: break-word;
+}
+.protoWeb-content th { background: #F5F7FA; color: var(--protoWeb-ink); font-weight: 600; }
+.protoWeb-mermaid {
+  margin: 12px 0 16px;
+  padding: 14px;
+  overflow: auto;
+  border: 1px solid #C9DDF8;
+  border-radius: 4px;
+  background: #F8FBFF;
+  text-align: center;
+}
+.protoWeb-mermaid svg { display: inline-block; max-width: 100%; height: auto; }
+.protoWeb-mermaid-error { border-color: #F5A3A3 !important; background: #FFF2F0 !important; color: #B42318 !important; }
+.protoWeb-panel-footer {
+  height: 48px;
+  min-height: 48px;
+  padding: 0 12px;
+  border-top: 1px solid #E1E5EC;
+  background: #FAFBFC;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.protoWeb-nav-button {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid #C9CFDA;
+  border-radius: 4px;
+  background: #FFFFFF;
+  color: #353B47;
+  font-size: 13px;
+}
+.protoWeb-nav-button:hover:not(:disabled) { border-color: var(--protoWeb-accent); color: var(--protoWeb-accent-dark); }
+.protoWeb-nav-button:disabled { cursor: not-allowed; color: #A8B0BE; background: #F5F7FA; }
+.protoWeb-page-count { color: var(--protoWeb-muted); font-size: 12px; }
+.protoWeb-resize-handle { position: absolute; z-index: 5; pointer-events: auto; }
+.protoWeb-resize-handle[data-direction="n"] { top: -4px; left: 14px; right: 14px; height: 9px; cursor: ns-resize; }
+.protoWeb-resize-handle[data-direction="s"] { bottom: -4px; left: 14px; right: 14px; height: 9px; cursor: ns-resize; }
+.protoWeb-resize-handle[data-direction="e"] { top: 14px; right: -4px; bottom: 14px; width: 9px; cursor: ew-resize; }
+.protoWeb-resize-handle[data-direction="w"] { top: 14px; left: -4px; bottom: 14px; width: 9px; cursor: ew-resize; }
+.protoWeb-resize-handle[data-direction="ne"],
+.protoWeb-resize-handle[data-direction="nw"],
+.protoWeb-resize-handle[data-direction="se"],
+.protoWeb-resize-handle[data-direction="sw"] { width: 18px; height: 18px; }
+.protoWeb-resize-handle[data-direction="ne"] { top: -4px; right: -4px; cursor: nesw-resize; }
+.protoWeb-resize-handle[data-direction="nw"] { top: -4px; left: -4px; cursor: nwse-resize; }
+.protoWeb-resize-handle[data-direction="se"] { right: 0; bottom: 0; cursor: nwse-resize; }
+.protoWeb-resize-handle[data-direction="sw"] { left: -4px; bottom: -4px; cursor: nesw-resize; }
+.protoWeb-resize-handle[data-direction="se"]::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--protoWeb-accent);
+  border-bottom: 2px solid var(--protoWeb-accent);
+  background: repeating-linear-gradient(135deg, transparent 0 3px, rgba(51,136,255,.62) 3px 4px);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+.protoWeb-docs-backdrop {
+  position: fixed;
+  inset: 0;
+  padding: 32px;
+  background: rgba(8,17,38,.42);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  z-index: 50;
+}
+.protoWeb-docs-backdrop.is-open { display: flex; }
+.protoWeb-docs {
+  width: min(1180px, calc(100vw - 64px));
+  height: min(820px, calc(100vh - 64px));
+  min-width: 760px;
+  min-height: 520px;
+  border: 1px solid rgba(51,136,255,.4);
+  border-top: 3px solid var(--protoWeb-accent);
+  border-radius: 6px;
+  background: #FFFFFF;
+  box-shadow: 0 28px 80px rgba(8,17,38,.3), 0 0 0 3px rgba(255,255,255,.92);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.protoWeb-docs-header { height: 52px; min-height: 52px; padding-left: 18px; }
+.protoWeb-docs-meta { color: rgba(255,255,255,.76); font-size: 12px; }
+.protoWeb-docs-main { min-height: 0; flex: 1; display: flex; }
+.protoWeb-docs-nav {
+  width: 220px;
+  min-width: 220px;
+  padding: 14px 10px;
+  overflow: auto;
+  border-right: 1px solid #DDE1EB;
+  background: #F8FAFD;
+}
+.protoWeb-docs-nav button {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #52617A;
+  text-align: left;
+  font-size: 14px;
+}
+.protoWeb-docs-nav button:hover { background: #EDF4FF; color: var(--protoWeb-accent-dark); }
+.protoWeb-docs-nav button.is-active {
+  background: #E8F2FF;
+  color: var(--protoWeb-accent-dark);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--protoWeb-accent);
+}
+.protoWeb-docs-body {
+  min-width: 0;
+  flex: 1;
+  padding: 24px 28px 32px;
+  overflow: auto;
+  background: #FFFFFF;
+}
+.protoWeb-docs-content { max-width: 900px; margin: 0 auto; }
+.protoWeb-docs-content h1 { font-size: 20px; }
+.protoWeb-docs-content h2 { font-size: 16px; }
+.protoWeb-docs-content table { table-layout: auto; }
 
-    <!-- 状态栏 -->
-    <div class="status-bar">
-      <span class="status-time">9:41</span>
-      <div class="status-icons">
-        <div class="status-cellular">
-          <span></span><span></span><span></span><span></span>
+/* Web 三栏审阅：说明与标注可调宽，业务原型按固定设计画布等比缩放。 */
+.protoWeb-review-workspace[hidden] { display: none !important; }
+.protoWeb-review-workspace {
+  --protoWeb-review-left-width: 360px;
+  --protoWeb-review-right-width: 380px;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: var(--protoWeb-review-left-width) 8px minmax(0, 1fr) 8px var(--protoWeb-review-right-width);
+  background: #EEF1F5;
+  color: #223355;
+  pointer-events: auto;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+.protoWeb-review-workspace.is-left-collapsed { grid-template-columns: 44px 0 minmax(0, 1fr) 8px var(--protoWeb-review-right-width); }
+.protoWeb-review-workspace.is-right-collapsed { grid-template-columns: var(--protoWeb-review-left-width) 8px minmax(0, 1fr) 0 44px; }
+.protoWeb-review-workspace.is-left-collapsed.is-right-collapsed { grid-template-columns: 44px 0 minmax(0, 1fr) 0 44px; }
+.protoWeb-review-side {
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0 0 22px rgba(8,17,38,.08);
+}
+.protoWeb-review-left { grid-column: 1; grid-row: 1; border-right: 1px solid #DDE1EB; }
+.protoWeb-review-splitter-left { grid-column: 2; grid-row: 1; }
+.protoWeb-review-center { grid-column: 3; grid-row: 1; }
+.protoWeb-review-splitter-right { grid-column: 4; grid-row: 1; }
+.protoWeb-review-right { grid-column: 5; grid-row: 1; border-left: 1px solid #DDE1EB; }
+.protoWeb-review-splitter {
+  position: relative;
+  min-width: 0;
+  cursor: col-resize;
+  touch-action: none;
+  background: #EEF1F5;
+  z-index: 2;
+}
+.protoWeb-review-splitter::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 48px;
+  border-radius: 2px;
+  background: #B8C2D3;
+  transform: translate(-50%, -50%);
+  transition: height .15s ease, background .15s ease;
+}
+.protoWeb-review-splitter:hover::after,
+.protoWeb-review-splitter.is-dragging::after { height: 72px; background: #3388FF; }
+.is-left-collapsed .protoWeb-review-splitter-left,
+.is-right-collapsed .protoWeb-review-splitter-right { display: none; }
+.protoWeb-review-workspace.is-resizing { cursor: col-resize; user-select: none; }
+.protoWeb-review-side-header {
+  height: 52px;
+  min-height: 52px;
+  padding: 0 10px 0 16px;
+  border-bottom: 1px solid #E9ECF2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+}
+.protoWeb-review-side-title { min-width: 0; flex: 1; font-size: 15px; font-weight: 600; color: #223355; }
+.protoWeb-review-icon-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: #6B7A99;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  line-height: 1;
+}
+.protoWeb-review-icon-button:hover { border-color: #C9DDF8; background: #F0F9FF; color: #2167D9; }
+.protoWeb-review-rail {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10px;
+  background: #FFFFFF;
+  pointer-events: auto;
+  z-index: 4;
+}
+.is-left-collapsed .protoWeb-review-left > :not(.protoWeb-review-rail),
+.is-right-collapsed .protoWeb-review-right > :not(.protoWeb-review-rail) { display: none; }
+.is-left-collapsed .protoWeb-review-left .protoWeb-review-rail,
+.is-right-collapsed .protoWeb-review-right .protoWeb-review-rail { display: flex !important; }
+.protoWeb-review-docs-main { min-height: 0; flex: 1; display: grid; grid-template-columns: 112px minmax(0, 1fr); }
+.protoWeb-review-docs-nav {
+  min-width: 0;
+  padding: 12px 8px;
+  overflow-y: auto;
+  border-right: 1px solid #E9ECF2;
+  background: #F8FAFD;
+}
+.protoWeb-review-docs-nav button {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 9px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #52617A;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.protoWeb-review-docs-nav button:hover { background: #EDF4FF; color: #2167D9; }
+.protoWeb-review-docs-nav button.is-active { background: #E8F2FF; color: #2167D9; font-weight: 600; box-shadow: inset 3px 0 0 #3388FF; }
+.protoWeb-review-docs-body { min-width: 0; padding: 18px 16px 28px; overflow: auto; }
+.protoWeb-review-center { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.protoWeb-review-toolbar {
+  height: 52px;
+  min-height: 52px;
+  padding: 0 14px;
+  border-bottom: 1px solid #DDE1EB;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F8FAFD;
+}
+.protoWeb-review-mode-group {
+  height: 34px;
+  padding: 2px;
+  border: 1px solid #DDE1EB;
+  border-radius: 4px;
+  display: inline-flex;
+  background: #FFFFFF;
+}
+.protoWeb-review-mode-group button {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #6B7A99;
+  font-size: 13px;
+}
+.protoWeb-review-mode-group button.is-active { background: #3388FF; color: #FFFFFF; }
+.protoWeb-review-scope { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #6B7A99; font-size: 12px; }
+.protoWeb-review-canvas { min-width: 0; min-height: 0; flex: 1; position: relative; overflow: hidden; background: #DDE3EC; }
+.protoWeb-review-prototype-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 375px;
+  height: 812px;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+  border-radius: 36px;
+  border: 8px solid #1F2329;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 1px rgba(34,51,85,.12), 0 12px 32px rgba(8,17,38,.18);
+  transform-origin: 0 0;
+  will-change: transform;
+  pointer-events: auto;
+}
+.protoWeb-review-prototype-frame > [data-proto-app] { width: 100% !important; height: 100% !important; min-width: 100%; min-height: 100%; }
+body.protoWeb-review-mode .protoWeb-launcher,
+body.protoWeb-review-mode .protoWeb-menu,
+body.protoWeb-review-mode .protoWeb-panel,
+body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
+.protoWeb-review-note-tools {
+  min-height: 46px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #E9ECF2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #FAFBFC;
+}
+.protoWeb-review-note-tools span { color: #6B7A99; font-size: 12px; }
+.protoWeb-review-toggle-wrap { display: inline-flex; align-items: center; gap: 8px; color: #52617A; font-size: 13px; }
+.protoWeb-review-toggle {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 11px;
+  background: #C9CFDA;
+}
+.protoWeb-review-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(8,17,38,.2);
+  transition: transform .18s ease;
+}
+.protoWeb-review-toggle[aria-checked="true"] { background: #3388FF; }
+.protoWeb-review-toggle[aria-checked="true"]::after { transform: translateX(16px); }
+.protoWeb-review-note-list { min-height: 0; flex: 1; padding: 12px; overflow: auto; background: #F8FAFD; }
+.protoWeb-review-empty { padding: 32px 12px; color: #A8B4C8; text-align: center; }
+.protoWeb-review-note-card {
+  position: relative;
+  padding: 14px 14px 14px 50px;
+  border: 1px solid #DDE1EB;
+  border-left: 3px solid #7FB0FF;
+  border-radius: 6px;
+  background: #FFFFFF;
+  box-shadow: 0 3px 10px rgba(8,17,38,.05);
+  cursor: pointer;
+}
+.protoWeb-review-note-card + .protoWeb-review-note-card { margin-top: 10px; }
+.protoWeb-review-note-card:hover { border-color: #9FC5FF; }
+.protoWeb-review-note-card.is-active { border-color: #3388FF; border-left-color: #2167D9; box-shadow: 0 0 0 2px rgba(51,136,255,.12), 0 6px 16px rgba(33,103,217,.12); }
+.protoWeb-review-note-index {
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  width: 26px;
+  height: 26px;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #3388FF;
+  color: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(33,103,217,.45), 0 4px 10px rgba(33,103,217,.22);
+  font-size: 12px;
+  font-weight: 700;
+}
+.protoWeb-review-note-card h3 { margin: 1px 0 8px; color: #223355; font-size: 14px; font-weight: 600; line-height: 1.55; }
+.protoWeb-review-note-card .protoWeb-content { color: #6B7A99; font-size: 13px; line-height: 1.65; }
+.protoWeb-review-note-card .protoWeb-content h1,
+.protoWeb-review-note-card .protoWeb-content h2,
+.protoWeb-review-note-card .protoWeb-content h3 { font-size: 14px; }
+.protoWeb-review-note-card .protoWeb-content img { max-height: 280px; }
+.protoWeb-review-note-card .protoWeb-content table { table-layout: auto; font-size: 12px; }
+.protoWeb-review-target-highlight { outline: 2px solid #3388FF !important; outline-offset: 3px; box-shadow: 0 0 0 6px rgba(51,136,255,.12) !important; }
+
+@media (max-width: 1440px) {
+  .protoWeb-review-workspace { --protoWeb-review-left-width: 300px; --protoWeb-review-right-width: 340px; }
+  .protoWeb-review-docs-main { grid-template-columns: 96px minmax(0, 1fr); }
+}
+@media (max-width: 900px) {
+  .protoWeb-docs-backdrop { padding: 12px; }
+  .protoWeb-docs { width: calc(100vw - 24px); height: calc(100vh - 24px); min-width: 0; min-height: 0; }
+  .protoWeb-docs-nav { width: 168px; min-width: 168px; }
+  .protoWeb-docs-body { padding: 20px; }
+  .protoWeb-docs-meta { display: none; }
+}
+
+</style>
+</head>
+<body data-proto-platform="web">
+  <div class="phone-container" data-proto-app data-proto-platform="web" data-proto-scope="page:shouye">
+    <!-- 小程序顶部胶囊按钮 -->
+    <div class="mp-navbar">
+      <div class="mp-capsule">
+        <div class="capsule-dots">
+          <span></span><span></span><span></span>
         </div>
-        <div class="status-wifi">
-          <svg width="15" height="11" viewBox="0 0 16 12" fill="none"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm-4.95-3.535a7 7 0 019.9 0l-1.414 1.414a5 5 0 00-7.072 0L3.05 5.965zM.222 3.136a11 11 0 0115.556 0l-1.414 1.414a9 9 0 00-12.728 0L.222 3.136z" fill="#000"/></svg>
-        </div>
-        <div class="status-battery">
-          <div class="battery-level"></div>
+        <div class="capsule-sep"></div>
+        <div class="capsule-circle">
+          <div class="capsule-circle-dot"></div>
         </div>
       </div>
     </div>
 
-    <!-- 顶部运营 Banner 区域 -->
-    <div class="banner-container">
-      <div class="banner-bg-svg">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -59.25 375.24 334.25" width="375.24" height="334.25">
-  <defs><linearGradient id="grad_paint_18_10407" x1="0.5000" y1="-0.0000" x2="0.5000" y2="1.0000"><stop offset="0.04" stop-color="#8BDFE0"/><stop offset="0.37" stop-color="#AFECE4"/><stop offset="1" stop-color="#F1FFF2"/></linearGradient><linearGradient id="grad_paint_14_03312" x1="0.5000" y1="-0.0000" x2="0.5000" y2="1.0000"><stop offset="0" stop-color="#87DEE0"/><stop offset="0.37" stop-color="#C6F4E7"/><stop offset="1" stop-color="#F8F8F8"/></linearGradient></defs>
-  <path d="M262.43878,8.2254887L263.61237,9.4410744C268.68738,14.697679,275.68048,17.666563,282.98715,17.666563L336.63684,17.666563C344.5694,17.666563,351,24.097174,351,32.029736L351,260.63684C351,268.5694,344.5694,275,336.63684,275L14.363178,275C6.4306097,275,0,268.5694,0,260.63684L0,14.363168C0,6.4306097,6.4306097,-2.0867358e-17,14.363172,-4.6608557e-17L243.06401,-7.8874379e-16C250.3707,-8.1245404e-16,257.36377,2.9688845,262.43878,8.2254887" fill="url(#grad_paint_18_10407)" fill-rule="evenodd"/>
-  <path d="M262.38535,7.8878961L263.66583,9.1683702C268.71637,14.218906,275.56635,17.056267,282.70889,17.056267L336.63684,17.056267C344.5694,17.056267,351,23.486877,351,31.419439L351,228.01535L0,228.01535L0,14.363165C0,6.4306097,6.4306097,-2.0146485e-17,14.363172,-4.4998443e-17L243.34229,-7.6236814e-16C250.48482,-7.84745e-16,257.33481,2.8373613,262.38535,7.8878961" fill="url(#grad_paint_14_03312)" fill-rule="evenodd"/>
-  <path d="M375.23785400390625,24.686702728271484C375.23785400390625,71.04260387363206,337.65897121371995,108.62148666381836,291.3030700683594,108.62148666381836C244.9471689229988,108.62148666381836,207.3682861328125,71.04260387363206,207.3682861328125,24.686702728271484C207.3682861328125,-21.669198417089078,244.9471689229988,-59.24808120727539,291.3030700683594,-59.24808120727539C337.65897121371995,-59.24808120727539,375.23785400390625,-21.669198417089078,375.23785400390625,24.686702728271484Z" fill="#AFF6CD"/>
-</svg>
-      </div>
-      <div class="banner-text-1">考勤记工价</div>
-      <div class="banner-text-2">定点打卡 杜绝虚假考勤</div>
-      <div class="banner-illustration">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 22" width="33" height="22">
-  <path d="M0,11C0,17.075134,4.9248667,22,11,22L30.175676,22C31.735508,22,33,20.735508,33,19.175674L33,2.8243244C33,1.2644929,31.735508,0,30.175674,0L11,0C4.9248667,0,0,4.9248667,0,11Z" fill="none"/>
-</svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.97 0 69.7 38.83" width="69.7" height="38.83">
-  <defs><linearGradient id="grad_paint_11_43675" x1="0.2808" y1="-0.1022" x2="0.7192" y2="1.1022"><stop offset="0.09" stop-color="#23263A"/><stop offset="0.81" stop-color="#222733"/></linearGradient></defs>
-  <path d="M0.53377956,14.5C-2.9662201,27.5,11.534355,37.5,21.033779,37.5C21.877718,37.5,22.938726,37.53157,24.165264,37.568066C36.74472,37.942375,66.735626,38.83477,58.533779,11.5Q54.533779,0,41.033779,0L15.533781,0Q4.0337796,1.5,0.53377956,14.5Z" fill="url(#grad_paint_11_43675)"/>
-</svg>
-        
+    <!-- 顶部薄荷绿运营 Banner 卡片 (流式布局，不重叠) -->
+    <div class="banner-card">
+      <div class="banner-top-row">
+        <div class="banner-titles">
+          <div class="banner-t1">考勤记工价</div>
+          <div class="banner-t2">定点打卡 杜绝虚假考勤</div>
+        </div>
+        <div class="robot-avatar-box">
+          <!-- 3D 萌系机器人纯矢量复刻 -->
+          <svg viewBox="0 0 100 92" width="100%" height="100%">
+            <defs>
+              <radialGradient id="rGlow" cx="50%" cy="85%" r="45%">
+                <stop offset="0%" stop-color="#4CEAD0" stop-opacity="0.8"/>
+                <stop offset="100%" stop-color="#4CEAD0" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="rBody" x1="0%" y1="0%" x2="40%" y2="100%">
+                <stop offset="0%" stop-color="#FFFFFF"/>
+                <stop offset="65%" stop-color="#F2F6FA"/>
+                <stop offset="100%" stop-color="#D7E6ED"/>
+              </linearGradient>
+              <linearGradient id="rScreen" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1B1E29"/>
+                <stop offset="100%" stop-color="#282E3E"/>
+              </linearGradient>
+              <linearGradient id="rEye" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#6AEBFF"/>
+                <stop offset="100%" stop-color="#21B4EA"/>
+              </linearGradient>
+              <linearGradient id="rVisor" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="rgba(33, 180, 234, 0.45)"/>
+                <stop offset="100%" stop-color="rgba(14, 110, 160, 0.6)"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="50" cy="82" rx="42" ry="9" fill="url(#rGlow)" />
+            <path d="M50 4 C32 4, 18 16, 18 36 C18 58, 30 78, 50 78 C70 78, 82 58, 82 36 C82 16, 68 4, 50 4 Z" fill="url(#rBody)"/>
+            <path d="M42 6 C47 3, 53 3, 58 6 C55 8, 45 8, 42 6 Z" fill="#FFFFFF"/>
+            <rect x="23" y="27" width="54" height="34" rx="17" fill="url(#rScreen)" />
+            <rect x="33" y="38" width="6" height="12" rx="3" fill="url(#rEye)"/>
+            <rect x="47" y="31" width="31" height="26" rx="13" fill="url(#rVisor)" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>
+            <rect x="56" y="38" width="6" height="12" rx="3" fill="url(#rEye)"/>
+            <path d="M30 31 C36 29, 44 29, 48 30" stroke="rgba(255,255,255,0.3)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
       </div>
 
       <!-- 核心双卡片 -->
       <div class="cards-row">
         <!-- 一键发薪卡片 -->
-        <div class="entry-card pay">
-          <div class="card-title-row">
-            <span class="card-main-title">一键发薪</span>
-            <span class="tag-badge">驻厂适用</span>
+        <div class="entry-card" onclick="window.location.href='create_project.html'">
+          <div>
+            <div class="card-title-line">
+              <span class="card-title-text">一键发薪</span>
+              <span class="tag-orange-resident">驻厂适用</span>
+            </div>
+            <div class="card-subtitle-line">
+              <span class="card-sub-text">批量操作秒到账</span>
+            </div>
           </div>
-          <div class="card-subtitle">批量操作秒到账</div>
-          <button class="card-btn" onclick="window.location.href='create_project.html'">创建项目</button>
-          <div class="card-art-pay">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 43 7" width="43" height="7">
-  <defs><linearGradient id="grad_paint_11_43720" x1="0.0000" y1="0.5000" x2="1.0000" y2="0.5000"><stop offset="0" stop-color="#A1DFB4"/><stop offset="1" stop-color="#00BA94"/></linearGradient></defs>
-  <path d="M0,7L43,7L43,6C43,2.686291,40.313709,0,37,0L6.0000005,0C2.6862915,0,0,2.686291,0,6L0,7Z" fill="url(#grad_paint_11_43720)"/>
-</svg>
+          <button class="card-mint-btn">创建项目</button>
+          <!-- 叠放绿银行卡插画 -->
+          <div class="card-illu">
+            <svg viewBox="0 0 76 68" width="100%" height="100%">
+              <defs>
+                <linearGradient id="cDarkGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00A887"/>
+                  <stop offset="100%" stop-color="#057862"/>
+                </linearGradient>
+                <linearGradient id="cLightMint" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#E1FAF1"/>
+                  <stop offset="100%" stop-color="#B2EFDC"/>
+                </linearGradient>
+              </defs>
+              <rect x="8" y="6" width="54" height="34" rx="6" fill="url(#cDarkGreen)" transform="rotate(-3 35 23)"/>
+              <rect x="18" y="24" width="54" height="34" rx="6" fill="url(#cLightMint)" stroke="#FFFFFF" stroke-width="1.5"/>
+              <rect x="52" y="44" width="10" height="7.5" rx="1.5" fill="#FFFFFF" opacity="0.9"/>
+            </svg>
           </div>
         </div>
 
-        <!-- 去管理卡片 -->
-        <div class="entry-card manage">
-          <div class="card-title-row">
-            <span class="card-main-title">日薪周薪考勤</span>
-            <span class="tag-badge">老用户免费体验</span>
+        <!-- 日薪周薪考勤卡片 -->
+        <div class="entry-card" onclick="window.location.href='project_detail.html'">
+          <div>
+            <div class="card-title-line">
+              <span class="card-title-text">日薪周薪考勤</span>
+            </div>
+            <div class="card-subtitle-line">
+              <span class="card-sub-text">智能考勤计工价</span>
+              <span class="tag-pink-beta">内测版</span>
+            </div>
           </div>
-          <div class="card-subtitle">智能考勤计工价</div>
-          <button class="card-btn">去管理</button>
-          <div class="card-art-manage">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="9.95 0 29.09 90" width="29.09" height="90">
-  <defs><linearGradient id="grad_paint_11_43501" x1="-0.0086" y1="0.4911" x2="1.0086" y2="0.5089"><stop offset="0.01" stop-color="#CDECD2"/><stop offset="0.87" stop-color="#F0FAF4"/><stop offset="1.03" stop-color="#D0EFE9"/></linearGradient></defs>
-  <path d="M9.953125,90L39.046875,90L39.046875,4.1169744C39.046875,1.8432319,37.203644,0,34.929901,0L14.0700994,0C11.7963569,0,9.953125,1.8432319,9.953125,4.1169753L9.953125,90Z" fill="url(#grad_paint_11_43501)"/>
-</svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="9.84 9.89 29.32 29.46" width="29.32" height="29.46">
-  <defs><linearGradient id="grad_paint_11_43530" x1="0.5000" y1="-0.0000" x2="0.5000" y2="1.0000"><stop offset="0" stop-color="#00B493"/><stop offset="1" stop-color="#60E8AD"/></linearGradient></defs>
-  <path d="M24.499940750488282,39.341943020324706C20.451442750488283,39.341943020324706,16.788425950488282,37.692628020324705,14.135182350488282,35.02877302032471C11.481939450488282,32.36303602032471,9.842231750488281,28.682769020324706,9.842231750488281,24.615203020324707C9.842231750488281,20.861255020324705,11.24124865048828,17.434146920324707,13.542857150488281,14.834532220324707C16.22806645048828,11.800389020324706,20.143057750488282,9.888463020324707,24.50182275048828,9.888463020324707C28.341596750488282,9.888463020324707,31.837259750488283,11.371528120324706,34.45101175048828,13.801109520324708C37.34682475048828,16.49140832032471,39.15953275048828,20.341710020324705,39.15953275048828,24.61709302032471C39.15953275048828,28.42205102032471,37.72290775048828,31.888833020324707,35.36676975048828,34.50167402032471C32.68531775048828,37.475364020324704,28.809818750488283,39.343835020324704,24.50182375048828,39.343835020324704L24.499940750488282,39.341943020324706Z" fill="#080103"/>
-  <path d="M24.49994024420166,11.8684172075708C27.57063224420166,11.8684172075708,30.53226024420166,12.984966747570802,32.84327224420166,15.0121369475708C35.60557824420166,17.4360504475708,37.188874244201656,20.9368400475708,37.188874244201656,24.6171089475708C37.188874244201656,27.9384179475708,35.92336524420166,31.084026947570802,33.62739424420166,33.4720449475708C31.21484424420166,35.9828669475708,27.97303524420166,37.3639119475708,24.499939244201663,37.3639119475708C21.38787924420166,37.3639119475708,18.39428424420166,36.2209119475708,16.07199044420166,34.1446159475708C13.36609674420166,31.7263709475708,11.81288671420166,28.2520299475708,11.81288671420166,24.6171059475708C11.81288671420166,21.4072629475708,13.00317934420166,18.3410015475708,15.16751864420166,15.9813227475708C17.565028144201662,13.368483047570802,20.96666824420166,11.868415117570802,24.49994024420166,11.8684172075708Z
-M24.50181724420166,10.9407909662708C20.54169944420166,10.9407909662708,16.97646334420166,12.6392309475708,14.48869464420166,15.3522009475708C12.25478074420166,17.7893390475708,10.88961124420166,21.0426369475708,10.88961124420166,24.6152169475708C10.88961124420166,28.6808939475708,12.65530584420166,32.3309339475708,15.45898054420166,34.8360849475708C17.86401174420166,36.984169947570805,21.03060324420166,38.2896449475708,24.50181724420166,38.2896449475708C28.34535924420166,38.2896449475708,31.81845424420166,36.689444947570806,34.29305924420166,34.1143889475708C36.65859924420166,31.6545779475708,38.114033244201664,28.3049309475708,38.114033244201664,24.6152169475708C38.114033244201664,20.5060882475708,36.30884424420166,16.8182625475708,33.45251724420166,14.311220847570802C31.06065224420166,12.212258847570801,27.92978524420166,10.9389009475708,24.501822244201662,10.9389009475708L24.50181724420166,10.9407909662708Z" fill="url(#grad_paint_11_43530)"/>
-</svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.41 7.04" width="12.41" height="7.04">
-  <defs><linearGradient id="grad_paint_11_43527" x1="0.1585" y1="1.0915" x2="0.8415" y2="-0.0915"><stop offset="0.37" stop-color="#FFFFFF"/><stop offset="0.47" stop-color="rgb(255,255,255)" stop-opacity="0.98"/><stop offset="0.6" stop-color="rgb(255,255,255)" stop-opacity="0.91"/><stop offset="0.74" stop-color="rgb(255,255,255)" stop-opacity="0.81"/><stop offset="0.86" stop-color="rgb(255,255,255)" stop-opacity="0.7"/></linearGradient><linearGradient id="grad_paint_11_43517" x1="0.3994" y1="1.0704" x2="0.6006" y2="-0.0704"><stop offset="0.13" stop-color="rgb(255,255,255)" stop-opacity="0.7"/><stop offset="0.19" stop-color="rgb(255,255,255)" stop-opacity="0.78"/><stop offset="0.28" stop-color="rgb(255,255,255)" stop-opacity="0.88"/><stop offset="0.38" stop-color="rgb(255,255,255)" stop-opacity="0.95"/><stop offset="0.49" stop-color="rgb(255,255,255)" stop-opacity="0.99"/><stop offset="0.61" stop-color="#FFFFFF"/></linearGradient><linearGradient id="grad_paint_11_43523" x1="0.0000" y1="0.5000" x2="1.0000" y2="0.5000"><stop offset="0.15" stop-color="#FFFFFF"/><stop offset="0.99" stop-color="rgb(255,255,255)" stop-opacity="0.5"/></linearGradient><linearGradient id="grad_paint_11_43520" x1="0.0000" y1="0.5000" x2="1.0000" y2="0.5000"><stop offset="0.31" stop-color="#FFFFFF"/><stop offset="0.48" stop-color="rgb(255,255,255)" stop-opacity="0.77"/><stop offset="0.98" stop-color="rgb(255,255,255)" stop-opacity="0.65"/></linearGradient></defs>
-  <path d="M11.867196580432129,5.52973020978241C11.49299738043213,3.4647747097824095,9.941668280432129,1.9533709297824098,7.788610685432129,1.7002098597824098C7.754763452432129,1.6964320497824097,7.732198148932129,1.6643136097824098,7.735959750132129,1.6303069897824096C7.760404421432129,1.4262671497824098,7.852544990432129,1.1428789047824097,7.976650600432129,1.1579932887724096C10.187999980432128,1.4281567897824097,11.968738080432129,3.1171514097824096,12.38618708043213,5.28979430978241C12.41251278043213,5.41259560978241,12.14173408043213,5.5297288097824095,11.940531780432128,5.5750712097824096C11.90668488043213,5.58262910978241,11.874718680432128,5.56373730978241,11.867196580432129,5.52973020978241Z" fill="#FFFFFF"/>
-  <path d="M10.631775348614502,5.998905894671631C10.449376348614502,4.343918394671631,9.240279648614502,3.1612458246716306,7.630658853614502,2.9987697046716306C7.596811620614502,2.994991834671631,7.574246317114502,2.962873394671631,7.578007918314502,2.928866774671631C7.602452589614502,2.724826934671631,7.694593158614502,2.4414386896716307,7.818698768614502,2.456553073661631C9.559948648614501,2.668150144671631,10.947682348614503,4.052972794671631,11.167689048614502,5.79864549467163C11.186492248614503,5.923336994671631,10.906313148614501,6.019687694671631,10.701348748614501,6.049916494671631C10.667502148614503,6.055583994671631,10.635535748614501,6.032913694671631,10.631775348614502,5.998905894671631Z" fill="#FFFFFF"/>
-  <path d="M9.356863824688721,6.27224302991333C9.36814572468872,5.14624702991333,8.491880524688721,4.33953445991333,7.47458433368872,4.26018613991333C7.440737090688721,4.25640832991333,7.418171793888721,4.22428988991333,7.421933394308721,4.19028323991333C7.446378059688721,3.98624339991333,7.538518634688721,3.70285512491333,7.66262419468872,3.7179695089033302C8.89616522468872,3.86722082991333,9.864571124688721,4.8855290299133305,9.915342524688722,6.15132952991333C9.915342524688722,6.27790882991333,9.623880124688721,6.33269762991333,9.41891742468872,6.33269762991333C9.385070324688721,6.33269762991333,9.356863824688721,6.30624792991333,9.356863824688721,6.27224302991333Z" fill="#FFFFFF"/>
-  <path d="M0.49266496712579866,5.346297634295654C0.4907841666954987,6.553531484295654,2.969149932495499,7.0409598842956544,4.121835132495498,6.292814684295655C4.351244332495499,6.139785584295654,4.563728432495498,5.964084804295655,4.757409732495499,5.771380004295654C4.717921432495499,5.744930564295654,4.522359532495499,5.601346764295655,4.294831432495499,5.453985124295654C4.1293567324954985,5.346297634295654,3.9431962324954988,5.2386101702956545,3.8153292324954986,5.163039684295654C2.435117432495499,6.763238884295655,0.49266496712579866,6.340046084295654,0.49266496712579866,5.348187294295654L0.49266496712579866,5.346297634295654Z" fill="url(#grad_paint_11_43527)"/>
-  <path d="M6.750630408148194,1.1052138L4.533641108148194,1.1052138L4.533641108148194,0.060456101C4.533641108148194,0.026449453,4.505434708148194,0,4.473468508148193,0C3.5727570081481934,0,3.3753161081481933,0.22293212,3.3753161081481933,0.51387751L3.3753161081481933,1.1052138L1.2711491181481933,1.1052138C1.1451627461481935,1.1052138,1.0906310081481934,1.3980488,1.0906310081481934,1.603977C1.0906310081481934,1.6379836,1.1169564781481933,1.6663228,1.1508037221481933,1.6663228L3.3753161081481933,1.6663228L3.3753161081481933,2.4069104L1.9010838881481935,2.4069104C1.7750976081481933,2.4069104,1.7205657381481934,2.7091908,1.7205657381481934,2.907563C1.7205657381481934,2.9415698,1.7468912581481932,2.9680192,1.7807384681481935,2.9680192L4.740485708148194,2.9680192C4.6803131081481935,3.4988997,4.535523408148194,3.9693248,4.334318608148193,4.3774033C4.697235808148193,4.5493269,5.062034108148193,4.7344718,5.445634808148194,4.9045053C5.893168408148194,4.1828098,6.165826808148194,3.3553166,6.171468208148194,2.529712C6.171468208148194,2.4616988,6.116936208148194,2.4069104,6.051122708148194,2.4069104L4.533641108148194,2.4069104L4.533641108148194,1.6663228L6.630286208148194,1.6663228C6.756272308148193,1.6663228,6.810803908148193,1.384824,6.810803908148193,1.1675595C6.810803908148193,1.1335528,6.784479108148194,1.1052138,6.750630408148194,1.1052138Z" fill="url(#grad_paint_11_43517)"/>
-  <path d="M7.425695883026123,6.974793919592285C7.982293883026124,6.974793919592285,8.127084983026123,6.277658719592285,8.153410183026123,5.729774519592285C8.159050683026123,5.622086919592285,8.074434083026123,5.531402019592285,7.969130283026123,5.529513719592285C6.447886983026123,5.482282319592285,5.391103983026123,4.875831689592285,4.338080883026123,4.377068519592285C5.502048283026123,5.380262519592285,6.000354183026123,6.976683819592285,7.427576283026124,6.976683819592285L7.425695883026123,6.974793919592285Z" fill="url(#grad_paint_11_43523)"/>
-  <path d="M0.49266291,5.347538208410644C0.49266291,4.829882908410644,1.0586634,4.457699478410644,1.7450093,4.457699478410644C2.4313555,4.457699478410644,3.1477869,4.763759408410644,3.8153288,5.1623921084106446C4.1331172,5.351317808410645,4.4471436,5.562914708410645,4.7574091,5.772622108410644C5.6411967,6.367737808410645,6.4986596,6.945849408410645,7.3561206,6.976077808410645C5.9815488,6.925068808410645,5.4794812,5.3645438084106445,4.3343201,4.378352638410645C3.5727575,4.017504218410645,2.8130774,3.7114458084106445,1.8766381,3.7114458084106445C0.77472419,3.7114458084106445,0,4.433141108410645,0,5.347541208410645C0,5.483567908410644,0.11094357,5.595033208410644,0.24633254,5.595033208410644C0.38172153,5.595033208410644,0.49266434,5.483567908410644,0.49266291,5.347538208410644Z" fill="#FFFFFF"/>
-  <path d="M0.0018822352,5.346644028165283C0.0018822352,6.251597388165283,0.79541075,6.975182288165283,1.8785195,6.975182288165283C2.73034,6.975182288165283,3.4881411,6.716353888165283,4.1199546,6.293161288165283C2.96539,7.039416288165283,0.49266508,6.553877988165283,0.49266508,5.346644028165283C0.49266508,5.210617448165284,0.38172221,5.099152088165283,0.24633254,5.099152088165283C0.11094285,5.099152088165283,0,5.210617448165284,0,5.346644028165283L0.0018822352,5.346644028165283Z" fill="url(#grad_paint_11_43520)"/>
-</svg>
+          <button class="card-mint-btn">去管理</button>
+          <!-- 碰一下考勤机插画 -->
+          <div class="card-illu">
+            <svg viewBox="0 0 76 80" width="100%" height="100%">
+              <defs>
+                <linearGradient id="devGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#00C997"/>
+                  <stop offset="100%" stop-color="#02A47B"/>
+                </linearGradient>
+                <linearGradient id="devPole" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#EDF2F4"/>
+                  <stop offset="50%" stop-color="#FFFFFF"/>
+                  <stop offset="100%" stop-color="#D7E0E3"/>
+                </linearGradient>
+              </defs>
+              <rect x="36" y="56" width="18" height="24" rx="2" fill="url(#devPole)"/>
+              <rect x="25" y="6" width="40" height="58" rx="10" fill="url(#devGreen)"/>
+              <text x="45" y="19" fill="#FFFFFF" font-size="5.5" font-weight="700" text-anchor="middle">碰一下考勤</text>
+              <circle cx="45" cy="38" r="13" fill="#11151A" stroke="#2DE4B2" stroke-width="1.2"/>
+              <g transform="translate(38.5, 31.5) scale(0.55)">
+                <path d="M12 2 L7 2 L7 5 L17 5 L17 7 L7 7 L7 10 L13 10 C15 10, 16 11, 16 13 C16 17, 13 20, 7 21 C10 18, 12 16, 12 14 L7 14 L7 18 L4 18 L4 14 L2 14 L2 12 L4 12 L4 2 Z" fill="#FFFFFF"/>
+                <path d="M19 11 C20.5 13, 20.5 16, 19 18" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                <path d="M22 9 C24.5 12.5, 24.5 17.5, 22 20.5" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+              </g>
+            </svg>
           </div>
         </div>
       </div>
 
-      <!-- 金刚区 4 大金刚位 -->
+      <!-- 金刚区 4 大图标 -->
       <div class="grid-menu">
-        <div class="grid-item">
-          <span class="grid-badge">门店适用</span>
+        <div class="grid-item" onclick="window.location.href='pay_salary.html'">
+          <span class="grid-badge-tag">门店适用</span>
           <div class="grid-icon-wrap">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="2.25 2.25 22.5 22.5" width="22.5" height="22.5">
-  <path d="M2.25,7.875C2.25,4.7684026,4.7684026,2.25,7.875,2.25C7.875,2.25,19.125,2.25,19.125,2.25C22.231575,2.25,24.75,4.7684026,24.75,7.875C24.75,7.875,24.75,19.125,24.75,19.125C24.75,22.231575,22.231575,24.75,19.125,24.75C19.125,24.75,7.875,24.75,7.875,24.75C4.7684026,24.75,2.25,22.231575,2.25,19.125C2.25,19.125,2.25,7.875,2.25,7.875C2.25,7.875,2.25,7.875,2.25,7.875Z
-M7.875,4.5C6.0110434999999995,4.5,4.5,6.0110434999999995,4.5,7.875C4.5,7.875,4.5,19.125,4.5,19.125C4.5,20.989014,6.0110434999999995,22.5,7.875,22.5C7.875,22.5,19.125,22.5,19.125,22.5C20.989014,22.5,22.5,20.989014,22.5,19.125C22.5,19.125,22.5,7.875,22.5,7.875C22.5,6.0110434999999995,20.989014,4.5,19.125,4.5C19.125,4.5,7.875,4.5,7.875,4.5C7.875,4.5,7.875,4.5,7.875,4.5Z" fill="#202536" fill-rule="evenodd"/>
-  <path d="M12.375,13.5C12.375,11.0147176,14.3897176,9,16.875,9C16.875,9,22.5,9,22.5,9C23.742675,9,24.75,10.0073599,24.75,11.25C24.75,11.25,24.75,15.75,24.75,15.75C24.75,16.992641,23.742675,18,22.5,18C22.5,18,16.875,18,16.875,18C14.3897176,18,12.375,15.9852824,12.375,13.5C12.375,13.5,12.375,13.5,12.375,13.5Z
-M16.875,11.25C15.6323588,11.25,14.625,12.2573588,14.625,13.5C14.625,14.742640999999999,15.6323588,15.75,16.875,15.75C16.875,15.75,22.5,15.75,22.5,15.75C22.5,15.75,22.5,11.25,22.5,11.25C22.5,11.25,16.875,11.25,16.875,11.25C16.875,11.25,16.875,11.25,16.875,11.25Z" fill="#202536" fill-rule="evenodd"/>
-  <path d="M15.75,13.5C15.75,12.87867939,16.25367939,12.375,16.875,12.375C16.875,12.375,16.9875001,12.375,16.9875001,12.375C17.608815,12.375,18.1125,12.87867939,18.1125,13.5C18.1125,14.121315,17.608815,14.625,16.9875001,14.625C16.9875001,14.625,16.875,14.625,16.875,14.625C16.25367939,14.625,15.75,14.121315,15.75,13.5C15.75,13.5,15.75,13.5,15.75,13.5Z" fill="#202536" fill-rule="evenodd"/>
-</svg>
+            <svg viewBox="0 0 28 28" fill="none">
+              <rect x="3.5" y="6" width="21" height="16" rx="4" stroke="#16393F" stroke-width="2.2"/>
+              <path d="M14 11 H23.5 C24.5 11 25.5 12 25.5 13.2 V15.8 C25.5 17 24.5 18 23.5 18 H14" stroke="#16393F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="19" cy="14.5" r="1.5" fill="#16393F"/>
+            </svg>
           </div>
           <span class="grid-label">极速发薪</span>
         </div>
-        <div class="grid-item">
+
+        <div class="grid-item" onclick="window.location.href='pay_salary.html'">
           <div class="grid-icon-wrap">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="4.5 2.25 18 22.5" width="18" height="22.5">
-  <path d="M9,19.125C9,18.50367939,9.50367939,18,10.125,18C10.125,18,16.875,18,16.875,18C17.496315,18,18,18.50367939,18,19.125C18,19.746315,17.496315,20.25,16.875,20.25C16.875,20.25,10.125,20.25,10.125,20.25C9.50367939,20.25,9,19.746315,9,19.125C9,19.125,9,19.125,9,19.125Z" fill="#202536" fill-rule="evenodd"/>
-  <path d="M9,14.625C9,14.00367939,9.50367939,13.5,10.125,13.5C10.125,13.5,16.875,13.5,16.875,13.5C17.496315,13.5,18,14.00367939,18,14.625C18,15.246315,17.496315,15.75,16.875,15.75C16.875,15.75,10.125,15.75,10.125,15.75C9.50367939,15.75,9,15.246315,9,14.625C9,14.625,9,14.625,9,14.625Z" fill="#202536" fill-rule="evenodd"/>
-  <path d="M9,10.125C9,9.50367939,9.50367939,9,10.125,9C10.125,9,11.25,9,11.25,9C11.871315,9,12.375,9.50367939,12.375,10.125C12.375,10.746315,11.871315,11.25,11.25,11.25C11.25,11.25,10.125,11.25,10.125,11.25C9.50367939,11.25,9,10.746315,9,10.125C9,10.125,9,10.125,9,10.125Z" fill="#202536" fill-rule="evenodd"/>
-  <path d="M9,4.5C7.7573588,4.5,6.75,5.5073588,6.75,6.75C6.75,6.75,6.75,20.25,6.75,20.25C6.75,21.492676,7.7573588,22.5,9,22.5C9,22.5,18,22.5,18,22.5C19.242675,22.5,20.25,21.492676,20.25,20.25C20.25,20.25,20.25,9.931983899999999,20.25,9.931983899999999C20.25,9.6336112,20.131425,9.3474674,19.920487,9.1364846C19.920487,9.1364846,15.613515,4.8295014,15.613515,4.8295014C15.402533,4.61853,15.116389,4.5,14.818016,4.5C14.818016,4.5,9,4.5,9,4.5C9,4.5,9,4.5,9,4.5Z
-M4.5,6.75C4.5,4.2647176,6.5147176,2.25,9,2.25C9,2.25,14.818016,2.25,14.818016,2.25C15.713123,2.25,16.571588,2.60557875,17.204513,3.23851502C17.204513,3.23851502,21.511463,7.5454988,21.511463,7.5454988C22.144388,8.1784353,22.5,9.0368776,22.5,9.931983899999999C22.5,9.931983899999999,22.5,20.25,22.5,20.25C22.5,22.735239,20.485236999999998,24.75,18,24.75C18,24.75,9,24.75,9,24.75C6.5147176,24.75,4.5,22.735239,4.5,20.25C4.5,20.25,4.5,6.75,4.5,6.75C4.5,6.75,4.5,6.75,4.5,6.75Z" fill="#202536" fill-rule="evenodd"/>
-  <path d="M15.75,3.375C15.75,3.375,15.75,5.625,15.75,5.625C15.75,7.4889565,17.2610435,9,19.125,9C19.125,9,21.375,9,21.375,9C21.375,9,21.375,11.25,21.375,11.25C21.375,11.25,19.125,11.25,19.125,11.25C16.0184026,11.25,13.5,8.7315974,13.5,5.625C13.5,5.625,13.5,3.375,13.5,3.375C13.5,3.375,15.75,3.375,15.75,3.375C15.75,3.375,15.75,3.375,15.75,3.375Z" fill="#202536" fill-rule="evenodd"/>
-</svg>
+            <svg viewBox="0 0 28 28" fill="none">
+              <rect x="5.5" y="4" width="17" height="20" rx="3" stroke="#16393F" stroke-width="2.2"/>
+              <path d="M9.5 9.5 H18.5" stroke="#16393F" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M9.5 14 H18.5" stroke="#16393F" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M9.5 18.5 H14" stroke="#16393F" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
           </div>
           <span class="grid-label">发薪账单</span>
         </div>
+
         <div class="grid-item">
           <div class="grid-icon-wrap">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="6.14 2.18 18 20.73" width="18" height="20.73">
-  <path d="M19.97140250631714,4.523084402105713L22.13636750631714,3.282790202105713L22.13841750631714,3.281615002105713L23.21769250631714,2.6633058221057127C23.62678050631714,2.4289422021057128,24.136365506317137,2.724290432105713,24.136365506317137,3.195754602105713L24.136365506317137,18.935064502105714C24.136365506317137,21.129858502105712,21.83382750631714,22.909090502105713,18.99350650631714,22.909090502105713L9.378993006317138,22.909090502105713C7.588138206317138,22.909090502105713,6.136363506317139,21.787264502105714,6.136363506317139,20.403423502105714L6.136363506317139,3.115960502105713C6.136363506317139,2.641889152105713,6.651030596317138,2.3468712021057128,7.060109736317139,2.5864499221057127L8.13362090631714,3.215155702105713L8.136363506317139,3.216761902105713L10.358560606317138,4.518199902105713C10.548569706317139,4.629479402105713,10.783635606317139,4.630420702105713,10.974529706317139,4.520666402105713L14.86000680631714,2.286715762105713C15.049380806317139,2.1778356121057127,15.28235770631714,2.177836622105713,15.471730706317139,2.2867185521057127L19.36050150631714,4.522609502105713C19.54958150631714,4.631322402105713,19.782154506317138,4.631503602105713,19.97140250631714,4.523084402105713Z
-M11.971405506317138,6.254517102105713L15.16585970631714,4.417869802105713L18.36361450631714,6.2564530021057125Q19.664025506317138,7.004136102105713,20.96559750631714,6.258474802105713L22.13636750631714,5.587748302105712L22.13636750631714,18.935064502105714Q22.13636750631714,19.599079502105713,21.40716350631714,20.162554502105714Q20.44105650631714,20.909090502105713,18.99350650631714,20.909090502105713L9.378993006317138,20.909090502105713Q8.136363506317139,20.909090502105713,8.136363506317139,20.403423502105714L8.136363506317139,5.5345111021057125L9.34783170631714,6.244011902105713Q10.656570906317139,7.0104804021057125,11.971405506317138,6.254517102105713Z" fill="#202536" fill-rule="evenodd"/>
-</svg>
+            <svg viewBox="0 0 28 28" fill="none">
+              <rect x="4" y="6.5" width="20" height="13.5" rx="3" stroke="#16393F" stroke-width="2.2"/>
+              <text x="14" y="16.5" fill="#16393F" font-size="9" font-weight="800" text-anchor="middle">¥</text>
+              <path d="M19 22 L22 22 L22 19" stroke="#16393F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 22 C12 24.5, 18 24, 21.5 22.2" stroke="#16393F" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2 2"/>
+            </svg>
           </div>
           <span class="grid-label">预支薪资</span>
         </div>
+
         <div class="grid-item">
-          <span class="grid-badge">海量简历</span>
+          <span class="grid-badge-tag">海量简历</span>
           <div class="grid-icon-wrap">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0.12 0.01 23.89 24.96" width="23.89" height="24.96">
-  <path d="M22.74055810407715,39.19248170507812Q25.92627480407715,42.48352670507812,30.43947410407715,42.48352670507812Q34.952672804077146,42.483524705078125,38.13838780407715,39.19248170507812Q41.30895280407715,35.917092705078126,41.30895280407715,31.292489705078125Q41.30895280407715,26.667886705078125,38.13838780407715,23.392498505078123Q34.952669804077146,20.101454305078125,30.43947410407715,20.101454305078125Q25.92627480407715,20.101454305078125,22.74055810407715,23.392498505078123Q19.56999640407715,26.667885805078125,19.56999560407715,31.292490705078123Q19.569996004077147,35.917092705078126,22.74055810407715,39.19248170507812Z
-M36.49487580407715,37.60156870507812Q33.98334380407715,40.19613870507813,30.43947410407715,40.19613870507813Q26.895604104077147,40.19614070507812,24.38407040407715,37.60156870507812Q21.85738270407715,34.99134070507812,21.85738240407715,31.292490705078123Q21.85738320407715,27.593637505078124,24.38407090407715,24.983411805078124Q26.895604104077147,22.388840705078124,30.43947410407715,22.388841105078125Q33.98334180407715,22.388841105078125,36.49487580407715,24.983411805078124Q39.021564804077144,27.593638405078124,39.021564804077144,31.292489705078125Q39.021564804077144,34.99134070507812,36.49487580407715,37.60156870507812Z" fill="#202536" fill-rule="evenodd" transform="matrix(-1,0,0,-1,41.4273796081543,42.49029541015625)"/>
-  <path d="M10.23432110616455,10.106716866589355Q10.132976506164551,10.003041166589355,10.07825730616455,9.868783266589356Q10.02353790616455,9.734525146589355,10.02353760616455,9.589544296589356Q10.02353760616455,9.516675236589355,10.03775360616455,9.445206286589356Q10.05196950616455,9.373737336589356,10.07985520616455,9.306415136589356Q10.10774110616455,9.239092916589355,10.148225106164551,9.178504526589355Q10.18870880616455,9.117916106589355,10.240235106164551,9.066389906589356Q10.291761206164551,9.014863686589356,10.35234950616455,8.974379806589356Q10.41293790616455,8.933895930589355,10.48026010616455,8.906010154589355Q10.547582106164551,8.878124374589355,10.619051206164551,8.863908330589355Q10.69052030616455,8.849692285059355,10.763389606164552,8.849692285059355Q10.84882260616455,8.849692285059355,10.932006806164551,8.869162943589355Q11.01519110616455,8.888633601589355,11.091748706164552,8.926550097589356Q11.168306306164551,8.964466606589356,11.234208106164552,9.018833246589356Q11.30010990616455,9.073199896589356,11.351886306164552,9.141155156589356Q12.209012506164552,10.142222666589355,12.209012506164552,11.209175566589355Q12.209012506164552,12.276129466589357,11.351884406164551,13.277198266589355Q11.300107006164552,13.345152866589356,11.234205706164552,13.399519466589355Q11.168304406164552,13.453885566589356,11.09174730616455,13.491801766589354Q11.015189606164551,13.529717466589355,10.932005406164551,13.549188166589357Q10.84882160616455,13.568658866589356,10.763389606164552,13.568658866589356Q10.69052030616455,13.568658866589356,10.619051206164551,13.554442366589356Q10.547582106164551,13.540226466589356,10.480259906164552,13.512340566589355Q10.41293790616455,13.484454666589356,10.35234980616455,13.443970666589355Q10.29176140616455,13.403487166589356,10.24023530616455,13.351961166589355Q10.18870900616455,13.300435066589355,10.148225306164552,13.239846266589355Q10.10774130616455,13.179257866589356,10.079855406164551,13.111935566589356Q10.05196950616455,13.044613366589356,10.03775360616455,12.973144566589355Q10.02353760616455,12.901676166589356,10.02353760616455,12.828807066589356Q10.02353760616455,12.683826466589355,10.07825680616455,12.549568666589355Q10.13297630616455,12.415310366589356,10.234320906164552,12.311634766589355Q10.73212430616455,11.727989166589357,10.73212430616455,11.209175566589355Q10.73212430616455,10.690362066589355,10.23432110616455,10.106716866589355Z
-M6.967629906164551,10.106716866589355Q6.866285186164551,10.003041166589355,6.8115657791645505,9.868783266589356Q6.756846368314551,9.734525146589355,6.756846368314551,9.589544296589356Q6.756846368314551,9.516675236589355,6.77106241516455,9.445206286589356Q6.785278462164551,9.373737336589356,6.813164241164551,9.306415136589356Q6.841050021164551,9.239092916589355,6.881533906164551,9.178504526589355Q6.922017786164551,9.117916106589355,6.973543986164551,9.066389906589356Q7.025070186164551,9.014863686589356,7.085658606164551,8.974379806589356Q7.1462469961645505,8.933895930589355,7.213569226164551,8.906010154589355Q7.28089141616455,8.878124374589355,7.352360366164551,8.863908330589355Q7.4238292561645505,8.849692285059355,7.4966983761645505,8.849692285059355Q7.582131086164551,8.849692285059355,7.66531544616455,8.869162943589355Q7.748499806164551,8.888633601589355,7.825057506164551,8.926550097589356Q7.9016151061645505,8.964466606589356,7.967516706164551,9.018833246589356Q8.033418206164551,9.073199896589356,8.085194806164552,9.141155156589356Q8.942321306164551,10.142222666589355,8.942321306164551,11.209175566589355Q8.942321306164551,12.276129466589357,8.08519330616455,13.277198266589355Q8.033416506164551,13.345152866589356,7.96751500616455,13.399519466589355Q7.901613706164551,13.453885566589356,7.82505620616455,13.491801766589354Q7.748498676164551,13.529717466589355,7.6653146761645505,13.549188166589357Q7.5821306661645504,13.568658866589356,7.4966983761645505,13.568658866589356Q7.4238292561645505,13.568658866589356,7.352360366164551,13.554442366589356Q7.280891476164551,13.540226466589356,7.213569256164551,13.512340566589355Q7.14624702616455,13.484454666589356,7.085658606164551,13.443970666589355Q7.025070186164551,13.403487166589356,6.973544006164551,13.351961166589355Q6.922017796164551,13.300435066589355,6.881533906164551,13.239846266589355Q6.841050029164551,13.179257866589356,6.813164241164551,13.111935566589356Q6.785278462164551,13.044613366589356,6.77106241416455,12.973144566589355Q6.756846368314551,12.901676166589356,6.756846368314551,12.828807066589356Q6.756846368314551,12.683826466589355,6.811565708164551,12.549568666589355Q6.866285046164551,12.415310366589356,6.967629666164551,12.311634766589355Q7.465433116164551,11.727989166589357,7.465433116164551,11.209175566589355Q7.465433056164551,10.690362066589355,6.967629906164551,10.106716866589355Z
-M13.35249180616455,10.106716866589355Q13.251147306164551,10.003041166589355,13.19642830616455,9.868783266589356Q13.141708806164552,9.734525146589355,13.14170840616455,9.589544296589356Q13.14170840616455,9.516675236589355,13.15592430616455,9.445206286589356Q13.170140306164551,9.373737336589356,13.19802570616455,9.306415136589356Q13.225911106164551,9.239092916589355,13.26639460616455,9.178504526589355Q13.30687900616455,9.117916106589355,13.35840510616455,9.066389906589356Q13.40993120616455,9.014863686589356,13.47051910616455,8.974379806589356Q13.53110790616455,8.933895930589355,13.59843020616455,8.906010154589355Q13.66575240616455,8.878124374589355,13.73722170616455,8.863908330589355Q13.808691006164551,8.849692285059355,13.881560306164552,8.849692285059355Q13.96699330616455,8.849692285059355,14.050177606164551,8.869162943589355Q14.133361806164551,8.888633601589355,14.20991900616455,8.926550097589356Q14.28647710616455,8.964466606589356,14.35237840616455,9.018833246589356Q14.41828060616455,9.073199896589356,14.47005700616455,9.141155156589356Q15.32718280616455,10.142222666589355,15.32718280616455,11.209175566589355Q15.32718280616455,12.276129466589357,14.470055106164551,13.277198266589355Q14.41827770616455,13.345152866589356,14.352376906164551,13.399519466589355Q14.28647520616455,13.453885566589356,14.20991800616455,13.491801766589354Q14.13335990616455,13.529717466589355,14.05017610616455,13.549188166589357Q13.96699240616455,13.568658866589356,13.881560306164552,13.568658866589356Q13.808691006164551,13.568658866589356,13.73722170616455,13.554442366589356Q13.66575240616455,13.540226466589356,13.59843020616455,13.512340566589355Q13.53110790616455,13.484454666589356,13.47051950616455,13.443970666589355Q13.40993120616455,13.403487166589356,13.35840560616455,13.351961166589355Q13.30687900616455,13.300435066589355,13.266395106164552,13.239846266589355Q13.225911106164551,13.179257866589356,13.19802570616455,13.111935566589356Q13.170140306164551,13.044613366589356,13.15592430616455,12.973144566589355Q13.14170840616455,12.901676166589356,13.14170840616455,12.828807066589356Q13.14170840616455,12.683826466589355,13.19642780616455,12.549568666589355Q13.25114680616455,12.415310366589356,13.35249140616455,12.311634766589355Q13.850295106164552,11.727989166589357,13.850295106164552,11.209175566589355Q13.850295106164552,10.690362066589355,13.35249180616455,10.106716866589355Z" fill="#202536"/>
-  <path d="M18.27557874010254,18.095193863896483L23.599746730102538,22.940201293896486Q23.69640403010254,23.020778693896485,23.77325013010254,23.120427593896483Q23.85009673010254,23.220077493896483,23.903461930102537,23.334040193896485Q23.95682713010254,23.448002793896485,23.98416183010254,23.570836593896484Q24.01149703010254,23.693670293896485,24.01149703010254,23.819508593896487Q24.01149703010254,23.875747693896486,24.00598483010254,23.931715993896486Q24.00047203010254,23.987684293896486,23.98950003010254,24.042841893896483Q23.978528930102538,24.098000493896485,23.96220353010254,24.151818293896483Q23.945878030102538,24.205635593896485,23.924355530102538,24.257593193896483Q23.902834430102537,24.309551693896484,23.87632373010254,24.359149893896486Q23.84981253010254,24.408748593896483,23.818567230102538,24.455509193896486Q23.787323030102538,24.502270193896486,23.75164553010254,24.545743893896486Q23.71596813010254,24.589217193896484,23.676200830102538,24.628983993896483Q23.63643403010254,24.668750793896486,23.59296083010254,24.704428693896485Q23.54948713010254,24.740105593896484,23.50272603010254,24.771350393896483Q23.45596503010254,24.802595093896485,23.40636733010254,24.829106293896483Q23.35676863010254,24.855617493896485,23.30481053010254,24.877138593896483Q23.25285243010254,24.898660693896485,23.19903563010254,24.914986593896487Q23.145218330102537,24.931311593896485,23.09005973010254,24.942282693896484Q23.03490163010254,24.953254693896483,22.97893383010254,24.958766893896485Q22.92296503010254,24.964279693896486,22.86672593010254,24.964279693896486Q22.64011333010254,24.964279693896486,22.43059113010254,24.877944993896485Q22.22106883010254,24.791609793896484,22.06023983010254,24.631962293896486L16.736071650102538,19.786954883896485Q16.63941479010254,19.706377743896486,16.56256914010254,19.606728553896485Q16.485723500102537,19.507079423896485,16.43235883010254,19.393117013896486Q16.37899423010254,19.279154543896485,16.35165933010254,19.156321283896485Q16.324324330102538,19.033488023896485,16.32432423010254,18.907649993896484Q16.32432423010254,18.851411003896484,16.329836630102537,18.795442823896483Q16.33534913010254,18.739474643896486,16.34632073010254,18.684316273896485Q16.35729243010254,18.629157903896484,16.37361763010254,18.575340543896484Q16.38994303010254,18.521523173896483,16.41146483010254,18.469565153896486Q16.43298653010254,18.417607073896484,16.45949733010254,18.368008733896485Q16.486008230102538,18.318410333896484,16.51725304010254,18.271649363896483Q16.54849768010254,18.224888323896483,16.58417529010254,18.181414963896483Q16.61985290010254,18.137941653896483,16.65961993010254,18.098174693896485Q16.699386890102538,18.058407663896485,16.74286026010254,18.022730053896485Q16.786333560102538,17.987052443896484,16.83309466010254,17.955807803896484Q16.87985563010254,17.924563053896485,16.92945397010254,17.898052193896483Q16.97905231010254,17.871541293896485,17.03101039010254,17.850019693896485Q17.082968410102538,17.828497893896483,17.13678578010254,17.812172693896485Q17.19060314010254,17.795847193896485,17.24576151010254,17.784875593896484Q17.30091988010254,17.773903893896485,17.356888060102538,17.768391393896483Q17.41285624010254,17.762878993896486,17.46909523010254,17.762878993896486Q17.695706920102538,17.762879093896483,17.90522844010254,17.849213193896485Q18.11474997010254,17.935547473896484,18.27557874010254,18.095193863896483Z" fill="#202536"/>
-</svg>
+            <svg viewBox="0 0 28 28" fill="none">
+              <circle cx="12" cy="12" r="7.5" stroke="#16393F" stroke-width="2.2"/>
+              <path d="M17.5 17.5 L23.5 23.5" stroke="#16393F" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M8.5 12 H10.5" stroke="#16393F" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M11.5 10.5 V13.5" stroke="#16393F" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M13.5 9.5 V14.5" stroke="#16393F" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
           </div>
           <span class="grid-label">极速招聘</span>
         </div>
       </div>
     </div>
 
-    <!-- 全部选择与筛选行 -->
-    <div class="company-filter-row">
-      <div class="filter-left-all" onclick="event.stopPropagation()">
-        <span class="all-text">全部</span>
-        <span class="all-arrow"></span>
+    <!-- 筛选行 (全部 ▾ 与 筛选 ) -->
+    <div class="filter-row">
+      <div class="filter-left">
+        <span>全部</span>
+        <span class="filter-left-arrow">▼</span>
       </div>
-      <div class="filter-right-btn" onclick="event.stopPropagation()">
+      <div class="filter-right">
         <span>筛选</span>
-        <span class="funnel-icon">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-            <path d="M2 3.5h12M4.5 8h7M7 12.5h2" stroke="#1F2329" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-        </span>
-      </div>
-    </div>
-
-    <!-- 搜索框 -->
-    <div class="search-bar">
-      <div class="search-icon">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <circle cx="7" cy="7" r="5" stroke="#8C98A4" stroke-width="1.6"/>
-          <path d="M11 11l3.5 3.5" stroke="#8C98A4" stroke-width="1.6" stroke-linecap="round"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
         </svg>
       </div>
-      <span class="search-placeholder">搜索</span>
     </div>
 
-    <!-- 项目卡片列表 -->
-    <div class="project-card-list">
-      <!-- 卡片 1: 发薪-02 (需打卡) -->
+    <!-- 药丸搜索框 -->
+    <div class="search-box-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" class="search-input" placeholder="搜索">
+    </div>
+
+        <!-- 项目卡片列表 (MasterGo 740:112487 首页-改版 1:1 像素级还原) -->
+    <div class="cards-list">
+      <!-- 卡片 1: 对应 MasterGo 设计稿实景项目 (西安华为技术有限公司) -->
       <div class="project-card">
-        <div class="card-header">
-          <div class="header-left" onclick="window.location.href='project_detail.html'">
-            <span class="type-tag need-clock">需打卡</span>
-            <span class="project-title">发薪-02</span>
+        <!-- 标题行 -->
+        <div class="card-top-row">
+          <div class="card-title-group" onclick="window.location.href='project_detail.html'">
+            <span class="badge-clock-orange">需打卡</span>
+            <span class="card-project-title">苏州蓝豚日结工～商务部门商务部</span>
           </div>
-          <div class="btn-more-dots" onclick="togglePopover(event, 'popover-1')">···</div>
+          <div class="card-more-action" onclick="openFastInvite('苏州蓝豚日结工')">···</div>
         </div>
 
-        <!-- 浮出菜单 -->
-        <div class="more-popover" id="popover-1">
-          <div class="popover-item" onclick="window.location.href='project_info.html'">
-            <span>项目设置</span>
+        <!-- 负责人与创建时间 -->
+        <div class="card-creator-row">
+          <div class="creator-left-box">
+            <img class="creator-avatar-sm" src="https://image-resource.mastergo.com/61188600613486/61188600613488/ab872d15c87ef2c5c102e6e79576f35b.jpg" alt="杨光">
+            <span class="creator-name-txt">杨光</span>
           </div>
-          <div class="popover-item" onclick="openInviteModal('发薪-02')">
-            <span>快捷邀请</span>
+          <span class="create-date-txt">2026-09-11 13:20</span>
+        </div>
+
+        <!-- 灰色全流程指标矩阵 (需报名/已报名/已签署/已投保/已发薪) -->
+        <div class="metrics-gray-box" onclick="window.location.href='project_detail.html'">
+          <div class="metrics-company-line">
+            企业名：<span class="metrics-company-val">西安华为技术有限公司</span>
           </div>
-          <div class="popover-item">
-            <span>项目归档</span>
+          <div class="metrics-data-grid">
+            <div class="metrics-row-flex">
+              <span class="metric-cell">需报名：<strong>23人</strong></span>
+              <span class="metric-cell">已报名：<strong>23人</strong></span>
+              <span class="metric-cell highlight">已签署：<strong>23人</strong></span>
+            </div>
+            <div class="metrics-row-flex">
+              <span class="metric-cell">已投保：<strong>0人</strong></span>
+              <span class="metric-cell">已发薪：<strong>0人</strong></span>
+              <span class="metric-cell"></span>
+            </div>
           </div>
         </div>
 
-        <!-- 灰底信息框 -->
-        <div class="project-info-box" onclick="window.location.href='project_detail.html'">
-          <div class="info-row">
-            <span class="info-label">企&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：</span>
-            <span class="info-val">苏州蓝豚跃动信息科技有限公司</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">需&nbsp;&nbsp;报&nbsp;&nbsp;名：</span>
-            <span class="info-val" style="min-width: 60px;">10人</span>
-            <span class="info-label" style="margin-left: 20px;">已&nbsp;&nbsp;报&nbsp;&nbsp;名：</span>
-            <span class="info-val">0人</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">创建时间：</span>
-            <span class="info-val">2026-10-19 16:48:00</span>
-          </div>
-        </div>
-
-        <!-- 底部发起人与操作按钮 -->
-        <div class="card-bottom-row">
-          <div class="creator-box">
-            <img class="creator-avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" alt="唐宛丽">
-            <span class="creator-name">唐宛丽</span>
-            <span class="creator-role">(创建者)</span>
-          </div>
-          <div class="card-btns-wrap">
-            <button class="btn-pay-salary" onclick="window.location.href='pay_salary.html'">去发薪</button>
-            <button class="btn-fast-invite" onclick="openInviteModal('发薪-02')">快捷邀请</button>
-          </div>
+        <!-- 4 大并排操作按钮 (一站式全链路流水线) -->
+        <div class="card-action-bar-4">
+          <button class="btn-step-gray" onclick="window.location.href='contract_create.html'">签合同</button>
+          <button class="btn-step-gray" onclick="window.location.href='insurance_create.html'">去投保</button>
+          <button class="btn-step-gray" onclick="window.location.href='pay_salary.html'">去发薪</button>
+          <button class="btn-step-green" onclick="openFastInvite('苏州蓝豚日结工')">快捷邀请</button>
         </div>
       </div>
 
-      <!-- 卡片 2: 发薪-01 (无打卡) -->
+      <!-- 卡片 2: 发薪-01 (已同步 10 人名单) -->
       <div class="project-card">
-        <div class="card-header">
-          <div class="header-left" onclick="window.location.href='project_detail.html'">
-            <span class="type-tag no-clock">无打卡</span>
-            <span class="project-title">发薪-01</span>
+        <div class="card-top-row">
+          <div class="card-title-group" onclick="window.location.href='project_detail.html'">
+            <span class="badge-clock-green">无打卡</span>
+            <span class="card-project-title">发薪-01</span>
           </div>
-          <div class="btn-more-dots" onclick="togglePopover(event, 'popover-2')">···</div>
+          <div class="card-more-action" onclick="openFastInvite('发薪-01')">···</div>
         </div>
 
-        <!-- 浮出菜单 -->
-        <div class="more-popover" id="popover-2">
-          <div class="popover-item" onclick="window.location.href='project_info.html'">
-            <span>项目设置</span>
+        <div class="card-creator-row">
+          <div class="creator-left-box">
+            <img class="creator-avatar-sm" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" alt="唐宛丽">
+            <span class="creator-name-txt">唐宛丽</span>
           </div>
-          <div class="popover-item" onclick="openInviteModal('发薪-01')">
-            <span>快捷邀请</span>
-          </div>
-          <div class="popover-item">
-            <span>项目归档</span>
-          </div>
+          <span class="create-date-txt">2026-10-19 16:27</span>
         </div>
 
-        <!-- 灰底信息框 -->
-        <div class="project-info-box" onclick="window.location.href='project_detail.html'">
-          <div class="info-row">
-            <span class="info-label">企&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：</span>
-            <span class="info-val">苏州蓝豚跃动信息科技有限公司</span>
+        <div class="metrics-gray-box" onclick="window.location.href='project_detail.html'">
+          <div class="metrics-company-line">
+            企业名：<span class="metrics-company-val">苏州蓝豚跃动信息科技有限公司</span>
           </div>
-          <div class="info-row">
-            <span class="info-label">需&nbsp;&nbsp;报&nbsp;&nbsp;名：</span>
-            <span class="info-val" style="min-width: 60px;">10人</span>
-            <span class="info-label" style="margin-left: 20px;">已&nbsp;&nbsp;报&nbsp;&nbsp;名：</span>
-            <span class="info-val">1人</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">创建时间：</span>
-            <span class="info-val">2026-10-19 16:27:04</span>
+          <div class="metrics-data-grid">
+            <div class="metrics-row-flex">
+              <span class="metric-cell">需报名：<strong>9人</strong></span>
+              <span class="metric-cell">已报名：<strong>10人</strong></span>
+              <span class="metric-cell highlight">已签署：<strong>10人</strong></span>
+            </div>
+            <div class="metrics-row-flex">
+              <span class="metric-cell highlight">已投保：<strong>10人</strong></span>
+              <span class="metric-cell">已发薪：<strong>0人</strong></span>
+              <span class="metric-cell"></span>
+            </div>
           </div>
         </div>
 
-        <!-- 底部发起人与操作按钮 -->
-        <div class="card-bottom-row">
-          <div class="creator-box">
-            <img class="creator-avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" alt="唐宛丽">
-            <span class="creator-name">唐宛丽</span>
-            <span class="creator-role">(创建者)</span>
+        <div class="card-action-bar-4">
+          <button class="btn-step-gray" onclick="window.location.href='contract_create.html'">签合同</button>
+          <button class="btn-step-gray" onclick="window.location.href='insurance_create.html'">去投保</button>
+          <button class="btn-step-gray" onclick="window.location.href='pay_salary.html'">去发薪</button>
+          <button class="btn-step-green" onclick="openFastInvite('发薪-01')">快捷邀请</button>
+        </div>
+      </div>
+
+      <!-- 卡片 3: 发薪-02 (新创建待入职项目) -->
+      <div class="project-card">
+        <div class="card-top-row">
+          <div class="card-title-group" onclick="window.location.href='project_detail.html'">
+            <span class="badge-clock-orange">需打卡</span>
+            <span class="card-project-title">发薪-02</span>
           </div>
-          <div class="card-btns-wrap">
-            <button class="btn-pay-salary" onclick="window.location.href='pay_salary.html'">去发薪</button>
-            <button class="btn-fast-invite" onclick="openInviteModal('发薪-01')">快捷邀请</button>
+          <div class="card-more-action" onclick="openFastInvite('发薪-02')">···</div>
+        </div>
+
+        <div class="card-creator-row">
+          <div class="creator-left-box">
+            <img class="creator-avatar-sm" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80" alt="唐宛丽">
+            <span class="creator-name-txt">唐宛丽</span>
           </div>
+          <span class="create-date-txt">2026-10-19 16:48</span>
+        </div>
+
+        <div class="metrics-gray-box" onclick="window.location.href='project_detail.html'">
+          <div class="metrics-company-line">
+            企业名：<span class="metrics-company-val">苏州蓝豚跃动信息科技有限公司</span>
+          </div>
+          <div class="metrics-data-grid">
+            <div class="metrics-row-flex">
+              <span class="metric-cell">需报名：<strong>10人</strong></span>
+              <span class="metric-cell">已报名：<strong>0人</strong></span>
+              <span class="metric-cell">已签署：<strong>0人</strong></span>
+            </div>
+            <div class="metrics-row-flex">
+              <span class="metric-cell">已投保：<strong>0人</strong></span>
+              <span class="metric-cell">已发薪：<strong>0人</strong></span>
+              <span class="metric-cell"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-action-bar-4">
+          <button class="btn-step-gray" onclick="window.location.href='contract_create.html'">签合同</button>
+          <button class="btn-step-gray" onclick="window.location.href='insurance_create.html'">去投保</button>
+          <button class="btn-step-gray" onclick="window.location.href='pay_salary.html'">去发薪</button>
+          <button class="btn-step-green" onclick="openFastInvite('发薪-02')">快捷邀请</button>
         </div>
       </div>
     </div>
 
-    <!-- 底部导航栏 -->
-    <div class="bottom-nav">
-      <div class="nav-item active">
-        <div class="nav-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="1.04 1.94 23.91 22.56" width="23.91" height="22.56">
-  <defs><linearGradient id="grad_paint_9_07523" x1="0.5000" y1="-0.0000" x2="0.5000" y2="1.0000"><stop offset="0" stop-color="#00D679"/><stop offset="1" stop-color="#00D9B5"/></linearGradient></defs>
-  <path d="M2.4447571999999997,8.5368285C1.5510378500000002,9.1326413,1.044053227,10.1607981,1.1155024199999999,11.2325363L1.7510716899999998,20.766075C1.89115107,22.867266,3.6363568,24.5,5.7422123,24.5L20.257788,24.5C22.363644,24.5,24.108849,22.867266,24.248928,20.766075L24.884497,11.2325363C24.955946,10.1607981,24.448961,9.1326413,23.555243,8.5368285L14.664102,2.6094004C13.656404,1.93760151,12.343598,1.93760157,11.3359,2.6094003L2.4447571999999997,8.5368285Z" fill="url(#grad_paint_9_07523)"/>
-</svg>
+    <!-- 底部固定 3-Tab 小程序导航栏 (1:1 还原图1与图2) -->
+    <div class="mp-tabbar">
+      <!-- 首页 (激活态绿色) -->
+      <div class="tab-item active" onclick="window.location.href='shouye.html'">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M3 10.5L12 3L21 10.5V20C21 20.5523 20.5523 21 20 21H15V14H9V21H4C3.44772 21 3 20.5523 3 20V10.5Z" fill="#00C261"/>
+          </svg>
         </div>
-        <span class="nav-text">首页</span>
+        <span class="tab-label">首页</span>
       </div>
-      <div class="nav-item">
-        <div class="nav-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="8 8 10 15.8" width="10" height="15.8">
-  <path d="M16.99993896484375,22.19999999L8.99993896484375,22.19999999L8.99993896484375,22.20015997Q8.92116160684375,22.20016003,8.84389793484375,22.21552873Q8.76663427484375,22.23089743,8.69385349484375,22.26104426Q8.62107270484375,22.2911911,8.55557170484375,22.33495736Q8.49007070484375,22.37872374,8.43436670484375,22.43442774Q8.37866270484375,22.49013174,8.33489638484375,22.55563277Q8.29113006484375,22.62113374,8.26098322484375,22.69391453Q8.23083639484375,22.76669531,8.215467694843749,22.84395897Q8.20009899484375,22.921222642,8.20009893484375,23Q8.20009899484375,23.078777358,8.215467694843749,23.15604103Q8.23083639484375,23.23330469,8.26098322484375,23.30608547Q8.29113006484375,23.37886626,8.33489632484375,23.44436726Q8.37866270484375,23.50986826,8.43436670484375,23.56557226Q8.49007070484375,23.62127626,8.55557173484375,23.66504258Q8.62107270484375,23.7088089,8.69385349484375,23.73895574Q8.76663427484375,23.76910257,8.84389793484375,23.78447127Q8.92116160684375,23.79983997,8.99993896484375,23.79984003L8.99993896484375,23.80000001L16.99993896484375,23.80000001L16.99993896484375,23.79984003Q17.07871626484375,23.79983997,17.15597916484375,23.78447127Q17.23324296484375,23.76910257,17.30602356484375,23.73895574Q17.37880326484375,23.7088089,17.44430546484375,23.66504264Q17.50980566484375,23.62127626,17.56551076484375,23.56557226Q17.62121386484375,23.50986826,17.664979964843752,23.44436723Q17.70874596484375,23.37886626,17.73889346484375,23.30608547Q17.76904006484375,23.23330469,17.78440956484375,23.15604103Q17.79977796484375,23.078777358,17.79977896484375,23Q17.79977796484375,22.921222642,17.78440956484375,22.84395897Q17.76904006484375,22.76669531,17.73889346484375,22.69391453Q17.70874596484375,22.62113374,17.664979964843752,22.55563274Q17.62121386484375,22.49013174,17.56551076484375,22.43442774Q17.50980566484375,22.37872374,17.44430546484375,22.33495742Q17.37880326484375,22.2911911,17.30602356484375,22.26104426Q17.23324296484375,22.23089743,17.15597916484375,22.21552873Q17.07871626484375,22.20016003,16.99993896484375,22.20015997L16.99993896484375,22.19999999Z" fill="#565868"/>
-  <path d="M17.70702643515625,9.70696539Q17.847650535156248,9.56634116,17.923755635156247,9.38260686Q17.99986073515625,9.19887258,17.99986073515625,9Q17.99986073515625,8.901528291,17.98064993515625,8.8049487Q17.961439135156247,8.70836911,17.92375473515625,8.61739314Q17.886072135156247,8.52641714,17.83136363515625,8.44454092Q17.776655235156248,8.3626647,17.707025535156248,8.29303467Q17.637395835156248,8.223404649999999,17.55551913515625,8.16869676Q17.47364333515625,8.11398882,17.38266753515625,8.07630533Q17.291690835156253,8.03862178,17.19511223515625,8.01941091Q17.09853173515625,8.00020003,17.00006103515625,8.00019997Q16.80118803515625,8.00020003,16.61745353515625,8.07630527Q16.43371963515625,8.15241045,16.29309563515625,8.29303449L16.29295443515625,8.29289323L14.00006103515625,10.5857866L12.70716783515625,9.29289323Q12.63752363515625,9.22324929,12.55563113515625,9.1685304Q12.473738235156251,9.11381151,12.38274383515625,9.076120488Q12.29174943515625,9.038429465,12.19515083515625,9.019214747Q12.09855173515625,9.000000029802322,12.00006053515625,9.000000029802322Q11.901569135156251,9.000000029802322,11.80497023515625,9.019214747Q11.70837143515625,9.038429465,11.61737723515625,9.076120488Q11.52638293515625,9.11381151,11.44449043515625,9.1685304Q11.36259793515625,9.22324929,11.29295423515625,9.29289323L8.29295426515625,12.2928932L8.29309570515625,12.2930346Q8.15247154515625,12.4336586,8.07636630515625,12.617393Q8.00026100515625,12.8011274,8.00026100515625,13Q8.00026106515625,13.0984716,8.01947194515625,13.1950512Q8.03868281515625,13.291630699999999,8.07636630515625,13.3826065Q8.11404979515625,13.4735823,8.16875773515625,13.5554585Q8.223465685156249,13.6373348,8.29309570515625,13.706965Q8.36272573515625,13.7765946,8.44460195515625,13.8313026Q8.52647817515625,13.886010200000001,8.61745417515625,13.923694099999999Q8.70843014515625,13.961378100000001,8.80500973515625,13.9805889Q8.90158932615625,13.9997997,9.00006103515625,13.9998002Q9.19893369515625,13.9998002,9.38266804515625,13.923694600000001Q9.56640243515625,13.8475895,9.70702654515625,13.7069654L9.70716780515625,13.7071066L12.00006103515625,11.4142137L13.29295443515625,12.7071068Q13.43360663515625,12.847759,13.61737773515625,12.9238796Q13.80114843515625,13,14.00006103515625,13Q14.198973135156251,13,14.38274433515625,12.9238796Q14.566514935156249,12.8477592,14.70716763515625,12.7071068L17.70716763515625,9.70710677L17.70702643515625,9.70696539Z" fill="#9497B1"/>
-</svg>
+
+      <!-- 工作台 (未激活灰色) -->
+      <div class="tab-item">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="4" width="20" height="13" rx="2" stroke="#8A92A0" stroke-width="2"/>
+            <path d="M7 10 L10 13 L17 7" stroke="#8A92A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 20 H16" stroke="#8A92A0" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 17 V20" stroke="#8A92A0" stroke-width="2"/>
+          </svg>
         </div>
-        <span class="nav-text">工作台</span>
+        <span class="tab-label">工作台</span>
       </div>
-      <div class="nav-item">
-        <div class="nav-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="2.7 0.7 20.6 23.6" width="20.6" height="23.6">
-  <path d="M13.000001,2.30000007Q9.3963423,2.30000007,6.8481711999999995,4.8481711999999995Q4.30000007,7.3963423,4.30000007,11.000001Q4.30000007,16.300851,9.0107388,18.731482Q9.08076,18.767611,9.1423874,18.816706Q9.2040148,18.865801,9.2548809,18.925976Q9.3057461,18.986151,9.343893999999999,19.055094Q9.3820429,19.124035,9.406008199999999,19.199097Q9.4299736,19.274157,9.438834700000001,19.352449Q9.4476957,19.430744,9.441113,19.509262Q9.434529300000001,19.58778,9.4127545,19.663506Q9.390980200000001,19.739231,9.354851199999999,19.809252Q9.3076549,19.900721,9.2388411,19.977266Q8.314825500000001,21.005087,8.043108499999999,22.363682L8.0229163,22.464638Q8.0046515,22.555958,8.0636954,22.627979Q8.1227388,22.700001,8.215869399999999,22.700001L17.784132,22.700001Q17.877262,22.700001,17.936305,22.627979Q17.995348,22.555958,17.977083999999998,22.46464L17.956893,22.363684Q17.685174,21.005089,16.76116,19.977259Q16.708482,19.918663,16.668247,19.850914Q16.628014,19.783169,16.601770000000002,19.708874Q16.575526,19.634579,16.564281,19.556595Q16.553036,19.478607,16.55722,19.399927Q16.561405,19.321243,16.580859,19.24489Q16.600313999999997,19.168537,16.634290999999997,19.097446Q16.668267,19.026356,16.715460999999998,18.963259Q16.762653,18.900162,16.82125,18.847486Q16.897795000000002,18.778673,16.989264,18.731476Q21.700001,16.300851,21.700001,11.000001Q21.700001,7.3963418,19.151831,4.8481711999999995Q16.603659999999998,2.30000007,13.000001,2.30000007Z
-M13.000001,0.69999993Q17.266401000000002,0.70000023,20.283201,3.7168Q23.300001,6.7336001,23.300001,11.000001Q23.300001,17.275721,17.722920000000002,20.15336L17.356092,19.442419L17.951024,18.907578Q19.168127,20.261425,19.525822,22.049892L19.546013,22.15085Q19.71279,22.984724,19.173653,23.642365Q18.634518999999997,24.300001,17.784132,24.300001L8.215869399999999,24.300001Q7.3654828000000006,24.300001,6.826348299999999,23.642365Q6.2872124,22.984724,6.4539871,22.150852L6.474179299999999,22.049894Q6.831872499999999,20.261423,8.0489798,18.907579L8.6439104,19.442423L8.277082,20.153364Q2.69999993,17.275723,2.69999993,11.000001Q2.70000023,6.7336001,5.7168,3.7168Q8.7336001,0.69999993,13.000001,0.69999993Z" fill="#565868"/>
-  <path d="M6.33331298828125,12L6.33331298828125,10Q6.33331298828125,9.90150857,6.35252770628125,9.80490965Q6.37174242328125,9.70831072,6.40943344728125,9.61731648Q6.44712446828125,9.52632231,6.50184335828125,9.44442973Q6.55656224828125,9.36253715,6.62620618828125,9.2928932Q6.69585013828125,9.22324926,6.77774274828125,9.16853037Q6.85963529828125,9.11381148,6.9506294682812495,9.076120459Q7.04162370828125,9.038429435,7.13822263828125,9.019214718Q7.23482155828125,9,7.33331298828125,9L7.33331298828125,9Q7.43180428828125,9,7.52840318828125,9.019214718Q7.62500198828125,9.038429435,7.71599628828125,9.076120459Q7.80699038828125,9.11381148,7.88888288828125,9.16853037Q7.97077558828125,9.22324926,8.04041958828125,9.2928932Q8.110063388281251,9.36253715,8.16478228828125,9.44442976Q8.21950128828125,9.52632231,8.25719238828125,9.61731648Q8.29488338828125,9.70831072,8.31409808828125,9.80490965Q8.33331288828125,9.90150857,8.33331298828125,10L8.33331298828125,12Q8.33331288828125,12.0984912,8.31409808828125,12.1950901Q8.29488328828125,12.2916889,8.25719228828125,12.3826833Q8.21950128828125,12.4736774,8.16478228828125,12.5555701Q8.110063388281251,12.6374626,8.04041958828125,12.7071066Q7.97077558828125,12.7767506,7.88888288828125,12.8314693Q7.80699038828125,12.886188,7.71599628828125,12.9238791Q7.62500198828125,12.9615703,7.52840318828125,12.9807849Q7.43180428828125,12.9999998,7.33331298828125,13L7.33331298828125,13Q7.23482155828125,12.9999998,7.13822263828125,12.9807849Q7.04162370828125,12.9615703,6.9506294682812495,12.9238791Q6.85963529828125,12.886188,6.77774271828125,12.8314693Q6.69585013828125,12.7767506,6.62620618828125,12.7071066Q6.55656224828125,12.6374626,6.50184335828125,12.5555699Q6.44712446828125,12.4736774,6.40943344728125,12.3826833Q6.37174242328125,12.2916889,6.35252770628125,12.1950901Q6.33331298828125,12.0984912,6.33331298828125,12Z
-M11.33331298828125,12L11.33331298828125,10Q11.33331298828125,9.90150857,11.35252758828125,9.80490965Q11.37174228828125,9.70831072,11.40943338828125,9.61731648Q11.44712448828125,9.52632231,11.50184348828125,9.44442973Q11.55656238828125,9.36253715,11.62620638828125,9.2928932Q11.69585038828125,9.22324926,11.77774238828125,9.16853037Q11.85963538828125,9.11381148,11.950629188281251,9.076120459Q12.04162358828125,9.038429435,12.13822218828125,9.019214718Q12.23482128828125,9,12.33331298828125,9L12.33331298828125,9Q12.43180368828125,9,12.52840228828125,9.019214718Q12.62500138828125,9.038429435,12.715995788281251,9.076120459Q12.80698968828125,9.11381148,12.88888258828125,9.16853037Q12.97077508828125,9.22324926,13.04041908828125,9.2928932Q13.110063088281251,9.36253715,13.164781588281251,9.44442976Q13.21950058828125,9.52632231,13.25719168828125,9.61731648Q13.29488278828125,9.70831072,13.31409788828125,9.80490965Q13.333312488281251,9.90150857,13.33331298828125,10L13.33331298828125,12Q13.333312488281251,12.0984912,13.314097388281251,12.1950901Q13.29488278828125,12.2916889,13.25719168828125,12.3826833Q13.21950058828125,12.4736774,13.16478208828125,12.5555701Q13.11006358828125,12.6374626,13.04041958828125,12.7071066Q12.97077558828125,12.7767506,12.88888258828125,12.8314693Q12.80698968828125,12.886188,12.715995788281251,12.9238791Q12.62500138828125,12.9615703,12.52840278828125,12.9807849Q12.43180368828125,12.9999998,12.33331298828125,13L12.33331298828125,13Q12.23482128828125,12.9999998,12.13822268828125,12.9807849Q12.04162358828125,12.9615703,11.950629188281251,12.9238791Q11.85963538828125,12.886188,11.77774238828125,12.8314693Q11.69584988828125,12.7767506,11.62620588828125,12.7071066Q11.55656198828125,12.6374626,11.50184348828125,12.5555699Q11.44712448828125,12.4736774,11.40943338828125,12.3826833Q11.37174228828125,12.2916889,11.35252758828125,12.1950901Q11.33331298828125,12.0984912,11.33331298828125,12Z" fill="#9497B1"/>
-</svg>
+
+      <!-- 我的 (未激活灰色) -->
+      <div class="tab-item">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="#8A92A0" stroke-width="2"/>
+            <circle cx="9" cy="10" r="1.2" fill="#8A92A0"/>
+            <circle cx="15" cy="10" r="1.2" fill="#8A92A0"/>
+            <path d="M8.5 14.5 C9.8 16.5, 14.2 16.5, 15.5 14.5" stroke="#8A92A0" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
         </div>
-        <span class="nav-text">我的</span>
+        <span class="tab-label">我的</span>
+      </div>
+    </div>
+
+    <!-- 快捷邀请二维码弹窗 (0 Toast) -->
+    <div class="invite-modal" id="inviteModal">
+      <div class="invite-card">
+        <div class="invite-title" id="inviteTitle">快捷邀请员工</div>
+        <div class="qr-box">
+          <svg width="120" height="120" viewBox="0 0 24 24" fill="none">
+            <path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h2v2h-2zM19 15h2v2h-2zM15 19h2v2h-2zM19 19h2v2h-2z" fill="#111827"/>
+          </svg>
+        </div>
+        <button class="invite-close-btn" onclick="closeFastInvite()">完成</button>
       </div>
     </div>
   </div>
 
   <script>
-    function togglePopover(e, id) {
-      e.stopPropagation();
-      const popover = document.getElementById(id);
-      const isShow = popover.classList.contains('show');
-      document.querySelectorAll('.more-popover').forEach(p => p.classList.remove('show'));
-      if (!isShow) {
-        popover.classList.add('show');
-      }
+    function openFastInvite(pName) {
+      document.getElementById('inviteTitle').innerText = '快捷邀请 · ' + pName;
+      document.getElementById('inviteModal').style.display = 'flex';
     }
-    document.addEventListener('click', () => {
-      document.querySelectorAll('.more-popover').forEach(p => p.classList.remove('show'));
-    });
-
-    function openInviteModal(projectName) {
-      document.getElementById('modalProjectName').textContent = projectName || '项目';
-      document.getElementById('inviteModal').classList.add('active');
-      document.querySelectorAll('.more-popover').forEach(p => p.classList.remove('show'));
-    }
-
-    function closeInviteModal() {
-      document.getElementById('inviteModal').classList.remove('active');
+    function closeFastInvite() {
+      document.getElementById('inviteModal').style.display = 'none';
     }
   </script>
 
-  <!-- 快捷邀请弹窗 (Modal) -->
-  <div id="inviteModal" class="invite-modal-overlay" onclick="closeInviteModal(event)">
-    <div class="invite-modal-card" onclick="event.stopPropagation()">
-      <div class="invite-modal-title">快捷邀请</div>
-      <div class="invite-modal-project" id="modalProjectName">发薪-02</div>
-      <div class="invite-qrcode-box">
-        <svg width="140" height="140" viewBox="0 0 100 100" fill="#202536">
-          <rect x="10" y="10" width="25" height="25" fill="#202536"/>
-          <rect x="15" y="15" width="15" height="15" fill="#FFFFFF"/>
-          <rect x="18" y="18" width="9" height="9" fill="#202536"/>
-          <rect x="65" y="10" width="25" height="25" fill="#202536"/>
-          <rect x="70" y="15" width="15" height="15" fill="#FFFFFF"/>
-          <rect x="73" y="18" width="9" height="9" fill="#202536"/>
-          <rect x="10" y="65" width="25" height="25" fill="#202536"/>
-          <rect x="15" y="70" width="15" height="15" fill="#FFFFFF"/>
-          <rect x="18" y="73" width="9" height="9" fill="#202536"/>
-          <rect x="42" y="15" width="6" height="16"/>
-          <rect x="52" y="25" width="6" height="10"/>
-          <rect x="15" y="42" width="16" height="6"/>
-          <rect x="25" y="52" width="10" height="6"/>
-          <rect x="42" y="42" width="16" height="16"/>
-          <rect x="65" y="42" width="8" height="18"/>
-          <rect x="78" y="42" width="12" height="6"/>
-          <rect x="80" y="55" width="10" height="15"/>
-          <rect x="42" y="65" width="15" height="8"/>
-          <rect x="65" y="70" width="10" height="18"/>
-          <rect x="80" y="75" width="10" height="15"/>
-          <rect x="42" y="80" width="15" height="10"/>
-        </svg>
+<script id="prototypeAnnotationData" type="application/json">
+{
+  "prototypeId": "shouye",
+  "version": 6,
+  "review": {
+    "designWidth": 375,
+    "designHeight": 812
+  },
+  "globalMeta": {
+    "name": "发薪管理首页 · 原型说明",
+    "version": "V1.0",
+    "updatedAt": "2026-10-22"
+  },
+  "globalSections": [
+    {
+      "id": "sec_overview",
+      "title": "1. 业务背景与产品定位",
+      "content": "<p>让企业在一个项目里一站式完成「签电子合同 → 投保 → 发薪」，打通发薪专户与电子签、保险能力，免去多产品切换。</p>",
+      "format": "html"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-mvj6vl6k-1-ad5fc2defe",
+      "scope": "page:shouye",
+      "target": "[data-proto-scope=\"page:shouye\"] div.project-card:nth-of-type(1) > div.card-action-bar-4 > button.btn-step-gray:nth-of-type(1)",
+      "x": 0.5,
+      "y": 0.729404525308298,
+      "title": "签合同业务说明",
+      "content": "<p>未选定合同模板则跳转至创建合同，已创建合同则跳转至详情进行操作。</p>",
+      "format": "html",
+      "type": "original",
+      "typeLabel": "原有",
+      "badge": "原有"
+    },
+    {
+      "id": "note-mvjalre4-1-00fb722e41",
+      "scope": "page:shouye",
+      "target": "[data-proto-scope=\"page:shouye\"] div.project-card:nth-of-type(1)",
+      "x": 0.39295939470492325,
+      "y": 0.9648655421703188,
+      "title": "去投保说明",
+      "content": "<p>未选定投保方案则跳转至创建投保，已创建则跳转至详情进行操作。</p>",
+      "format": "html",
+      "type": "original",
+      "typeLabel": "原有",
+      "badge": "原有"
+    }
+  ]
+}
+</script>
+
+<div class="protoWeb-root" id="prototypeAnnotationRoot" popover="manual" aria-label="原型标注层">
+  <div class="protoWeb-review-workspace" id="protoWebReviewWorkspace" aria-label="三栏审阅模式">
+    <aside class="protoWeb-review-side protoWeb-review-left" aria-label="原型说明">
+      <header class="protoWeb-review-side-header">
+        <span class="protoWeb-review-side-title">原型说明</span>
+        <button class="protoWeb-review-icon-button" id="protoWebReviewCollapseLeft" type="button" title="收起原型说明" aria-label="收起原型说明">‹</button>
+      </header>
+      <div class="protoWeb-review-docs-main">
+        <nav class="protoWeb-review-docs-nav" id="protoWebReviewDocsNav" aria-label="原型说明目录"></nav>
+        <article class="protoWeb-review-docs-body protoWeb-content" id="protoWebReviewDocsBody"></article>
       </div>
-      <div class="invite-tip-text">微信扫描上方二维码，即刻填写报名加入项目</div>
-      <div class="invite-btns-bar">
-        <button class="invite-share-btn" onclick="closeInviteModal()">关闭</button>
-        <button class="invite-confirm-btn" onclick="closeInviteModal()">完成</button>
+      <div class="protoWeb-review-rail">
+        <button class="protoWeb-review-icon-button" id="protoWebReviewExpandLeft" type="button" title="展开原型说明" aria-label="展开原型说明">›</button>
+      </div>
+    </aside>
+    <div class="protoWeb-review-splitter protoWeb-review-splitter-left" id="protoWebReviewSplitterLeft" role="separator" aria-label="调整原型说明宽度" aria-orientation="vertical" title="拖拽调整原型说明宽度"></div>
+    <section class="protoWeb-review-center">
+      <header class="protoWeb-review-toolbar">
+        <span class="protoWeb-review-scope" id="protoWebReviewScope">当前页面</span>
+        <div class="protoWeb-review-mode-group" aria-label="标注浏览模式">
+          <button id="protoWebReviewModeFloat" type="button">浮动标注</button>
+          <button class="is-active" id="protoWebReviewModeColumns" type="button" aria-current="true">三栏审阅</button>
+        </div>
+      </header>
+      <div class="protoWeb-review-canvas" id="protoWebReviewCanvas">
+        <div class="protoWeb-review-prototype-frame" id="protoWebReviewPrototypeFrame"></div>
+      </div>
+    </section>
+    <div class="protoWeb-review-splitter protoWeb-review-splitter-right" id="protoWebReviewSplitterRight" role="separator" aria-label="调整当前标注宽度" aria-orientation="vertical" title="拖拽调整当前标注宽度"></div>
+    <aside class="protoWeb-review-side protoWeb-review-right" aria-label="当前标注">
+      <header class="protoWeb-review-side-header">
+        <button class="protoWeb-review-icon-button" id="protoWebReviewCollapseRight" type="button" title="收起当前标注" aria-label="收起当前标注">›</button>
+        <span class="protoWeb-review-side-title">当前标注</span>
+      </header>
+      <div class="protoWeb-review-note-tools">
+        <span id="protoWebReviewNoteCount">0 条</span>
+        <label class="protoWeb-review-toggle-wrap">显示圆点
+          <button class="protoWeb-review-toggle" id="protoWebReviewNoteToggle" type="button" role="switch" aria-checked="false" aria-label="显示页面标注"></button>
+        </label>
+      </div>
+      <div class="protoWeb-review-note-list" id="protoWebReviewNoteList"></div>
+      <div class="protoWeb-review-rail">
+        <button class="protoWeb-review-icon-button" id="protoWebReviewExpandRight" type="button" title="展开当前标注" aria-label="展开当前标注">‹</button>
+      </div>
+    </aside>
+  </div>
+  <div class="protoWeb-marker-layer" id="protoWebMarkerLayer"></div>
+  <section class="protoWeb-panel" id="protoWebPanel" role="dialog" aria-label="原型标注详情">
+    <header class="protoWeb-panel-header" id="protoWebPanelHeader">
+      <span class="protoWeb-panel-heading" id="protoWebPanelHeading">标注详情</span>
+      <span class="protoWeb-panel-tools">
+        <button class="protoWeb-icon-button" id="protoWebCollapse" type="button" title="收起标注窗口" aria-label="收起标注窗口">−</button>
+        <button class="protoWeb-icon-button" id="protoWebClose" type="button" title="关闭标注详情" aria-label="关闭标注详情">×</button>
+      </span>
+    </header>
+    <div class="protoWeb-panel-body">
+      <article class="protoWeb-content" id="protoWebContent"></article>
+    </div>
+    <footer class="protoWeb-panel-footer">
+      <button class="protoWeb-nav-button" id="protoWebPrev" type="button">上一条</button>
+      <span class="protoWeb-page-count" id="protoWebPageCount">1 / 1</span>
+      <button class="protoWeb-nav-button" id="protoWebNext" type="button">下一条</button>
+    </footer>
+    <span class="protoWeb-resize-handle" data-direction="n" aria-hidden="true"></span>
+    <span class="protoWeb-resize-handle" data-direction="ne" aria-hidden="true"></span>
+    <span class="protoWeb-resize-handle" data-direction="e" aria-hidden="true"></span>
+    <span class="protoWeb-resize-handle" data-direction="se" aria-hidden="true"></span>
+    <span class="protoWeb-resize-handle" data-direction="s" aria-hidden="true"></span>
+    <span class="protoWeb-resize-handle" data-direction="sw" aria-hidden="true"></span>
+    <span class="protoWeb-resize-handle" data-direction="w" aria-hidden="true"></span>
+    <span class="protoWeb-resize-handle" data-direction="nw" aria-hidden="true"></span>
+  </section>
+  <div class="protoWeb-menu" id="protoWebMenu" role="menu" aria-label="原型标注菜单">
+    <div class="protoWeb-menu-mode">
+      <span class="protoWeb-menu-mode-label">浏览模式</span>
+      <div class="protoWeb-menu-mode-group" aria-label="选择标注浏览模式">
+        <button class="is-active" id="protoWebMenuModeFloat" type="button" aria-current="true">浮动标注</button>
+        <button id="protoWebOpenReview" type="button">三栏审阅</button>
       </div>
     </div>
+    <div class="protoWeb-menu-row">
+      <span class="protoWeb-menu-copy"><strong>显示标注</strong><small id="protoWebMenuCount">当前页面 0 条</small></span>
+      <button class="protoWeb-toggle" id="protoWebPageToggle" type="button" role="switch" aria-checked="false" aria-label="显示页面标注"></button>
+    </div>
+    <button class="protoWeb-menu-link" id="protoWebOpenDocs" type="button" role="menuitem">
+      <span class="protoWeb-menu-copy"><strong>原型说明</strong><small>查看跨页面需求与整体说明</small></span>
+      <span class="protoWeb-menu-arrow" aria-hidden="true">›</span>
+    </button>
   </div>
+  <div class="protoWeb-docs-backdrop" id="protoWebDocsBackdrop">
+    <section class="protoWeb-docs" id="protoWebDocs" role="dialog" aria-modal="true" aria-labelledby="protoWebDocsTitle">
+      <header class="protoWeb-docs-header">
+        <span class="protoWeb-docs-title" id="protoWebDocsTitle">原型说明</span>
+        <span class="protoWeb-docs-meta" id="protoWebDocsMeta"></span>
+        <button class="protoWeb-icon-button" id="protoWebDocsClose" type="button" title="关闭原型说明" aria-label="关闭原型说明">×</button>
+      </header>
+      <div class="protoWeb-docs-main">
+        <nav class="protoWeb-docs-nav" id="protoWebDocsNav" aria-label="原型说明目录"></nav>
+        <div class="protoWeb-docs-body" id="protoWebDocsBody">
+          <article class="protoWeb-content protoWeb-docs-content" id="protoWebDocsContent"></article>
+        </div>
+      </div>
+    </section>
+  </div>
+  <button class="protoWeb-launcher" id="protoWebLauncher" type="button" aria-haspopup="menu" aria-expanded="false" title="打开原型标注菜单">
+    <span class="protoWeb-launcher-symbol">注</span>
+    <span class="protoWeb-launcher-count" id="protoWebLauncherCount">0</span>
+  </button>
+</div>
 
+<script id="protoWebWebAnnotationRuntime">
+(() => {
+  const dataNode = document.getElementById("prototypeAnnotationData");
+  const root = document.getElementById("prototypeAnnotationRoot");
+  const markerLayer = document.getElementById("protoWebMarkerLayer");
+  const launcher = document.getElementById("protoWebLauncher");
+  const launcherCount = document.getElementById("protoWebLauncherCount");
+  const menu = document.getElementById("protoWebMenu");
+  const menuCount = document.getElementById("protoWebMenuCount");
+  const pageToggle = document.getElementById("protoWebPageToggle");
+  const openDocsButton = document.getElementById("protoWebOpenDocs");
+  const panel = document.getElementById("protoWebPanel");
+  const panelHeader = document.getElementById("protoWebPanelHeader");
+  const panelHeading = document.getElementById("protoWebPanelHeading");
+  const content = document.getElementById("protoWebContent");
+  const pageCount = document.getElementById("protoWebPageCount");
+  const prevButton = document.getElementById("protoWebPrev");
+  const nextButton = document.getElementById("protoWebNext");
+  const collapseButton = document.getElementById("protoWebCollapse");
+  const closeButton = document.getElementById("protoWebClose");
+  const docsBackdrop = document.getElementById("protoWebDocsBackdrop");
+  const docsNav = document.getElementById("protoWebDocsNav");
+  const docsBody = document.getElementById("protoWebDocsBody");
+  const docsContent = document.getElementById("protoWebDocsContent");
+  const docsMeta = document.getElementById("protoWebDocsMeta");
+  const docsCloseButton = document.getElementById("protoWebDocsClose");
+  const menuFloatModeButton = document.getElementById("protoWebMenuModeFloat");
+  const openReviewButton = document.getElementById("protoWebOpenReview");
+  const reviewWorkspace = document.getElementById("protoWebReviewWorkspace");
+  const reviewCanvas = document.getElementById("protoWebReviewCanvas");
+  const reviewPrototypeFrame = document.getElementById("protoWebReviewPrototypeFrame");
+  const reviewLeftSplitter = document.getElementById("protoWebReviewSplitterLeft");
+  const reviewRightSplitter = document.getElementById("protoWebReviewSplitterRight");
+  const reviewFloatModeButton = document.getElementById("protoWebReviewModeFloat");
+  const reviewColumnsModeButton = document.getElementById("protoWebReviewModeColumns");
+  const reviewCollapseLeftButton = document.getElementById("protoWebReviewCollapseLeft");
+  const reviewExpandLeftButton = document.getElementById("protoWebReviewExpandLeft");
+  const reviewCollapseRightButton = document.getElementById("protoWebReviewCollapseRight");
+  const reviewExpandRightButton = document.getElementById("protoWebReviewExpandRight");
+  const reviewDocsNav = document.getElementById("protoWebReviewDocsNav");
+  const reviewDocsBody = document.getElementById("protoWebReviewDocsBody");
+  const reviewNoteList = document.getElementById("protoWebReviewNoteList");
+  const reviewNoteCount = document.getElementById("protoWebReviewNoteCount");
+  const reviewNoteToggle = document.getElementById("protoWebReviewNoteToggle");
+  const reviewScopeLabel = document.getElementById("protoWebReviewScope");
+
+  if (!dataNode || !root) return;
+
+  let annotationData;
+  try {
+    annotationData = JSON.parse(dataNode.textContent);
+  } catch (error) {
+    console.error("原型标注数据解析失败", error);
+    root.hidden = true;
+    return;
+  }
+
+  const annotations = Array.isArray(annotationData.annotations) ? annotationData.annotations : [];
+  const globalSections = Array.isArray(annotationData.globalSections) ? annotationData.globalSections : [];
+  const storageKey = `protoWeb-ui:${annotationData.prototypeId || "prototype"}`;
+  const reviewStorageKey = `protoWeb-review:${annotationData.prototypeId || "prototype"}`;
+  const reviewOptions = annotationData.review && typeof annotationData.review === "object" ? annotationData.review : {};
+  const reviewDesignWidth = Number(reviewOptions.designWidth) > 0 ? Number(reviewOptions.designWidth) : 375;
+    const reviewDesignHeight = Number(reviewOptions.designHeight) > 0 ? Number(reviewOptions.designHeight) : 812;
+  const reviewCanvasMargin = 16;
+  const reviewPlacementAnchors = new Map();
+  let enabled = false;
+  let currentNoteId = "";
+  let currentPanelNotes = [];
+  let currentPanelScope = "";
+  let panelScopeMismatchSince = 0;
+  let currentGlobalSectionId = globalSections[0]?.id || "";
+  let layoutFrame = 0;
+  let contextRefreshFrame = 0;
+  let contextRefreshUntil = 0;
+  let saveTimer = 0;
+  let mermaidRenderCounter = 0;
+  let restoredPanelSize = { width: 440, height: 460 };
+  let annotationAuditTimer = 0;
+  let reviewLayoutFrame = 0;
+  let reviewSyncFrame = 0;
+  let reviewRenderVersion = 0;
+  let reviewActiveNoteId = "";
+  let reviewContextSignature = "";
+  let reviewPendingSignature = "";
+  let launcherPlacementBeforeReview = null;
+  let implicitOverlayContext = null;
+  const rootFallbackBaseZIndex = 2147483000;
+  const rootFallbackMaxZIndex = 2147483646;
+
+  openDocsButton.hidden = globalSections.length === 0;
+
+  if (window.mermaid) {
+    window.mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "base",
+      themeVariables: {
+        primaryColor: "#F0F9FF",
+        primaryTextColor: "#223355",
+        primaryBorderColor: "#3388FF",
+        lineColor: "#6B7A99",
+        secondaryColor: "#E8F4FF",
+        tertiaryColor: "#F5F7FA",
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif',
+        fontSize: "14px"
+      },
+      flowchart: { curve: "basis", htmlLabels: true }
+    });
+  }
+
+  function readPreferences() {
+    try {
+      return JSON.parse(localStorage.getItem(storageKey) || "{}") || {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function savePreferences() {
+    if (isReviewMode() && reviewPrototypeFrame && reviewPrototypeFrame.children.length > 0) return;
+    clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(() => {
+      const launcherRect = launcher.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
+      const preferences = {
+        launcher: { left: launcherRect.left, top: launcherRect.top },
+        panel: {
+          left: panelRect.left,
+          top: panelRect.top,
+          width: panel.classList.contains("is-collapsed") ? restoredPanelSize.width : panelRect.width,
+          height: panel.classList.contains("is-collapsed") ? restoredPanelSize.height : panelRect.height
+        }
+      };
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(preferences));
+      } catch (error) {}
+    }, 120);
+  }
+
+  function restorePreferences() {
+    const preferences = readPreferences();
+    if (preferences.launcher) {
+      launcher.style.left = `${preferences.launcher.left}px`;
+      launcher.style.top = `${preferences.launcher.top}px`;
+      launcher.style.right = "auto";
+      launcher.style.bottom = "auto";
+    }
+    if (preferences.panel) {
+      const width = Math.max(320, Number(preferences.panel.width) || 440);
+      const height = Math.max(220, Number(preferences.panel.height) || 460);
+      restoredPanelSize = { width, height };
+      panel.style.left = `${Number(preferences.panel.left) || Math.max(24, window.innerWidth - width - 88)}px`;
+      panel.style.top = `${Number(preferences.panel.top) || 92}px`;
+      panel.style.width = `${width}px`;
+      panel.style.height = `${height}px`;
+    } else {
+      panel.style.left = `${Math.max(24, window.innerWidth - 528)}px`;
+      panel.style.top = "92px";
+    }
+  }
+
+  function isElementVisible(element, requireViewport = false) {
+    if (!element) return false;
+    const style = getComputedStyle(element);
+    if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return false;
+    if (element.hidden || element.getAttribute("aria-hidden") === "true") return false;
+    const rect = element.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return false;
+    if (!requireViewport) return true;
+    return rect.right > 0 && rect.bottom > 0 && rect.left < window.innerWidth && rect.top < window.innerHeight;
+  }
+
+  function isScopeCandidateVisible(item) {
+    if (!item?.node || !isElementVisible(item.node, true)) return false;
+    if (item.layer > 0 || !item.scope.startsWith("page:")) {
+      const style = getComputedStyle(item.node);
+      if (style.pointerEvents === "none") return false;
+    }
+    return true;
+  }
+
+  function rememberImplicitOverlayScope(target) {
+    const trigger = target?.closest?.("[data-proto-route],[data-drawer],[data-modal],[data-dialog]");
+    if (!trigger) return;
+    let scope = trigger.dataset.protoRoute || "";
+    let kind = "";
+    if (scope.includes(":")) {
+      kind = scope.split(":", 1)[0];
+    } else if (trigger.dataset.drawer) {
+      kind = "drawer";
+      scope = `drawer:${trigger.dataset.drawer}`;
+    } else if (trigger.dataset.modal) {
+      kind = "modal";
+      scope = `modal:${trigger.dataset.modal}`;
+    } else if (trigger.dataset.dialog) {
+      kind = "modal";
+      scope = `modal:${trigger.dataset.dialog}`;
+    }
+    if (!scope || !kind) return;
+    implicitOverlayContext = { scope, kind };
+    scheduleContextRefresh(true);
+  }
+
+  function getImplicitOverlayContext() {
+    if (!implicitOverlayContext) return null;
+    const selectors = implicitOverlayContext.kind === "drawer"
+      ? ".drawer-overlay.open,.drawer.open,[data-drawer-overlay].open,[data-drawer-overlay][aria-hidden='false']"
+      : ".modal-overlay.open,.dialog-overlay.open,.modal.open,.dialog.open,[role='dialog'][aria-modal='true']";
+    const overlays = Array.from(document.querySelectorAll(selectors))
+      .filter(node => isElementVisible(node, true));
+    if (!overlays.length) return null;
+    overlays.sort((a, b) => {
+      const zA = Number.parseInt(getComputedStyle(a).zIndex, 10) || 0;
+      const zB = Number.parseInt(getComputedStyle(b).zIndex, 10) || 0;
+      return zA - zB || (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
+    });
+    const overlay = overlays[overlays.length - 1];
+    const panelSelector = implicitOverlayContext.kind === "drawer"
+      ? ".drawer,[role='dialog'],aside"
+      : "[role='dialog'],.modal,.dialog";
+    const panel = Array.from(overlay.querySelectorAll(panelSelector)).find(node => isElementVisible(node, true));
+    return {
+      node: panel || overlay,
+      scope: implicitOverlayContext.scope,
+      layer: implicitOverlayContext.kind === "drawer" ? 20 : 30,
+      implicit: true
+    };
+  }
+
+  function isElementRenderable(element, scopeNode) {
+    if (!element || !element.isConnected) return false;
+    let current = element;
+    while (current && current.nodeType === 1) {
+      const style = getComputedStyle(current);
+      if (current.hidden || current.getAttribute("aria-hidden") === "true") return false;
+      if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return false;
+      if (current === scopeNode || current === document.body) break;
+      current = current.parentElement;
+    }
+    const rect = element.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  }
+
+  function isElementUndersized(element) {
+    const rect = element.getBoundingClientRect();
+    return rect.width < 4 || rect.height < 4;
+  }
+
+  function getClippedTargetRect(target) {
+    if (!target) return null;
+    const original = target.getBoundingClientRect();
+    let left = Math.max(0, original.left);
+    let top = Math.max(0, original.top);
+    let right = Math.min(window.innerWidth, original.right);
+    let bottom = Math.min(window.innerHeight, original.bottom);
+    let parent = target.parentElement;
+
+    while (parent && parent !== document.body) {
+      const style = getComputedStyle(parent);
+      if (parent === reviewPrototypeFrame || /(auto|scroll|hidden|clip)/.test(`${style.overflow}${style.overflowX}${style.overflowY}`)) {
+        const rect = parent.getBoundingClientRect();
+        left = Math.max(left, rect.left);
+        top = Math.max(top, rect.top);
+        right = Math.min(right, rect.right);
+        bottom = Math.min(bottom, rect.bottom);
+      }
+      parent = parent.parentElement;
+    }
+
+    if (right <= left || bottom <= top) return null;
+    return { original, visible: { left, top, right, bottom } };
+  }
+
+  function isPopoverOpen() {
+    try {
+      return root.matches(":popover-open");
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function inspectHostLayers() {
+    let maxZIndex = 0;
+    let maxElement = null;
+    document.body.querySelectorAll("*").forEach(element => {
+      if (element === root || root.contains(element)) return;
+      const style = getComputedStyle(element);
+      if (style.display === "none" || style.visibility === "hidden") return;
+      const zIndex = Number.parseInt(style.zIndex, 10);
+      if (!Number.isFinite(zIndex) || zIndex <= maxZIndex) return;
+      maxZIndex = zIndex;
+      maxElement = element;
+    });
+    return {
+      maxZIndex,
+      maxElement: maxElement ? `${maxElement.tagName.toLowerCase()}${maxElement.id ? `#${maxElement.id}` : ""}${maxElement.classList.length ? `.${Array.from(maxElement.classList).join(".")}` : ""}` : ""
+    };
+  }
+
+  function ensureAnnotationLayer(reorderTopLayer = false) {
+    const supportsPopover = typeof root.showPopover === "function" && typeof root.hidePopover === "function";
+    if (supportsPopover) {
+      try {
+        if (reorderTopLayer && isPopoverOpen()) root.hidePopover();
+        if (!isPopoverOpen()) root.showPopover();
+        root.dataset.protoWebLayerMode = "top-layer";
+        if (root.style.zIndex !== String(rootFallbackMaxZIndex)) root.style.zIndex = String(rootFallbackMaxZIndex);
+        return;
+      } catch (error) {
+        console.warn("标注层进入浏览器 top layer 失败，已切换到 z-index 兜底", error);
+      }
+    }
+
+    root.removeAttribute("popover");
+    const audit = inspectHostLayers();
+    const nextZIndex = Math.min(rootFallbackMaxZIndex, Math.max(rootFallbackBaseZIndex, audit.maxZIndex + 100));
+    if (root.style.zIndex !== String(nextZIndex)) root.style.zIndex = String(nextZIndex);
+    root.dataset.protoWebLayerMode = "z-index";
+    if (audit.maxZIndex >= rootFallbackMaxZIndex) {
+      console.error("业务界面已占用浏览器最大 z-index，无法保证标注层始终位于最上层", audit);
+    }
+  }
+
+  function getLauncherHitAudit() {
+    const rect = launcher.getBoundingClientRect();
+    const x = Math.min(window.innerWidth - 1, Math.max(0, rect.left + rect.width / 2));
+    const y = Math.min(window.innerHeight - 1, Math.max(0, rect.top + rect.height / 2));
+    const hit = document.elementFromPoint(x, y);
+    return {
+      clickable: Boolean(hit && (hit === launcher || launcher.contains(hit))),
+      hitElement: hit ? `${hit.tagName.toLowerCase()}${hit.id ? `#${hit.id}` : ""}` : "",
+      point: { x, y }
+    };
+  }
+
+  function scheduleAnnotationAudit() {
+    window.clearTimeout(annotationAuditTimer);
+    annotationAuditTimer = window.setTimeout(() => {
+      ensureAnnotationLayer(false);
+      const hitAudit = getLauncherHitAudit();
+      root.dataset.protoWebLauncherClickable = String(hitAudit.clickable);
+      if (!hitAudit.clickable) {
+        ensureAnnotationLayer(true);
+        requestAnimationFrame(() => {
+          const repairedAudit = getLauncherHitAudit();
+          root.dataset.protoWebLauncherClickable = String(repairedAudit.clickable);
+          if (!repairedAudit.clickable) console.error("原型标注入口被业务界面遮挡", repairedAudit);
+        });
+      }
+    }, 40);
+  }
+
+  function getScopeContext() {
+    const candidates = Array.from(document.querySelectorAll("[data-proto-scope]"))
+      .map((node, index) => ({
+        node,
+        index,
+        scope: node.dataset.protoScope,
+        layer: Number(node.dataset.protoLayer) || 0
+      }))
+      .filter(item => item.scope && isScopeCandidateVisible(item));
+
+    const explicitOverlays = candidates.filter(item => item.layer > 0 || !item.scope.startsWith("page:"));
+    if (explicitOverlays.length) {
+      explicitOverlays.sort((a, b) => a.layer - b.layer || a.index - b.index);
+      return explicitOverlays[explicitOverlays.length - 1];
+    }
+
+    const implicitOverlay = getImplicitOverlayContext();
+    if (implicitOverlay) return implicitOverlay;
+
+    if (candidates.length) {
+      candidates.sort((a, b) => a.layer - b.layer || a.index - b.index);
+      return candidates[candidates.length - 1];
+    }
+
+    const activePage = document.querySelector(".page.active[id]");
+    if (activePage) {
+      return { node: activePage, scope: `page:${activePage.id.replace(/^page-/, "")}`, layer: 0 };
+    }
+
+    return { node: document.body, scope: document.body.dataset.protoScope || "page:default", layer: 0 };
+  }
+
+  function getScopeNotes(scope = getScopeContext().scope) {
+    return annotations.filter(note => note.scope === scope || (scope.startsWith("page:") && note.scope === "page:*"));
+  }
+
+  function findTarget(note, scopeNode) {
+    if (!note.target) return null;
+    try {
+      if (scopeNode?.matches?.(note.target)) return scopeNode;
+      return scopeNode?.querySelector?.(note.target) || document.querySelector(note.target);
+    } catch (error) {
+      console.warn(`标注 ${note.id || note.title || "未命名"} 的 target 选择器无效`, error);
+      return null;
+    }
+  }
+
+  function getRenderableScopeNotes(context = getScopeContext()) {
+    return getScopeNotes(context.scope).filter(note => isElementRenderable(findTarget(note, context.node), context.node));
+  }
+
+  function renderMarkers() {
+    const context = getScopeContext();
+    const notes = getRenderableScopeNotes(context);
+    const existingMarkers = new Map(Array.from(markerLayer.querySelectorAll(".protoWeb-marker"))
+      .map(marker => [marker.dataset.annotationId, marker]));
+    const desiredIds = new Set();
+    launcherCount.textContent = String(notes.length);
+    menuCount.textContent = `当前页面 ${notes.length} 条`;
+    launcher.title = `打开原型标注菜单（当前页面 ${notes.length} 条）`;
+    pageToggle.setAttribute("aria-checked", String(enabled));
+    pageToggle.setAttribute("aria-label", enabled ? "隐藏页面标注" : "显示页面标注");
+    if (!enabled || docsBackdrop.classList.contains("is-open")) {
+      existingMarkers.forEach(marker => marker.remove());
+      return;
+    }
+
+    notes.forEach((note, index) => {
+      const target = findTarget(note, context.node);
+      if (!isElementVisible(target, true)) return;
+      const clipped = getClippedTargetRect(target);
+      if (!clipped) return;
+      const xValue = Number(note.x);
+      const yValue = Number(note.y);
+      const x = Number.isFinite(xValue) ? Math.min(1, Math.max(0, xValue)) : 0.5;
+      const y = Number.isFinite(yValue) ? Math.min(1, Math.max(0, yValue)) : 0.5;
+      const left = Math.max(clipped.visible.left, Math.min(clipped.visible.right, clipped.original.left + clipped.original.width * x));
+      const top = Math.max(clipped.visible.top, Math.min(clipped.visible.bottom, clipped.original.top + clipped.original.height * y));
+      desiredIds.add(note.id);
+      let marker = existingMarkers.get(note.id);
+      if (!marker) {
+        marker = document.createElement("button");
+        marker.type = "button";
+        marker.className = "protoWeb-marker";
+        marker.dataset.annotationId = note.id;
+        marker.addEventListener("click", event => {
+          event.stopPropagation();
+          const boundNote = marker.__protoWebNote;
+          if (!boundNote) return;
+          if (isReviewMode()) {
+            setReviewActiveNote(boundNote.id);
+            scrollReviewCardIntoView(boundNote.id);
+          } else {
+            openNote(boundNote, marker.__protoWebScopeNotes, marker.__protoWebScope);
+          }
+        });
+      }
+      marker.__protoWebNote = note;
+      marker.__protoWebScopeNotes = notes;
+      marker.__protoWebScope = context.scope;
+      marker.classList.toggle("is-active", note.id === currentNoteId);
+      marker.textContent = String(index + 1);
+      marker.style.left = `${left}px`;
+      marker.style.top = `${top}px`;
+      marker.title = note.title;
+      marker.setAttribute("aria-label", `标注 ${index + 1}：${note.title}`);
+      const currentAtIndex = markerLayer.children[index];
+      if (currentAtIndex !== marker) markerLayer.insertBefore(marker, currentAtIndex || null);
+    });
+    existingMarkers.forEach((marker, id) => {
+      if (!desiredIds.has(id)) marker.remove();
+    });
+  }
+
+  function scheduleMarkerLayout() {
+    if (layoutFrame) return;
+    layoutFrame = requestAnimationFrame(() => {
+      layoutFrame = 0;
+      renderMarkers();
+    });
+  }
+
+  function clampPanel() {
+    if (!panel.classList.contains("is-open")) return;
+    const rect = panel.getBoundingClientRect();
+    const margin = 12;
+    const left = Math.min(Math.max(margin, rect.left), Math.max(margin, window.innerWidth - rect.width - margin));
+    const top = Math.min(Math.max(margin, rect.top), Math.max(margin, window.innerHeight - rect.height - margin));
+    panel.style.left = `${left}px`;
+    panel.style.top = `${top}px`;
+  }
+
+  function clampLauncher() {
+    if (isReviewMode() || !isElementVisible(launcher)) return;
+    const rect = launcher.getBoundingClientRect();
+    if (!launcher.style.left) return;
+    launcher.style.left = `${Math.min(Math.max(8, rect.left), window.innerWidth - rect.width - 8)}px`;
+    launcher.style.top = `${Math.min(Math.max(8, rect.top), window.innerHeight - rect.height - 8)}px`;
+  }
+
+  function positionMenu() {
+    if (!menu.classList.contains("is-open")) return;
+    const launcherRect = launcher.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    const margin = 8;
+    const left = Math.min(Math.max(margin, launcherRect.right - menuRect.width), window.innerWidth - menuRect.width - margin);
+    let top = launcherRect.top - menuRect.height - 10;
+    if (top < margin) top = launcherRect.bottom + 10;
+    top = Math.min(top, window.innerHeight - menuRect.height - margin);
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
+  }
+
+  function closeMenu() {
+    menu.classList.remove("is-open");
+    launcher.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleMenu() {
+    const willOpen = !menu.classList.contains("is-open");
+    menu.classList.toggle("is-open", willOpen);
+    launcher.setAttribute("aria-expanded", String(willOpen));
+    if (willOpen) positionMenu();
+  }
+
+  async function renderMermaidBlocks(renderRoot) {
+    if (!window.mermaid) return;
+    const blocks = Array.from(renderRoot.querySelectorAll("pre code.language-mermaid"));
+    for (const block of blocks) {
+      const pre = block.closest("pre");
+      const container = document.createElement("div");
+      container.className = "protoWeb-mermaid";
+      try {
+        const result = await window.mermaid.render(`protoWeb-mermaid-${++mermaidRenderCounter}`, block.textContent.trim());
+        container.innerHTML = result.svg;
+        if (result.bindFunctions) result.bindFunctions(container);
+        pre.replaceWith(container);
+      } catch (error) {
+        pre.classList.add("protoWeb-mermaid-error");
+        console.error("标注流程图渲染失败", error);
+      }
+    }
+  }
+
+  async function renderRichContent(renderRoot, item) {
+    if (item.format === "html" || !window.marked) {
+      renderRoot.innerHTML = item.content || "";
+    } else {
+      renderRoot.innerHTML = window.marked.parse(item.content || "", { gfm: true, breaks: true });
+    }
+    await renderMermaidBlocks(renderRoot);
+  }
+
+  async function renderPanel(note, notes = currentPanelNotes) {
+    const index = notes.findIndex(item => item.id === note.id);
+    panelHeading.textContent = note.title;
+    await renderRichContent(content, note);
+    pageCount.textContent = `${index + 1} / ${notes.length}`;
+    prevButton.disabled = index <= 0;
+    nextButton.disabled = index < 0 || index >= notes.length - 1;
+  }
+
+  function openNote(noteOrId, scopeNotes = null, scope = "") {
+    const note = typeof noteOrId === "object"
+      ? noteOrId
+      : annotations.find(item => item.id === noteOrId);
+    if (!note) {
+      console.warn("未找到要打开的标注", noteOrId);
+      return;
+    }
+    const context = getScopeContext();
+    const fallbackNotes = getRenderableScopeNotes(context);
+    const candidateNotes = Array.isArray(scopeNotes) && scopeNotes.some(item => item.id === note.id)
+      ? scopeNotes
+      : fallbackNotes;
+    currentPanelNotes = candidateNotes.some(item => item.id === note.id) ? candidateNotes : [note];
+    currentPanelScope = scope || context.scope;
+    panelScopeMismatchSince = 0;
+    currentNoteId = note.id;
+    panel.classList.add("is-open");
+    panel.classList.remove("is-collapsed");
+    collapseButton.textContent = "−";
+    collapseButton.title = "收起标注窗口";
+    renderPanel(note, currentPanelNotes).catch(error => {
+      console.error("标注内容渲染失败", error);
+      content.innerHTML = "<p>标注内容暂时无法显示。</p>";
+    });
+    requestAnimationFrame(() => {
+      clampPanel();
+      renderMarkers();
+    });
+  }
+
+  function closePanel() {
+    currentNoteId = "";
+    currentPanelNotes = [];
+    currentPanelScope = "";
+    panelScopeMismatchSince = 0;
+    panel.classList.remove("is-open", "is-collapsed");
+    collapseButton.textContent = "−";
+    renderMarkers();
+  }
+
+  function movePanel(step) {
+    const notes = currentPanelNotes.length ? currentPanelNotes : getRenderableScopeNotes();
+    const index = notes.findIndex(note => note.id === currentNoteId);
+    const targetIndex = index + step;
+    if (targetIndex >= 0 && targetIndex < notes.length) openNote(notes[targetIndex], notes, currentPanelScope);
+  }
+
+  function toggleAnnotations() {
+    enabled = !enabled;
+    launcher.classList.toggle("is-active", enabled);
+    pageToggle.setAttribute("aria-checked", String(enabled));
+    syncReviewToggle();
+    if (!enabled) closePanel();
+    else renderMarkers();
+  }
+
+  function renderGlobalNav() {
+    docsNav.replaceChildren();
+    globalSections.forEach(section => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = section.title;
+      button.classList.toggle("is-active", section.id === currentGlobalSectionId);
+      button.addEventListener("click", () => renderGlobalSection(section.id));
+      docsNav.appendChild(button);
+    });
+  }
+
+  async function renderGlobalSection(id) {
+    const section = globalSections.find(item => item.id === id) || globalSections[0];
+    if (!section) return;
+    currentGlobalSectionId = section.id;
+    renderGlobalNav();
+    docsBody.scrollTop = 0;
+    try {
+      await renderRichContent(docsContent, section);
+    } catch (error) {
+      console.error("全局原型说明渲染失败", error);
+      docsContent.innerHTML = "<p>原型说明暂时无法显示。</p>";
+    }
+  }
+
+  function openGlobalDocs() {
+    if (!globalSections.length) return;
+    closeMenu();
+    docsBackdrop.classList.add("is-open");
+    closePanel();
+    markerLayer.replaceChildren();
+    const meta = annotationData.globalMeta || {};
+    docsMeta.textContent = `${meta.version || "V0.1"} · 更新于 ${meta.updatedAt || "未记录"}`;
+    renderGlobalSection(currentGlobalSectionId || globalSections[0].id);
+    requestAnimationFrame(() => docsCloseButton.focus());
+  }
+
+  function closeGlobalDocs() {
+    docsBackdrop.classList.remove("is-open");
+    renderMarkers();
+    launcher.focus();
+  }
+
+  function isReviewMode() {
+    return document.body.classList.contains("protoWeb-review-mode");
+  }
+
+  function readReviewPreferences() {
+    try {
+      return JSON.parse(localStorage.getItem(reviewStorageKey) || "{}") || {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function getDefaultReviewSideWidth(side) {
+    if (window.innerWidth <= 1440) return side === "left" ? 300 : 340;
+    return side === "left" ? 360 : 380;
+  }
+
+  function getReviewSideWidth(side) {
+    const property = side === "left" ? "--protoWeb-review-left-width" : "--protoWeb-review-right-width";
+    return Number.parseFloat(getComputedStyle(reviewWorkspace).getPropertyValue(property)) || getDefaultReviewSideWidth(side);
+  }
+
+  function setReviewSideWidth(side, requestedWidth) {
+    const minimum = side === "left" ? 260 : 300;
+    const hardMaximum = side === "left" ? 760 : 640;
+    const otherSide = side === "left" ? "right" : "left";
+    const ownCollapsed = reviewWorkspace.classList.contains(side === "left" ? "is-left-collapsed" : "is-right-collapsed");
+    const otherCollapsed = reviewWorkspace.classList.contains(otherSide === "left" ? "is-left-collapsed" : "is-right-collapsed");
+    const otherTrack = otherCollapsed ? 44 : getReviewSideWidth(otherSide);
+    const splitterWidth = (ownCollapsed ? 0 : 8) + (otherCollapsed ? 0 : 8);
+    const availableMaximum = window.innerWidth - otherTrack - splitterWidth - 420;
+    const maximum = Math.max(minimum, Math.min(hardMaximum, availableMaximum));
+    const width = Math.round(Math.min(maximum, Math.max(minimum, Number(requestedWidth) || getDefaultReviewSideWidth(side))));
+    const property = side === "left" ? "--protoWeb-review-left-width" : "--protoWeb-review-right-width";
+    if (Math.abs(getReviewSideWidth(side) - width) > 0.5) reviewWorkspace.style.setProperty(property, `${width}px`);
+    const splitter = side === "left" ? reviewLeftSplitter : reviewRightSplitter;
+    splitter?.setAttribute("aria-valuemin", String(minimum));
+    splitter?.setAttribute("aria-valuemax", String(maximum));
+    splitter?.setAttribute("aria-valuenow", String(width));
+    return width;
+  }
+
+  function normalizeReviewSideWidths() {
+    setReviewSideWidth("left", getReviewSideWidth("left"));
+    setReviewSideWidth("right", getReviewSideWidth("right"));
+  }
+
+  function saveReviewPreferences() {
+    try {
+      localStorage.setItem(reviewStorageKey, JSON.stringify({
+        leftCollapsed: reviewWorkspace.classList.contains("is-left-collapsed"),
+        rightCollapsed: reviewWorkspace.classList.contains("is-right-collapsed"),
+        leftWidth: getReviewSideWidth("left"),
+        rightWidth: getReviewSideWidth("right")
+      }));
+    } catch (error) {}
+  }
+
+  function applyReviewPreferences() {
+    const preferences = readReviewPreferences();
+    reviewWorkspace.classList.toggle("is-left-collapsed", Boolean(preferences.leftCollapsed));
+    reviewWorkspace.classList.toggle("is-right-collapsed", Boolean(preferences.rightCollapsed));
+    setReviewSideWidth("left", Number(preferences.leftWidth) || getDefaultReviewSideWidth("left"));
+    setReviewSideWidth("right", Number(preferences.rightWidth) || getDefaultReviewSideWidth("right"));
+  }
+
+  function setReviewSideCollapsed(side, collapsed) {
+    reviewWorkspace.classList.toggle(side === "left" ? "is-left-collapsed" : "is-right-collapsed", collapsed);
+    normalizeReviewSideWidths();
+    saveReviewPreferences();
+    scheduleReviewLayout();
+  }
+
+  function getReviewBusinessNodes() {
+    const phone = document.querySelector(".phone-container");
+    if (phone) return [phone];
+    const explicitNodes = Array.from(document.querySelectorAll("[data-proto-app], [data-proto-portal]"))
+      .filter(node => !root.contains(node) && node !== document.body);
+    if (explicitNodes.length) return explicitNodes;
+    return Array.from(document.body.children).filter(node => {
+      if (node === root || node === dataNode) return false;
+      return !["SCRIPT", "STYLE", "LINK", "TEMPLATE"].includes(node.tagName);
+    });
+  }
+
+  function moveBusinessIntoReviewFrame() {
+    getReviewBusinessNodes().forEach(node => {
+      if (!reviewPlacementAnchors.has(node)) {
+        const anchor = document.createComment(`protoWeb-review-anchor:${node.id || node.className || node.tagName}`);
+        node.parentNode.insertBefore(anchor, node);
+        reviewPlacementAnchors.set(node, anchor);
+      }
+      reviewPrototypeFrame.appendChild(node);
+    });
+  }
+
+  function restoreBusinessFromReviewFrame() {
+    reviewPlacementAnchors.forEach((anchor, node) => {
+      if (anchor.parentNode) anchor.parentNode.insertBefore(node, anchor.nextSibling);
+    });
+  }
+
+  function captureLauncherPlacement() {
+    launcherPlacementBeforeReview = {
+      left: launcher.style.left,
+      top: launcher.style.top,
+      right: launcher.style.right,
+      bottom: launcher.style.bottom
+    };
+  }
+
+  function restoreLauncherPlacement() {
+    if (!launcherPlacementBeforeReview) return;
+    Object.assign(launcher.style, launcherPlacementBeforeReview);
+    launcherPlacementBeforeReview = null;
+  }
+
+  function layoutReviewPrototype() {
+    reviewLayoutFrame = 0;
+    if (!isReviewMode()) return;
+    normalizeReviewSideWidths();
+    reviewPrototypeFrame.style.width = `${reviewDesignWidth}px`;
+    reviewPrototypeFrame.style.height = `${reviewDesignHeight}px`;
+    const availableWidth = Math.max(1, reviewCanvas.clientWidth - reviewCanvasMargin * 2);
+    const availableHeight = Math.max(1, reviewCanvas.clientHeight - reviewCanvasMargin * 2);
+    const scale = Math.min(availableWidth / reviewDesignWidth, availableHeight / reviewDesignHeight);
+    const left = Math.round((reviewCanvas.clientWidth - reviewDesignWidth * scale) / 2);
+    const top = Math.round((reviewCanvas.clientHeight - reviewDesignHeight * scale) / 2);
+    reviewPrototypeFrame.style.transform = `translate(${left}px, ${top}px) scale(${scale})`;
+    reviewPrototypeFrame.dataset.scale = scale.toFixed(4);
+    scheduleMarkerLayout();
+    scheduleAnnotationAudit();
+  }
+
+  function scheduleReviewLayout() {
+    if (!isReviewMode() || reviewLayoutFrame) return;
+    reviewLayoutFrame = requestAnimationFrame(layoutReviewPrototype);
+  }
+
+  function makeReviewSplitterDraggable(splitter, side) {
+    if (!splitter) return;
+    let dragState = null;
+    splitter.addEventListener("pointerdown", event => {
+      if (event.button !== 0) return;
+      dragState = { pointerId: event.pointerId, startX: event.clientX, startWidth: getReviewSideWidth(side) };
+      splitter.setPointerCapture(event.pointerId);
+      splitter.classList.add("is-dragging");
+      reviewWorkspace.classList.add("is-resizing");
+      event.preventDefault();
+    });
+    splitter.addEventListener("pointermove", event => {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      const delta = event.clientX - dragState.startX;
+      setReviewSideWidth(side, dragState.startWidth + (side === "left" ? delta : -delta));
+      scheduleReviewLayout();
+    });
+    const endDrag = event => {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      dragState = null;
+      splitter.classList.remove("is-dragging");
+      reviewWorkspace.classList.remove("is-resizing");
+      saveReviewPreferences();
+      scheduleReviewLayout();
+    };
+    splitter.addEventListener("pointerup", endDrag);
+    splitter.addEventListener("pointercancel", endDrag);
+  }
+
+  function renderReviewDocsNav() {
+    reviewDocsNav.replaceChildren();
+    globalSections.forEach(section => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = section.title;
+      button.classList.toggle("is-active", section.id === currentGlobalSectionId);
+      button.addEventListener("click", () => renderReviewSection(section.id));
+      reviewDocsNav.appendChild(button);
+    });
+  }
+
+  async function renderReviewSection(id) {
+    const section = globalSections.find(item => item.id === id) || globalSections[0];
+    if (!section) {
+      reviewDocsNav.replaceChildren();
+      reviewDocsBody.innerHTML = '<div class="protoWeb-review-empty">暂无原型说明</div>';
+      return;
+    }
+    currentGlobalSectionId = section.id;
+    renderReviewDocsNav();
+    reviewDocsBody.scrollTop = 0;
+    await renderRichContent(reviewDocsBody, section);
+  }
+
+  function getReviewScopeLabel(context) {
+    const scopeNode = context.node;
+    const activeNav = document.querySelector("[data-proto-page].active, [data-page-link].active, .nav-leaf.active, .menu-item.active");
+    return scopeNode?.dataset?.protoWebTitle || activeNav?.textContent?.trim() || context.scope.replace(/^(page|drawer|modal):/, "");
+  }
+
+  function syncReviewToggle() {
+    if (!reviewNoteToggle) return;
+    reviewNoteToggle.setAttribute("aria-checked", String(enabled));
+    reviewNoteToggle.setAttribute("aria-label", enabled ? "隐藏页面标注" : "显示页面标注");
+  }
+
+  function setReviewActiveNote(noteId) {
+    reviewActiveNoteId = noteId;
+    reviewNoteList.querySelectorAll(".protoWeb-review-note-card").forEach(card => card.classList.toggle("is-active", card.dataset.noteId === noteId));
+    markerLayer.querySelectorAll(".protoWeb-marker").forEach(marker => marker.classList.toggle("is-active", marker.dataset.annotationId === noteId));
+  }
+
+  function scrollReviewCardIntoView(noteId) {
+    const card = Array.from(reviewNoteList.querySelectorAll(".protoWeb-review-note-card")).find(item => item.dataset.noteId === noteId);
+    if (!card) return;
+    const listRect = reviewNoteList.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const top = cardRect.top - listRect.top + reviewNoteList.scrollTop - (reviewNoteList.clientHeight - cardRect.height) / 2;
+    reviewNoteList.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    card.focus({ preventScroll: true });
+  }
+
+  function highlightReviewTarget(target) {
+    document.querySelectorAll(".protoWeb-review-target-highlight").forEach(node => node.classList.remove("protoWeb-review-target-highlight"));
+    target.classList.add("protoWeb-review-target-highlight");
+    window.setTimeout(() => target.classList.remove("protoWeb-review-target-highlight"), 1200);
+  }
+
+  function findReviewScrollParent(target) {
+    let parent = target.parentElement;
+    while (parent && parent !== reviewPrototypeFrame) {
+      const style = getComputedStyle(parent);
+      if ((parent.hasAttribute("data-proto-scroll-container") || /(auto|scroll)/.test(style.overflowY)) && parent.scrollHeight > parent.clientHeight + 1) return parent;
+      parent = parent.parentElement;
+    }
+    return null;
+  }
+
+  function locateReviewTarget(note) {
+    const context = getScopeContext();
+    const target = findTarget(note, context.node);
+    if (!isElementRenderable(target, context.node)) return;
+    setReviewActiveNote(note.id);
+    if (note.scroll === false || target.getAttribute("data-proto-scroll") === "none") {
+      highlightReviewTarget(target);
+      return;
+    }
+    const scroller = findReviewScrollParent(target);
+    if (!scroller) {
+      highlightReviewTarget(target);
+      return;
+    }
+    const scrollerRect = scroller.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    if (targetRect.top >= scrollerRect.top && targetRect.bottom <= scrollerRect.bottom) {
+      highlightReviewTarget(target);
+      return;
+    }
+    const scale = Number(reviewPrototypeFrame.dataset.scale) || 1;
+    const targetTop = (targetRect.top - scrollerRect.top) / scale + scroller.scrollTop;
+    const targetHeight = targetRect.height / scale;
+    const maxTop = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
+    const nextTop = Math.min(maxTop, Math.max(0, targetTop - (scroller.clientHeight - targetHeight) / 2));
+    scroller.scrollTo({ top: nextTop, behavior: "smooth" });
+    window.setTimeout(() => highlightReviewTarget(target), 360);
+  }
+
+  async function renderReviewNoteList(context = getScopeContext(), notes = getRenderableScopeNotes(context), signature = "") {
+    const renderVersion = ++reviewRenderVersion;
+    reviewScopeLabel.textContent = getReviewScopeLabel(context);
+    reviewNoteCount.textContent = `${notes.length} 条`;
+    syncReviewToggle();
+    if (!notes.length) {
+      if (renderVersion === reviewRenderVersion) {
+        reviewNoteList.innerHTML = '<div class="protoWeb-review-empty">当前页面暂无标注</div>';
+        reviewContextSignature = signature;
+      }
+      return;
+    }
+    const listRoot = document.createElement("div");
+    reviewNoteList.replaceChildren(listRoot);
+    for (const [index, note] of notes.entries()) {
+      if (renderVersion !== reviewRenderVersion) return;
+      const card = document.createElement("article");
+      card.className = "protoWeb-review-note-card";
+      card.dataset.noteId = note.id;
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label", `定位标注 ${index + 1}：${note.title}`);
+      const number = document.createElement("span");
+      number.className = "protoWeb-review-note-index";
+      number.textContent = String(index + 1);
+      const heading = document.createElement("h3");
+      heading.textContent = note.title;
+      const body = document.createElement("div");
+      body.className = "protoWeb-content";
+      card.append(number, heading, body);
+      const locate = () => locateReviewTarget(note);
+      card.addEventListener("click", locate);
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          locate();
+        }
+      });
+      listRoot.appendChild(card);
+      await renderRichContent(body, note);
+    }
+    if (renderVersion !== reviewRenderVersion) return;
+    reviewContextSignature = signature;
+    setReviewActiveNote(notes.some(note => note.id === reviewActiveNoteId) ? reviewActiveNoteId : "");
+  }
+
+  function syncReviewContext() {
+    if (!isReviewMode()) return;
+    const context = getScopeContext();
+    const notes = getRenderableScopeNotes(context);
+    if (!notes.some(note => note.id === reviewActiveNoteId)) reviewActiveNoteId = "";
+    const signature = `${context.scope}|${enabled ? 1 : 0}|${notes.map(note => note.id).join(",")}`;
+    if (signature !== reviewContextSignature && signature !== reviewPendingSignature) {
+      reviewPendingSignature = signature;
+      renderReviewNoteList(context, notes, signature)
+        .catch(error => console.error("三栏审阅标注列表渲染失败", error))
+        .finally(() => {
+          if (reviewPendingSignature === signature) reviewPendingSignature = "";
+        });
+    } else {
+      setReviewActiveNote(reviewActiveNoteId);
+    }
+    scheduleReviewLayout();
+  }
+
+  function scheduleReviewSync() {
+    if (!isReviewMode() || reviewSyncFrame) return;
+    reviewSyncFrame = requestAnimationFrame(() => {
+      reviewSyncFrame = 0;
+      syncReviewContext();
+    });
+  }
+
+  function enterReviewMode() {
+    if (isReviewMode() && reviewPrototypeFrame && reviewPrototypeFrame.children.length > 0) return;
+    reviewContextSignature = "";
+    reviewPendingSignature = "";
+    captureLauncherPlacement();
+    moveBusinessIntoReviewFrame();
+    applyReviewPreferences();
+    reviewWorkspace.hidden = false;
+    document.body.classList.add("protoWeb-review-mode");
+    closeMenu();
+    closePanel();
+    docsBackdrop.classList.remove("is-open");
+    enabled = true;
+    launcher.classList.add("is-active");
+    pageToggle.setAttribute("aria-checked", "true");
+    syncReviewToggle();
+    renderReviewSection(currentGlobalSectionId).catch(error => console.error("三栏审阅原型说明渲染失败", error));
+    requestAnimationFrame(() => {
+      layoutReviewPrototype();
+      syncReviewContext();
+    });
+  }
+
+  function exitReviewMode() {
+    if (!isReviewMode()) return;
+    reviewRenderVersion += 1;
+    reviewContextSignature = "";
+    reviewPendingSignature = "";
+    document.body.classList.remove("protoWeb-review-mode");
+    restoreBusinessFromReviewFrame();
+    restoreLauncherPlacement();
+    reviewWorkspace.hidden = true;
+    document.querySelectorAll(".protoWeb-review-target-highlight").forEach(node => node.classList.remove("protoWeb-review-target-highlight"));
+    ensureAnnotationLayer(true);
+    requestAnimationFrame(() => {
+      clampLauncher();
+      renderMarkers();
+      scheduleAnnotationAudit();
+    });
+  }
+
+  function syncContext() {
+    ensureAnnotationLayer(false);
+    const context = getScopeContext();
+    const contextNotes = getRenderableScopeNotes(context);
+    if (currentNoteId) {
+      if (contextNotes.some(note => note.id === currentNoteId)) {
+        currentPanelNotes = contextNotes;
+        currentPanelScope = context.scope;
+        panelScopeMismatchSince = 0;
+      } else if (!panelScopeMismatchSince) {
+        panelScopeMismatchSince = performance.now();
+      } else if (performance.now() - panelScopeMismatchSince >= 280) {
+        closePanel();
+      }
+    }
+    scheduleMarkerLayout();
+    scheduleReviewSync();
+    scheduleAnnotationAudit();
+  }
+
+  function runContextRefresh() {
+    contextRefreshFrame = 0;
+    syncContext();
+    if (performance.now() < contextRefreshUntil) {
+      contextRefreshFrame = requestAnimationFrame(runContextRefresh);
+    }
+  }
+
+  function scheduleContextRefresh(settle = false) {
+    if (settle === true) {
+      contextRefreshUntil = Math.max(contextRefreshUntil, performance.now() + 900);
+    }
+    if (!contextRefreshFrame) contextRefreshFrame = requestAnimationFrame(runContextRefresh);
+  }
+
+  function makeDraggable(handle, target, onEnd) {
+    let dragState = null;
+    handle.addEventListener("pointerdown", event => {
+      if (event.button !== 0 || event.target.closest("button")) return;
+      const rect = target.getBoundingClientRect();
+      dragState = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height
+      };
+      target.style.left = `${rect.left}px`;
+      target.style.top = `${rect.top}px`;
+      handle.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    });
+    handle.addEventListener("pointermove", event => {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      const margin = 12;
+      const left = Math.min(Math.max(margin, dragState.left + event.clientX - dragState.startX), window.innerWidth - dragState.width - margin);
+      const top = Math.min(Math.max(margin, dragState.top + event.clientY - dragState.startY), window.innerHeight - dragState.height - margin);
+      target.style.left = `${left}px`;
+      target.style.top = `${top}px`;
+    });
+    const endDrag = event => {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      dragState = null;
+      onEnd?.();
+    };
+    handle.addEventListener("pointerup", endDrag);
+    handle.addEventListener("pointercancel", endDrag);
+  }
+
+  function makeResizable() {
+    document.querySelectorAll(".protoWeb-resize-handle").forEach(handle => {
+      let resizeState = null;
+      handle.addEventListener("pointerdown", event => {
+        if (event.button !== 0 || panel.classList.contains("is-collapsed")) return;
+        const rect = panel.getBoundingClientRect();
+        resizeState = {
+          pointerId: event.pointerId,
+          direction: handle.dataset.direction,
+          startX: event.clientX,
+          startY: event.clientY,
+          left: rect.left,
+          top: rect.top,
+          right: rect.right,
+          bottom: rect.bottom,
+          width: rect.width,
+          height: rect.height
+        };
+        handle.setPointerCapture(event.pointerId);
+        event.preventDefault();
+        event.stopPropagation();
+      });
+      handle.addEventListener("pointermove", event => {
+        if (!resizeState || event.pointerId !== resizeState.pointerId) return;
+        const margin = 12;
+        const minWidth = 320;
+        const minHeight = 220;
+        const dx = event.clientX - resizeState.startX;
+        const dy = event.clientY - resizeState.startY;
+        let left = resizeState.left;
+        let top = resizeState.top;
+        let width = resizeState.width;
+        let height = resizeState.height;
+        const direction = resizeState.direction;
+
+        if (direction.includes("e")) width = Math.min(Math.max(minWidth, resizeState.width + dx), window.innerWidth - margin - resizeState.left);
+        if (direction.includes("w")) {
+          width = Math.min(Math.max(minWidth, resizeState.width - dx), resizeState.right - margin);
+          left = resizeState.right - width;
+        }
+        if (direction.includes("s")) height = Math.min(Math.max(minHeight, resizeState.height + dy), window.innerHeight - margin - resizeState.top);
+        if (direction.includes("n")) {
+          height = Math.min(Math.max(minHeight, resizeState.height - dy), resizeState.bottom - margin);
+          top = resizeState.bottom - height;
+        }
+
+        panel.style.left = `${left}px`;
+        panel.style.top = `${top}px`;
+        panel.style.width = `${width}px`;
+        panel.style.height = `${height}px`;
+        restoredPanelSize = { width, height };
+      });
+      const endResize = event => {
+        if (!resizeState || event.pointerId !== resizeState.pointerId) return;
+        resizeState = null;
+        clampPanel();
+        savePreferences();
+      };
+      handle.addEventListener("pointerup", endResize);
+      handle.addEventListener("pointercancel", endResize);
+    });
+  }
+
+  let launcherDrag = null;
+  let suppressLauncherClick = false;
+  launcher.addEventListener("pointerdown", event => {
+    if (event.button !== 0) return;
+    const rect = launcher.getBoundingClientRect();
+    launcherDrag = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      left: rect.left,
+      top: rect.top,
+      moved: false
+    };
+    launcher.style.left = `${rect.left}px`;
+    launcher.style.top = `${rect.top}px`;
+    launcher.style.right = "auto";
+    launcher.style.bottom = "auto";
+    launcher.setPointerCapture(event.pointerId);
+  });
+  launcher.addEventListener("pointermove", event => {
+    if (!launcherDrag || event.pointerId !== launcherDrag.pointerId) return;
+    const dx = event.clientX - launcherDrag.startX;
+    const dy = event.clientY - launcherDrag.startY;
+    if (Math.hypot(dx, dy) > 5) launcherDrag.moved = true;
+    launcher.style.left = `${Math.min(Math.max(8, launcherDrag.left + dx), window.innerWidth - launcher.offsetWidth - 8)}px`;
+    launcher.style.top = `${Math.min(Math.max(8, launcherDrag.top + dy), window.innerHeight - launcher.offsetHeight - 8)}px`;
+    positionMenu();
+  });
+  launcher.addEventListener("pointerup", event => {
+    if (!launcherDrag || event.pointerId !== launcherDrag.pointerId) return;
+    suppressLauncherClick = launcherDrag.moved;
+    launcherDrag = null;
+    savePreferences();
+  });
+  launcher.addEventListener("click", event => {
+    if (suppressLauncherClick) {
+      suppressLauncherClick = false;
+      event.preventDefault();
+      return;
+    }
+    toggleMenu();
+  });
+
+  makeDraggable(panelHeader, panel, () => {
+    clampPanel();
+    savePreferences();
+  });
+  makeResizable();
+
+  pageToggle.addEventListener("click", event => {
+    event.stopPropagation();
+    toggleAnnotations();
+  });
+  menuFloatModeButton.addEventListener("click", closeMenu);
+  openReviewButton.addEventListener("click", enterReviewMode);
+  reviewFloatModeButton.addEventListener("click", exitReviewMode);
+  reviewColumnsModeButton.addEventListener("click", () => {});
+  reviewCollapseLeftButton.addEventListener("click", () => setReviewSideCollapsed("left", true));
+  reviewExpandLeftButton.addEventListener("click", () => setReviewSideCollapsed("left", false));
+  reviewCollapseRightButton.addEventListener("click", () => setReviewSideCollapsed("right", true));
+  reviewExpandRightButton.addEventListener("click", () => setReviewSideCollapsed("right", false));
+  reviewNoteToggle.addEventListener("click", event => {
+    event.stopPropagation();
+    toggleAnnotations();
+    scheduleReviewSync();
+  });
+  openDocsButton.addEventListener("click", openGlobalDocs);
+  closeButton.addEventListener("click", closePanel);
+  docsCloseButton.addEventListener("click", closeGlobalDocs);
+  docsBackdrop.addEventListener("click", event => {
+    if (event.target === docsBackdrop) closeGlobalDocs();
+  });
+  collapseButton.addEventListener("click", () => {
+    const willCollapse = !panel.classList.contains("is-collapsed");
+    if (willCollapse) {
+      const rect = panel.getBoundingClientRect();
+      restoredPanelSize = { width: Math.max(320, rect.width), height: Math.max(220, rect.height) };
+      panel.classList.add("is-collapsed");
+      panel.style.width = `${Math.min(360, restoredPanelSize.width)}px`;
+      collapseButton.textContent = "+";
+      collapseButton.title = "展开标注窗口";
+    } else {
+      panel.classList.remove("is-collapsed");
+      panel.style.width = `${restoredPanelSize.width}px`;
+      panel.style.height = `${restoredPanelSize.height}px`;
+      collapseButton.textContent = "−";
+      collapseButton.title = "收起标注窗口";
+      requestAnimationFrame(clampPanel);
+    }
+    savePreferences();
+  });
+  prevButton.addEventListener("click", () => movePanel(-1));
+  nextButton.addEventListener("click", () => movePanel(1));
+
+  document.addEventListener("click", event => {
+    rememberImplicitOverlayScope(event.target);
+    if (!menu.contains(event.target) && !launcher.contains(event.target)) closeMenu();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    if (docsBackdrop.classList.contains("is-open")) closeGlobalDocs();
+    else if (menu.classList.contains("is-open")) closeMenu();
+    else if (panel.classList.contains("is-open")) closePanel();
+  });
+  document.addEventListener("scroll", scheduleMarkerLayout, true);
+  document.addEventListener("prototype-annotation:scopechange", () => scheduleContextRefresh(true));
+  const handleHostMotion = event => {
+    if (root.contains(event.target)) return;
+    scheduleContextRefresh(true);
+  };
+  document.addEventListener("animationstart", handleHostMotion, true);
+  document.addEventListener("animationend", handleHostMotion, true);
+  document.addEventListener("animationcancel", handleHostMotion, true);
+  document.addEventListener("transitionrun", handleHostMotion, true);
+  document.addEventListener("transitionend", handleHostMotion, true);
+  document.addEventListener("transitioncancel", handleHostMotion, true);
+  window.addEventListener("resize", () => {
+    clampLauncher();
+    clampPanel();
+    positionMenu();
+    scheduleContextRefresh(true);
+    scheduleReviewLayout();
+    scheduleAnnotationAudit();
+  });
+
+  const scopeObserver = new MutationObserver(records => {
+    if (records.every(record => (record.target === root || root.contains(record.target)) && !reviewPrototypeFrame.contains(record.target))) return;
+    scheduleContextRefresh(true);
+  });
+  scopeObserver.observe(document.body, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["class", "hidden", "style", "aria-hidden", "data-proto-scope", "data-proto-layer"]
+  });
+
+  function inspectCurrentScopeAnnotations() {
+    const context = getScopeContext();
+    const configured = getScopeNotes(context.scope);
+    const invalidTargetIds = [];
+    const hiddenTargetIds = [];
+    const undersizedTargetIds = [];
+    const clippedTargetIds = [];
+    const points = [];
+    configured.forEach(note => {
+      const target = findTarget(note, context.node);
+      if (!target) {
+        invalidTargetIds.push(note.id);
+        return;
+      }
+      if (!isElementRenderable(target, context.node)) {
+        hiddenTargetIds.push(note.id);
+        return;
+      }
+      if (isElementUndersized(target)) undersizedTargetIds.push(note.id);
+      const clipped = getClippedTargetRect(target);
+      if (!clipped) {
+        clippedTargetIds.push(note.id);
+        return;
+      }
+      const x = Math.min(1, Math.max(0, Number(note.x)));
+      const y = Math.min(1, Math.max(0, Number(note.y)));
+      points.push({
+        id: note.id,
+        x: Math.max(clipped.visible.left, Math.min(clipped.visible.right, clipped.original.left + clipped.original.width * x)),
+        y: Math.max(clipped.visible.top, Math.min(clipped.visible.bottom, clipped.original.top + clipped.original.height * y))
+      });
+    });
+    const overlaps = [];
+    for (let index = 0; index < points.length; index += 1) {
+      for (let next = index + 1; next < points.length; next += 1) {
+        if (Math.hypot(points[index].x - points[next].x, points[index].y - points[next].y) < 28) {
+          overlaps.push([points[index].id, points[next].id]);
+        }
+      }
+    }
+    return {
+      scope: context.scope,
+      configuredCount: configured.length,
+      renderableCount: configured.length - invalidTargetIds.length - hiddenTargetIds.length,
+      visibleMarkerCount: points.length,
+      invalidTargetIds,
+      hiddenTargetIds,
+      undersizedTargetIds,
+      clippedTargetIds,
+      overlapPairs: overlaps,
+      outOfViewportIds: points.filter(point => point.x < 0 || point.y < 0 || point.x > window.innerWidth || point.y > window.innerHeight).map(point => point.id)
+    };
+  }
+
+  window.__prototypeWebDiagnostics = {
+    inspect() {
+      return {
+        layerMode: root.dataset.protoWebLayerMode || "unknown",
+        rootZIndex: getComputedStyle(root).zIndex,
+        host: inspectHostLayers(),
+        launcher: getLauncherHitAudit(),
+        scope: getScopeContext().scope,
+        annotationCount: getRenderableScopeNotes().length,
+        annotationIds: getRenderableScopeNotes().map(note => note.id),
+        annotationAudit: inspectCurrentScopeAnnotations(),
+        review: {
+          active: isReviewMode(),
+          designWidth: reviewDesignWidth,
+          designHeight: reviewDesignHeight,
+          scale: Number(reviewPrototypeFrame.dataset.scale || 0),
+          leftWidth: getReviewSideWidth("left"),
+          rightWidth: getReviewSideWidth("right"),
+          leftCollapsed: reviewWorkspace.classList.contains("is-left-collapsed"),
+          rightCollapsed: reviewWorkspace.classList.contains("is-right-collapsed")
+        }
+      };
+    },
+    repair() {
+      ensureAnnotationLayer(true);
+      clampLauncher();
+      scheduleMarkerLayout();
+      scheduleAnnotationAudit();
+    }
+  };
+
+  makeReviewSplitterDraggable(reviewLeftSplitter, "left");
+  makeReviewSplitterDraggable(reviewRightSplitter, "right");
+  if (window.ResizeObserver) new ResizeObserver(scheduleReviewLayout).observe(reviewCanvas);
+
+  ensureAnnotationLayer(false);
+  restorePreferences();
+  enterReviewMode();
+  requestAnimationFrame(() => {
+    scheduleReviewLayout();
+    renderMarkers();
+    scheduleAnnotationAudit();
+  });
+})();
+
+</script>
 </body>
 </html>
