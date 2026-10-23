@@ -1042,6 +1042,18 @@ html.protoMobile-ready body {
 
     <!-- 表单主体卡片 (1:1 像素级复刻截图) -->
     <div class="form-card">
+      <!-- 字段 1：发起企业 (1:1 还原用户最新需求) -->
+      <div class="form-item">
+        <div class="form-label">
+          <span class="req-star">*</span>发起企业
+        </div>
+        <div class="input-box" onclick="openCompanyDrawer()">
+          <span class="input-placeholder" id="companyDisplay">请输入企业名称</span>
+          <svg class="input-arrow" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+      </div>
       <!-- 字段 1：合同模版 -->
       <div class="form-item">
         <div class="form-label">
@@ -1069,6 +1081,44 @@ html.protoMobile-ready body {
     <!-- 底部固定主按钮：创建合同 (1:1 还原截图) -->
     <div class="bottom-bar">
       <button class="btn-submit" onclick="handleSubmit()">创建合同</button>
+    </div>
+  </div>
+
+  
+  <!-- 发起企业选择抽屉 -->
+  <div class="drawer-overlay" id="companyDrawer" onclick="handleMaskClick(event, 'companyDrawer')">
+    <div class="drawer-sheet" onclick="event.stopPropagation()">
+      <div class="drawer-title">请选择发起企业</div>
+      <div class="drawer-list" id="companyList">
+        <div class="drawer-item selected" data-val="苏州蓝豚跃动信息科技有限公司" onclick="selectCompanyItem(this)">
+          <span class="drawer-item-text">苏州蓝豚跃动信息科技有限公司</span>
+          <div class="radio-circle">
+            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+        <div class="drawer-item" data-val="西安华为技术有限公司" onclick="selectCompanyItem(this)">
+          <span class="drawer-item-text">西安华为技术有限公司</span>
+          <div class="radio-circle">
+            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+        <div class="drawer-item" data-val="昆山科森科技股份有限公司" onclick="selectCompanyItem(this)">
+          <span class="drawer-item-text">昆山科森科技股份有限公司</span>
+          <div class="radio-circle">
+            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+        <div class="drawer-item" data-val="苏州汇川技术有限公司" onclick="selectCompanyItem(this)">
+          <span class="drawer-item-text">苏州汇川技术有限公司</span>
+          <div class="radio-circle">
+            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+      </div>
+      <div class="drawer-actions">
+        <button class="drawer-btn drawer-btn-cancel" onclick="closeDrawer('companyDrawer')">取消</button>
+        <button class="drawer-btn drawer-btn-confirm" onclick="confirmCompany()">确定</button>
+      </div>
     </div>
   </div>
 
@@ -1110,6 +1160,39 @@ html.protoMobile-ready body {
   </div>
 
   <script>
+    
+    let tempCompany = '苏州蓝豚跃动信息科技有限公司';
+    let confirmedCompany = '';
+
+    function openCompanyDrawer() {
+      const cur = confirmedCompany || '苏州蓝豚跃动信息科技有限公司';
+      tempCompany = cur;
+      updateCompanyUI('companyList', cur);
+      document.getElementById('companyDrawer').style.display = 'flex';
+    }
+    function selectCompanyItem(el) {
+      el.parentElement.querySelectorAll('.drawer-item').forEach(it => it.classList.remove('selected'));
+      el.classList.add('selected');
+      tempCompany = el.getAttribute('data-val');
+    }
+    function updateCompanyUI(listId, val) {
+      const container = document.getElementById(listId);
+      container.querySelectorAll('.drawer-item').forEach(it => {
+        if (it.getAttribute('data-val') === val) {
+          it.classList.add('selected');
+        } else {
+          it.classList.remove('selected');
+        }
+      });
+    }
+    function confirmCompany() {
+      confirmedCompany = tempCompany;
+      const el = document.getElementById('companyDisplay');
+      el.innerText = confirmedCompany;
+      el.className = 'input-value-text';
+      closeDrawer('companyDrawer');
+    }
+
     let tempTemplate = '临时用工协议-日结';
     let confirmedTemplate = '';
 
@@ -1117,7 +1200,7 @@ html.protoMobile-ready body {
       if (document.referrer) {
         window.history.back();
       } else {
-        window.location.href = 'project_detail.html';
+        window.location.href = 'shouye.html';
       }
     }
 
@@ -1173,7 +1256,7 @@ html.protoMobile-ready body {
 <script id="prototypeAnnotationData" type="application/json">
 {
   "prototypeId": "contract_create",
-  "version": 2,
+  "version": 3,
   "mobile": {
     "appRoot": "[data-proto-app]",
     "deviceWidth": 390
@@ -1191,7 +1274,21 @@ html.protoMobile-ready body {
       "format": "html"
     }
   ],
-  "annotations": []
+  "annotations": [
+    {
+      "id": "note-mvkjs2fb-1-627771dd93",
+      "scope": "page:contract_create",
+      "target": "[data-proto-scope=\"page:contract_create\"] div.form-card",
+      "x": 0.6871794871794872,
+      "y": 0.05092592592592592,
+      "title": "首次进入创建合同说明",
+      "content": "<p>首次需选择合同模板，创建合同后，原电子合同入口进入后可查看该项目，PC端同步可查。</p>",
+      "format": "html",
+      "type": "original",
+      "typeLabel": "原有",
+      "badge": "原有"
+    }
+  ]
 }
 </script>
 
