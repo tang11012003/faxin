@@ -1050,6 +1050,127 @@ html.protoMobile-ready body {
 }
 
 </style>
+
+  <style>
+  /* 申请新增企业入口条 */
+  .apply-company-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 12px;
+    margin: 8px 0 4px 0;
+    background: #F8FBF9;
+    border: 1px dashed #B8ECD4;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .apply-company-entry:active {
+    background: #EDF8F3;
+  }
+  .apply-company-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .add-circle-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .apply-company-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #009944;
+  }
+  .apply-arrow {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* 申请抽屉样式 */
+  .apply-company-sheet {
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .drawer-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .drawer-close-btn {
+    border: none;
+    background: none;
+    font-size: 24px;
+    line-height: 1;
+    color: #9497B1;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  .apply-company-tip {
+    font-size: 12px;
+    line-height: 17px;
+    color: #8C98A4;
+    background: #F4F6F9;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+  }
+  .apply-form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .apply-form-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+  }
+  .apply-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #202536;
+  }
+  .apply-input {
+    width: 100%;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid #E2E6EE;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #202536;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+  }
+  .apply-input:focus {
+    border-color: #00D679;
+  }
+  .apply-upload-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #FAFAFC;
+    border: 1px dashed #D1D5DF;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .upload-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  .upload-text {
+    font-size: 12.5px;
+    color: #009944;
+    font-weight: 500;
+  }
+  </style>
+
 </head>
 <body data-proto-platform="mobile">
 
@@ -1149,6 +1270,75 @@ html.protoMobile-ready body {
     </div>
   </div>
 
+  
+  <!-- 抽屉 3：申请新增派遣单位资质报备抽屉 (1:1 闭环原安心日保核心诉求) -->
+  <div class="drawer-overlay" id="applyCompanyDrawerMask" onclick="handleMaskClick(event, 'applyCompanyDrawerMask')">
+    <div class="drawer-sheet apply-company-sheet" onclick="event.stopPropagation()">
+      <div class="drawer-header-row">
+        <div class="drawer-title" style="margin-bottom:0;">申请新增派遣单位</div>
+        <button class="drawer-close-btn" type="button" onclick="closeDrawer('applyCompanyDrawerMask')">&times;</button>
+      </div>
+      <div class="apply-company-tip">
+        单位资质报备通过后，可在安心日保投保时选为被保险单位。平台将在 1 小时内完成核验。
+      </div>
+
+      <div class="apply-form-body">
+        <!-- 单位全称 -->
+        <div class="apply-form-item">
+          <label class="apply-label"><span class="req-star">*</span>单位全称</label>
+          <input type="text" class="apply-input" id="newCompanyName" placeholder="请输入派遣单位/企业全称 (如: 昆山科森劳务派遣有限公司)" value="昆山科森劳务派遣有限公司" />
+        </div>
+
+        <!-- 统一信用代码 -->
+        <div class="apply-form-item">
+          <label class="apply-label"><span class="req-star">*</span>统一社会信用代码</label>
+          <input type="text" class="apply-input" id="newCompanyCode" placeholder="请输入18位代码" value="91320583MA1W9KXX76" />
+        </div>
+
+        <!-- 资质证明照片 -->
+        <div class="apply-form-item">
+          <label class="apply-label"><span class="req-star">*</span>营业执照 / 劳务派遣资质 (点击上传)</label>
+          <div class="apply-upload-box" id="uploadLicenseBox" onclick="simulateUploadLicense()">
+            <svg class="upload-icon" id="uploadIconSvg" viewBox="0 0 24 24" fill="none" stroke="#00D679" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span class="upload-text" id="uploadLicenseText">已选择：营业执照资质核验原件 (副本.jpg)</span>
+          </div>
+        </div>
+
+        <!-- 经办人联系电话 -->
+        <div class="apply-form-item">
+          <label class="apply-label">经办人联系电话</label>
+          <input type="text" class="apply-input" id="newCompanyPhone" placeholder="用于接收资质核验通过通知" value="139****5822" />
+        </div>
+      </div>
+
+      <div class="drawer-actions" style="margin-top: 14px;">
+        <button class="drawer-btn drawer-btn-cancel" onclick="closeDrawer('applyCompanyDrawerMask')">返回</button>
+        <button class="drawer-btn drawer-btn-confirm" onclick="submitNewCompanyApplication()">提交报备申请</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 报备成功轻提示模态框 -->
+  <div class="feedback-modal" id="applySuccessModal" onclick="closeApplySuccessModal()">
+    <div class="feedback-card" onclick="event.stopPropagation()">
+      <div class="feedback-icon-box" style="background: #E8FFEA; margin-bottom: 12px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00B42A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <div class="feedback-title" style="color: #1D2129; margin-bottom: 6px;">单位报备申请已提交</div>
+      <div class="feedback-desc" id="applySuccessDesc" style="color: #64748B; font-size: 13px; line-height: 19px; margin-bottom: 18px;">
+        单位已加入可选列表！平台将进行合规背书，当前您可直接选定并完成投保配置。
+      </div>
+      <button class="feedback-btn" style="background:#00D679; color:#fff;" onclick="closeApplySuccessModal()">立即使用该单位</button>
+    </div>
+  </div>
+
   <!-- 抽屉 2：请选择企业/派遣单位 (1:1 像素级复刻图2 media_1792640570763_c2c0438f.png) -->
   <div class="drawer-overlay" id="enterpriseDrawerMask" onclick="handleMaskClick(event, 'enterpriseDrawerMask')">
     <div class="drawer-sheet" onclick="event.stopPropagation()">
@@ -1195,6 +1385,22 @@ html.protoMobile-ready body {
             </svg>
           </div>
         </div>
+      
+        <!-- 申请新增派遣单位快捷入口 (解决无匹配单位时的业务阻断) -->
+        <div class="apply-company-entry" onclick="openApplyCompanyDrawer()">
+          <div class="apply-company-left">
+            <svg class="add-circle-icon" viewBox="0 0 24 24" fill="none" stroke="#00D679" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            <span class="apply-company-text">没有找到需要的单位？点此申请新增</span>
+          </div>
+          <svg class="apply-arrow" viewBox="0 0 24 24" fill="none" stroke="#9497B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </div>
+
       </div>
       <div class="drawer-actions">
         <button class="drawer-btn drawer-btn-cancel" onclick="closeDrawer('enterpriseDrawerMask')">取消</button>
@@ -1311,7 +1517,7 @@ html.protoMobile-ready body {
 <script id="prototypeAnnotationData" type="application/json">
 {
   "prototypeId": "insurance_create",
-  "version": 2,
+  "version": 3,
   "mobile": {
     "appRoot": "[data-proto-app]",
     "deviceWidth": 390
@@ -1329,7 +1535,21 @@ html.protoMobile-ready body {
       "format": "html"
     }
   ],
-  "annotations": []
+  "annotations": [
+    {
+      "id": "note-mvkjxvco-1-89bc10d011",
+      "scope": "page:insurance_create",
+      "target": "[data-proto-scope=\"page:insurance_create\"] div.nav-bar",
+      "x": 0.617948717948718,
+      "y": 0.4375,
+      "title": "去投保业务说明",
+      "content": "<p>开通投保业务的，首次进入需选择商品和派遣单位。点击确定后同步创建安心日保项目，原安心日保、PC端都可查</p>",
+      "format": "html",
+      "type": "original",
+      "typeLabel": "原有",
+      "badge": "原有"
+    }
+  ]
 }
 </script>
 
@@ -2745,5 +2965,80 @@ html.protoMobile-ready body {
 })();
 
 </script>
+
+  <script>
+  function openApplyCompanyDrawer() {
+    closeDrawer('enterpriseDrawerMask');
+    document.getElementById('applyCompanyDrawerMask').style.display = 'flex';
+  }
+
+  function simulateUploadLicense() {
+    const txt = document.getElementById('uploadLicenseText');
+    if (txt) {
+      txt.innerText = '已选择：营业执照资质核验原件 (副本.jpg)';
+    }
+  }
+
+  let latestAppliedCompanyName = '';
+
+  function submitNewCompanyApplication() {
+    const nameInput = document.getElementById('newCompanyName');
+    const compName = nameInput ? nameInput.value.trim() : '';
+    if (!compName) {
+      alert('请输入派遣单位/企业全称');
+      return;
+    }
+
+    latestAppliedCompanyName = compName;
+
+    // 动态在 enterpriseList 顶部插入该全新报备的企业选项
+    const list = document.getElementById('enterpriseList');
+    if (list) {
+      list.querySelectorAll('.drawer-item').forEach(it => it.classList.remove('selected'));
+
+      const newItem = document.createElement('div');
+      newItem.className = 'drawer-item selected';
+      newItem.setAttribute('data-val', compName);
+      newItem.onclick = function() { selectDrawerItem(this, 'enterprise'); };
+      newItem.innerHTML = `
+        <span class="drawer-item-text">${compName} <span style="font-size:11px;color:#00D679;font-weight:600;margin-left:4px;">[最新报备]</span></span>
+        <div class="radio-circle">
+          <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+      `;
+      list.insertBefore(newItem, list.firstChild);
+    }
+
+    // 更新选中值
+    tempSelectedEnterprise = compName;
+    confirmedEnterprise = compName;
+
+    // 回填到主界面
+    const label = document.getElementById('enterpriseLabel');
+    if (label) {
+      label.innerText = compName;
+      label.className = 'selector-value-text';
+    }
+
+    // 关闭申请抽屉
+    closeDrawer('applyCompanyDrawerMask');
+
+    // 打开成功轻提示模态框
+    const modal = document.getElementById('applySuccessModal');
+    if (modal) {
+      modal.style.display = 'flex';
+    }
+  }
+
+  function closeApplySuccessModal() {
+    const modal = document.getElementById('applySuccessModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+  </script>
+
 </body>
 </html>
