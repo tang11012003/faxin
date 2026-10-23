@@ -1822,6 +1822,40 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
   };
   </script>
 
+
+  <style>
+  /* 未开通按钮置灰样式 (实现一半灰、一半没灰) */
+  .btn-bottom-action.is-disabled-feature {
+    background: #F2F3F5 !important;
+    color: #B4B9C2 !important;
+    border: 1px solid #E5E6EB !important;
+    opacity: 0.72;
+    cursor: pointer;
+  }
+
+  /* 修复弹窗遮罩：固定在屏幕视口中，100%全覆盖且绝对居中，杜绝半截灰 */
+  .feature-not-enabled-mask {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(15, 23, 42, 0.55) !important;
+    backdrop-filter: blur(2px) !important;
+    z-index: 99999 !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+  }
+  .feature-not-enabled-mask.active {
+    display: flex !important;
+  }
+  </style>
+
 </head>
 <body data-proto-platform="web">
   <div class="phone-container" data-proto-app data-proto-platform="web" data-proto-scope="page:project_detail">
@@ -1973,10 +2007,10 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
     </div>
 
     <div class="bottom-bar" id="projectBottomBar">
-      <button class="btn-bottom-action btn-contract" onclick="showFeatureNotEnabledModal('contract')" id="btnBottomContract">
+      <button class="btn-bottom-action btn-contract is-disabled-feature" onclick="showFeatureNotEnabledModal('contract')" id="btnBottomContract">
         <span>签合同</span>
       </button>
-      <button class="btn-bottom-action btn-insurance" onclick="showFeatureNotEnabledModal('insurance')" id="btnBottomInsurance">
+      <button class="btn-bottom-action btn-insurance is-disabled-feature" onclick="showFeatureNotEnabledModal('insurance')" id="btnBottomInsurance">
         <span>去投保</span>
       </button>
       <button class="btn-bottom-action btn-pay" onclick="handlePayAction()" id="btnBottomPay">
