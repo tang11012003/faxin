@@ -1776,6 +1776,113 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
   }
   </style>
 
+
+  <style>
+  .feature-not-enabled-mask {
+    position: absolute !important;
+    inset: 0 !important;
+    background: rgba(15, 23, 42, 0.55) !important;
+    backdrop-filter: blur(2px) !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+  }
+  .feature-not-enabled-box {
+    width: 100% !important;
+    max-width: 290px !important;
+    background: #FFFFFF !important;
+    border-radius: 16px !important;
+    padding: 24px 20px 20px 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22) !important;
+    animation: fnePopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  @keyframes fnePopIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .fne-icon-wrap {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 26px !important;
+    background: #FFF7E6;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 14px !important;
+  }
+  .fne-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #1F2329 !important;
+    margin-bottom: 8px !important;
+  }
+  .fne-desc {
+    font-size: 13px !important;
+    line-height: 19px !important;
+    color: #64748B !important;
+    margin-bottom: 20px !important;
+    text-align: center !important;
+  }
+  .fne-btn {
+    width: 100% !important;
+    height: 40px !important;
+    background: #00D679 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #FFFFFF !important;
+    cursor: pointer !important;
+    transition: opacity 0.15s ease !important;
+  }
+  .fne-btn:active {
+    opacity: 0.85 !important;
+  }
+  </style>
+
+
+  <script>
+  window.showFeatureNotEnabledModal = function(type) {
+    const drawer = document.getElementById('moreActionsDrawer');
+    if (drawer) drawer.style.display = 'none';
+
+    const modal = document.getElementById('featureNotEnabledModal');
+    const title = document.getElementById('fneTitle');
+    const desc = document.getElementById('fneDesc');
+    const iconWrap = document.getElementById('fneIconWrap');
+    if (!modal) {
+      alert('功能暂未开通，请联系管理员开通');
+      return;
+    }
+    
+    if (type === 'contract') {
+      title.textContent = '电子合同暂未开通';
+      desc.textContent = '当前企业暂未开通【电子用工合同】服务。开通后支持向员工手机端一键推送协议并实名签署。如需开通，请联系企业主管理员。';
+      if (iconWrap) iconWrap.style.background = '#E6F4FF';
+    } else if (type === 'insurance') {
+      title.textContent = '投保服务暂未开通';
+      desc.textContent = '当前企业暂未开通【灵活用工意外险】服务。开通后支持按天灵活加保，对冲用工意外风险。如需开通，请联系企业主管理员。';
+      if (iconWrap) iconWrap.style.background = '#FFF7E6';
+    } else {
+      title.textContent = '功能暂未开通';
+      desc.textContent = '当前功能暂未向企业开放。如需使用，请联系企业主管理员配置开通。';
+    }
+    modal.style.display = 'flex';
+  };
+  window.closeFeatureNotEnabledModal = function(e) {
+    if (e && e.target && e.target !== e.currentTarget) return;
+    const modal = document.getElementById('featureNotEnabledModal');
+    if (modal) modal.style.display = 'none';
+  };
+  </script>
+
 </head>
 <body data-proto-platform="web">
   <div class="phone-container" data-proto-app data-proto-platform="web" data-proto-scope="page:project_detail">
@@ -1909,6 +2016,23 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
     <div class="list-end-tip" id="listEndTip">没有更多了</div>
 
     <!-- 底部固定操作条 (MasterGo 740:109213 1:1 三按钮平铺：签合同 / 去投保 / 去发薪) -->
+    
+    <!-- 功能未开通友好提示弹窗 (嵌入手机容器，100%居中可见) -->
+    <div id="featureNotEnabledModal" class="feature-not-enabled-mask" style="display:none;" onclick="closeFeatureNotEnabledModal(event)">
+      <div class="feature-not-enabled-box" onclick="event.stopPropagation()">
+        <div class="fne-icon-wrap" id="fneIconWrap">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FA8C16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="fne-title" id="fneTitle">功能暂未开通</div>
+        <div class="fne-desc" id="fneDesc">当前企业暂未开通该服务。如需使用，请联系企业主管理员配置开通。</div>
+        <button class="fne-btn" type="button" onclick="closeFeatureNotEnabledModal()">我知道了</button>
+      </div>
+    </div>
+
     <div class="bottom-bar" id="projectBottomBar">
       <button class="btn-bottom-action btn-contract" onclick="showFeatureNotEnabledModal('contract')" id="btnBottomContract">
         <span>签合同</span>
@@ -4238,54 +4362,5 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
 
 </script>
 
-  <!-- 功能未开通友好提示弹窗 (微信原生风格无侵入) -->
-  <div id="featureNotEnabledModal" class="feature-not-enabled-mask" style="display:none;" onclick="closeFeatureNotEnabledModal(event)">
-    <div class="feature-not-enabled-box" onclick="event.stopPropagation()">
-      <div class="fne-icon-wrap" id="fneIconWrap">
-        <svg id="fneIconSvg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FA8C16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-      </div>
-      <div class="fne-title" id="fneTitle">功能暂未开通</div>
-      <div class="fne-desc" id="fneDesc">当前企业暂未开通该服务。如需使用，请联系企业主管理员配置开通。</div>
-      <button class="fne-btn" type="button" onclick="closeFeatureNotEnabledModal()">我知道了</button>
-    </div>
-  </div>
-
-  <script>
-  function showFeatureNotEnabledModal(type) {
-    // 若开启了抽屉，先关掉抽屉
-    const drawer = document.getElementById('moreActionsDrawer');
-    if (drawer) drawer.style.display = 'none';
-
-    const modal = document.getElementById('featureNotEnabledModal');
-    const title = document.getElementById('fneTitle');
-    const desc = document.getElementById('fneDesc');
-    const iconWrap = document.getElementById('fneIconWrap');
-    if (!modal) return;
-    
-    if (type === 'contract') {
-      title.textContent = '电子合同暂未开通';
-      desc.textContent = '当前企业暂未开通【电子用工合同】服务。开通后支持向员工手机端一键推送协议并实名签署。如需开通，请联系企业主管理员。';
-      if (iconWrap) iconWrap.style.background = '#E6F4FF';
-    } else if (type === 'insurance') {
-      title.textContent = '投保服务暂未开通';
-      desc.textContent = '当前企业暂未开通【灵活用工意外险】服务。开通后支持按天灵活加保，对冲用工意外风险。如需开通，请联系企业主管理员。';
-      if (iconWrap) iconWrap.style.background = '#FFF7E6';
-    } else {
-      title.textContent = '功能暂未开通';
-      desc.textContent = '当前功能暂未向企业开放。如需使用，请联系企业主管理员配置开通。';
-    }
-    modal.style.display = 'flex';
-  }
-  function closeFeatureNotEnabledModal(e) {
-    if (e && e.target && e.target !== e.currentTarget) return;
-    const modal = document.getElementById('featureNotEnabledModal');
-    if (modal) modal.style.display = 'none';
-  }
-  </script>
-
-</body>
+  </body>
 </html>
