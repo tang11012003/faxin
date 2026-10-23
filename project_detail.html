@@ -1706,6 +1706,76 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
 }
 
 </style>
+
+  <style>
+  .feature-not-enabled-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.48);
+    backdrop-filter: blur(2px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .feature-not-enabled-box {
+    width: 100%;
+    max-width: 310px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 28px 24px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);
+    animation: fnePopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes fnePopIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .fne-icon-wrap {
+    width: 56px;
+    height: 56px;
+    border-radius: 28px;
+    background: #FFF7E6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .fne-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1F2329;
+    margin-bottom: 10px;
+  }
+  .fne-desc {
+    font-size: 13.5px;
+    line-height: 20px;
+    color: #64748B;
+    margin-bottom: 22px;
+    text-align: center;
+  }
+  .fne-btn {
+    width: 100%;
+    height: 42px;
+    background: #00D679;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+  .fne-btn:active {
+    opacity: 0.85;
+  }
+  </style>
+
 </head>
 <body data-proto-platform="web">
   <div class="phone-container" data-proto-app data-proto-platform="web" data-proto-scope="page:project_detail">
@@ -1840,10 +1910,10 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
 
     <!-- 底部固定操作条 (MasterGo 740:109213 1:1 三按钮平铺：签合同 / 去投保 / 去发薪) -->
     <div class="bottom-bar" id="projectBottomBar">
-      <button class="btn-bottom-action btn-contract" onclick="handleContractAction()" id="btnBottomContract">
+      <button class="btn-bottom-action btn-contract" onclick="showFeatureNotEnabledModal('contract')" id="btnBottomContract">
         <span>签合同</span>
       </button>
-      <button class="btn-bottom-action btn-insurance" onclick="handleInsuranceAction()" id="btnBottomInsurance">
+      <button class="btn-bottom-action btn-insurance" onclick="showFeatureNotEnabledModal('insurance')" id="btnBottomInsurance">
         <span>去投保</span>
       </button>
       <button class="btn-bottom-action btn-pay" onclick="handlePayAction()" id="btnBottomPay">
@@ -1861,7 +1931,7 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
         </div>
         <div class="drawer-menu-list">
           <!-- 签合同 (MasterGo 740:125612) -->
-          <div class="drawer-menu-item" onclick="handleDrawerContract()">
+          <div class="drawer-menu-item" onclick="showFeatureNotEnabledModal('contract')">
             <div class="drawer-item-icon icon-contract">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1677FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -1882,7 +1952,7 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
           </div>
 
           <!-- 去投保 (MasterGo 740:125612) -->
-          <div class="drawer-menu-item" onclick="handleDrawerInsurance()">
+          <div class="drawer-menu-item" onclick="showFeatureNotEnabledModal('insurance')">
             <div class="drawer-item-icon icon-insurance">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00D679" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -4167,5 +4237,55 @@ body.protoWeb-review-mode .protoWeb-docs-backdrop { display: none !important; }
 })();
 
 </script>
+
+  <!-- 功能未开通友好提示弹窗 (微信原生风格无侵入) -->
+  <div id="featureNotEnabledModal" class="feature-not-enabled-mask" style="display:none;" onclick="closeFeatureNotEnabledModal(event)">
+    <div class="feature-not-enabled-box" onclick="event.stopPropagation()">
+      <div class="fne-icon-wrap" id="fneIconWrap">
+        <svg id="fneIconSvg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FA8C16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <div class="fne-title" id="fneTitle">功能暂未开通</div>
+      <div class="fne-desc" id="fneDesc">当前企业暂未开通该服务。如需使用，请联系企业主管理员配置开通。</div>
+      <button class="fne-btn" type="button" onclick="closeFeatureNotEnabledModal()">我知道了</button>
+    </div>
+  </div>
+
+  <script>
+  function showFeatureNotEnabledModal(type) {
+    // 若开启了抽屉，先关掉抽屉
+    const drawer = document.getElementById('moreActionsDrawer');
+    if (drawer) drawer.style.display = 'none';
+
+    const modal = document.getElementById('featureNotEnabledModal');
+    const title = document.getElementById('fneTitle');
+    const desc = document.getElementById('fneDesc');
+    const iconWrap = document.getElementById('fneIconWrap');
+    if (!modal) return;
+    
+    if (type === 'contract') {
+      title.textContent = '电子合同暂未开通';
+      desc.textContent = '当前企业暂未开通【电子用工合同】服务。开通后支持向员工手机端一键推送协议并实名签署。如需开通，请联系企业主管理员。';
+      if (iconWrap) iconWrap.style.background = '#E6F4FF';
+    } else if (type === 'insurance') {
+      title.textContent = '投保服务暂未开通';
+      desc.textContent = '当前企业暂未开通【灵活用工意外险】服务。开通后支持按天灵活加保，对冲用工意外风险。如需开通，请联系企业主管理员。';
+      if (iconWrap) iconWrap.style.background = '#FFF7E6';
+    } else {
+      title.textContent = '功能暂未开通';
+      desc.textContent = '当前功能暂未向企业开放。如需使用，请联系企业主管理员配置开通。';
+    }
+    modal.style.display = 'flex';
+  }
+  function closeFeatureNotEnabledModal(e) {
+    if (e && e.target && e.target !== e.currentTarget) return;
+    const modal = document.getElementById('featureNotEnabledModal');
+    if (modal) modal.style.display = 'none';
+  }
+  </script>
+
 </body>
 </html>
