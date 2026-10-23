@@ -291,12 +291,18 @@ html, body, #app, .page-body {
 
 <script>
 // 发薪管理系统专属默认页面清单
-const UNIFIED_STORAGE_KEY = 'FAXIN_PRD_PAGES_REGISTRY_V1';
+const UNIFIED_STORAGE_KEY = 'FAXIN_PRD_PAGES_REGISTRY_V2';
 const DEFAULT_PAGES = [
   {
     "id": "shouye",
-    "name": "移动端首页",
+    "name": "首页",
     "path": "shouye.html",
+    "visible": true
+  },
+  {
+    "id": "project_detail",
+    "name": "发薪",
+    "path": "project_detail.html",
     "visible": true
   },
   {
@@ -306,14 +312,14 @@ const DEFAULT_PAGES = [
     "visible": true
   },
   {
-    "id": "project_detail",
-    "name": "员工管理与详情",
-    "path": "project_detail.html",
+    "id": "contract_list",
+    "name": "电子合同",
+    "path": "contract_list.html",
     "visible": true
   },
   {
     "id": "contract_create",
-    "name": "签订合同",
+    "name": "创建合同",
     "path": "contract_create.html",
     "visible": true
   },
@@ -324,34 +330,28 @@ const DEFAULT_PAGES = [
     "visible": true
   },
   {
-    "id": "create_project",
-    "name": "创建项目",
-    "path": "create_project.html",
-    "visible": true
-  },
-  {
-    "id": "company_project",
-    "name": "企业项目列表",
-    "path": "company_project.html",
+    "id": "insurance_list",
+    "name": "安心日保",
+    "path": "insurance_list.html",
     "visible": true
   },
   {
     "id": "insurance_create",
-    "name": "员工批量加保",
+    "name": "创建投保",
     "path": "insurance_create.html",
     "visible": true
   },
   {
-    "id": "login",
-    "name": "子弹人力云 PC登录",
-    "path": "login.html",
-    "visible": false
+    "id": "insurance_detail",
+    "name": "加保详情",
+    "path": "insurance_detail.html",
+    "visible": true
   },
   {
-    "id": "login_crm",
-    "name": "子弹CRM 登录",
-    "path": "login_crm.html",
-    "visible": false
+    "id": "dispatch_unit",
+    "name": "申请派遣单位",
+    "path": "dispatch_unit.html",
+    "visible": true
   }
 ];
 

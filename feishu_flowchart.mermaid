@@ -1,0 +1,45 @@
+flowchart TD
+    Start["创建项目 / 员工完成报名入职"] --> CheckContract{"检查项目合同状态"}
+
+    %% 第一阶段：签合同
+    subgraph S1["第一阶段：签合同（用工合规）"]
+        CheckContract -- "未绑定模板" --> CreateContract["跳转创建合同 (contract_create.html)\n选定行业模板 / 设置签约期限"]
+        CreateContract --> BindTpl["项目绑定合同模板成功"]
+        CheckContract -- "已绑定模板" --> BindTpl
+        BindTpl --> PushSign["项目详情 / 列表发起推签\n通过微信服务通知或短信推送"]
+        PushSign --> EmpSign{"员工手机端签署"}
+        EmpSign -- "实名+人脸+电子手写签" --> ContractSigned["合同状态变更为：已签署"]
+        EmpSign -- "超时未签 / 拒绝" --> ContractPending["保持待签状态，支持一键催签"]
+    end
+
+    %% 第二阶段：去投保
+    subgraph S2["第二阶段：去投保（用工保障）"]
+        ContractSigned --> CheckInsurance{"检查项目保险配置"}
+        ContractPending --> CheckInsurance
+        CheckInsurance -- "未配置方案" --> SelectPlan["跳转配置投保 (insurance_create.html)\n选择意外险方案与保障额度"]
+        SelectPlan --> BindPlan["完成投保方案绑定"]
+        CheckInsurance -- "已配置方案" --> BindPlan
+        BindPlan --> SelectEmp["进入批量加保页 (insurance_add.html)\n勾选今日上岗出勤人员名单"]
+        SelectEmp --> PayPremium["核对保费并从企业资金账户扣除"]
+        PayPremium --> PolicyActive["即时生成保单，状态变更为：已投保"]
+    end
+
+    %% 第三阶段：去发薪
+    subgraph S3["第三阶段：去发薪（业务闭环）"]
+        PolicyActive --> PrePayCheck{"发薪前置合规与风控校验"}
+        PrePayCheck -- "存在未签约人员" --> ComplianceAlert["提示合规风险\n可选择一键推签或允许豁免发薪"]
+        PrePayCheck -- "全部合规已签约" --> EnterPay["进入发薪页 (pay_salary.html)"]
+        ComplianceAlert --> EnterPay
+        EnterPay --> AdjustAmount["核对发放人员、出勤工时与实发金额\n支持单人改薪或批量调薪"]
+        AdjustAmount --> CheckBalance{"企业可用发薪余额充足?"}
+        CheckBalance -- "余额不足" --> TopUp["引导充值 / 资金专户调拨"]
+        TopUp --> CheckBalance
+        CheckBalance -- "充足" --> ConfirmPay["提交发薪，调用银行/三方支付通道"]
+        ConfirmPay --> PaySuccess["发薪成功\n生成电子工资条并下发银行流水\n首页已发薪人数实时更新"]
+    end
+
+    %% 样式定义
+    style Start fill:#F2F3F5,stroke:#C9CDD4,stroke-width:1px,color:#1D2129
+    style ContractSigned fill:#E8FFEA,stroke:#00B42A,stroke-width:1px,color:#00B42A
+    style PolicyActive fill:#E8F3FF,stroke:#165DFF,stroke-width:1px,color:#165DFF
+    style PaySuccess fill:#E8FFEA,stroke:#00B42A,stroke-width:2px,color:#00B42A

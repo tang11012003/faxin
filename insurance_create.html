@@ -1230,7 +1230,7 @@ html.protoMobile-ready body {
     <div class="btn-submit-wrap">
       <button class="btn-submit" onclick="handleSubmit()">确定</button>
     </div>
-  </div>
+
 
   <!-- 抽屉 1：请选择保险商品 (1:1 像素级复刻图1 media_1792640550533_8b5b07b8.png) -->
   <div class="drawer-overlay" id="productDrawerMask" onclick="handleMaskClick(event, 'productDrawerMask')">
@@ -1271,74 +1271,6 @@ html.protoMobile-ready body {
   </div>
 
   
-  <!-- 抽屉 3：申请新增派遣单位资质报备抽屉 (1:1 闭环原安心日保核心诉求) -->
-  <div class="drawer-overlay" id="applyCompanyDrawerMask" onclick="handleMaskClick(event, 'applyCompanyDrawerMask')">
-    <div class="drawer-sheet apply-company-sheet" onclick="event.stopPropagation()">
-      <div class="drawer-header-row">
-        <div class="drawer-title" style="margin-bottom:0;">申请新增派遣单位</div>
-        <button class="drawer-close-btn" type="button" onclick="closeDrawer('applyCompanyDrawerMask')">&times;</button>
-      </div>
-      <div class="apply-company-tip">
-        单位资质报备通过后，可在安心日保投保时选为被保险单位。平台将在 1 小时内完成核验。
-      </div>
-
-      <div class="apply-form-body">
-        <!-- 单位全称 -->
-        <div class="apply-form-item">
-          <label class="apply-label"><span class="req-star">*</span>单位全称</label>
-          <input type="text" class="apply-input" id="newCompanyName" placeholder="请输入派遣单位/企业全称 (如: 昆山科森劳务派遣有限公司)" value="昆山科森劳务派遣有限公司" />
-        </div>
-
-        <!-- 统一信用代码 -->
-        <div class="apply-form-item">
-          <label class="apply-label"><span class="req-star">*</span>统一社会信用代码</label>
-          <input type="text" class="apply-input" id="newCompanyCode" placeholder="请输入18位代码" value="91320583MA1W9KXX76" />
-        </div>
-
-        <!-- 资质证明照片 -->
-        <div class="apply-form-item">
-          <label class="apply-label"><span class="req-star">*</span>营业执照 / 劳务派遣资质 (点击上传)</label>
-          <div class="apply-upload-box" id="uploadLicenseBox" onclick="simulateUploadLicense()">
-            <svg class="upload-icon" id="uploadIconSvg" viewBox="0 0 24 24" fill="none" stroke="#00D679" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-            <span class="upload-text" id="uploadLicenseText">已选择：营业执照资质核验原件 (副本.jpg)</span>
-          </div>
-        </div>
-
-        <!-- 经办人联系电话 -->
-        <div class="apply-form-item">
-          <label class="apply-label">经办人联系电话</label>
-          <input type="text" class="apply-input" id="newCompanyPhone" placeholder="用于接收资质核验通过通知" value="139****5822" />
-        </div>
-      </div>
-
-      <div class="drawer-actions" style="margin-top: 14px;">
-        <button class="drawer-btn drawer-btn-cancel" onclick="closeDrawer('applyCompanyDrawerMask')">返回</button>
-        <button class="drawer-btn drawer-btn-confirm" onclick="submitNewCompanyApplication()">提交报备申请</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 报备成功轻提示模态框 -->
-  <div class="feedback-modal" id="applySuccessModal" onclick="closeApplySuccessModal()">
-    <div class="feedback-card" onclick="event.stopPropagation()">
-      <div class="feedback-icon-box" style="background: #E8FFEA; margin-bottom: 12px;">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00B42A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-      </div>
-      <div class="feedback-title" style="color: #1D2129; margin-bottom: 6px;">单位报备申请已提交</div>
-      <div class="feedback-desc" id="applySuccessDesc" style="color: #64748B; font-size: 13px; line-height: 19px; margin-bottom: 18px;">
-        单位已加入可选列表！平台将进行合规背书，当前您可直接选定并完成投保配置。
-      </div>
-      <button class="feedback-btn" style="background:#00D679; color:#fff;" onclick="closeApplySuccessModal()">立即使用该单位</button>
-    </div>
-  </div>
-
   <!-- 抽屉 2：请选择企业/派遣单位 (1:1 像素级复刻图2 media_1792640570763_c2c0438f.png) -->
   <div class="drawer-overlay" id="enterpriseDrawerMask" onclick="handleMaskClick(event, 'enterpriseDrawerMask')">
     <div class="drawer-sheet" onclick="event.stopPropagation()">
@@ -1409,6 +1341,9 @@ html.protoMobile-ready body {
     </div>
   </div>
 
+
+  </div>
+
   <script>
     // 状态记录
     let tempSelectedProduct = 'FD日保80万';
@@ -1451,10 +1386,6 @@ html.protoMobile-ready body {
 
     // 2. 派遣单位前置判断与抽屉处理
     function handleEnterpriseClick() {
-      // 业务硬约束：未选保险商品时点击无反应
-      if (!confirmedProduct) {
-        return;
-      }
       const current = confirmedEnterprise || '申通快递';
       tempSelectedEnterprise = current;
       updateDrawerUI('enterpriseList', current);
@@ -2968,8 +2899,7 @@ html.protoMobile-ready body {
 
   <script>
   function openApplyCompanyDrawer() {
-    closeDrawer('enterpriseDrawerMask');
-    document.getElementById('applyCompanyDrawerMask').style.display = 'flex';
+    window.location.href = "dispatch_unit.html";
   }
 
   function simulateUploadLicense() {

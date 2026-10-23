@@ -232,25 +232,286 @@
 
     /* 半屏选择抽屉遮罩 (375px 手机视口对齐) */
     .drawer-overlay {
-      position: fixed;
-      inset: 0;
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(0, 0, 0, 0.5);
-      z-index: 100;
+      z-index: 999 !important;
       display: none;
       align-items: flex-end;
       justify-content: center;
     }
-    .drawer-sheet {
-      width: 375px;
+        .drawer-sheet {
+      width: 100%;
       max-width: 100%;
       background: #FFFFFF;
       border-radius: 16px 16px 0 0;
-      padding: 20px 16px 24px 16px;
+      padding: 16px 16px 18px 16px;
       box-sizing: border-box;
       animation: sheetUp 0.22s ease-out;
-      max-height: 80vh;
+      max-height: 70%;
       display: flex;
       flex-direction: column;
+    }
+    .drawer-title {
+      flex-shrink: 0;
+      margin-bottom: 8px;
+    }
+    .drawer-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      padding-right: 2px;
+    }
+    
+    /* 设置合同到期时间半屏抽屉 (1:1 像素级复刻图二 media_1792744621271_0e3ee619.png) */
+    .expire-drawer-overlay {
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 1000 !important;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .expire-drawer-sheet {
+      width: 100%;
+      background: #FFFFFF;
+      border-radius: 16px 16px 0 0;
+      padding: 16px 16px 20px 16px;
+      box-sizing: border-box;
+      animation: sheetUp 0.2s ease-out;
+      display: flex;
+      flex-direction: column;
+    }
+    .expire-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .expire-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #202536;
+    }
+    .expire-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      line-height: 1;
+      color: #9497B1;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    .expire-unit-segmented {
+      display: flex;
+      background: #F4F5F8;
+      border-radius: 8px;
+      padding: 3px;
+      margin: 0 auto 16px auto;
+      width: 180px;
+    }
+    .segmented-btn {
+      flex: 1;
+      height: 28px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      color: #64748B;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .segmented-btn.active {
+      background: #FFFFFF;
+      color: #00D679;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .expire-display-val {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 800;
+      color: #202536;
+      margin-bottom: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+    }
+    .expire-display-unit {
+      font-size: 22px;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+    /* 数字九宫格数字键盘与绿色完成按钮 */
+    .keypad-grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .keypad-btn {
+      height: 48px;
+      background: #FFFFFF;
+      border: 1px solid #EBECEF;
+      border-radius: 6px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #202536;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.1s;
+    }
+    .keypad-btn:active {
+      background: #F2F3F5;
+    }
+    .keypad-btn.btn-zero {
+      grid-column: span 2;
+    }
+    .btn-keypad-done {
+      grid-column: 4;
+      grid-row: span 3;
+      height: 100%;
+      background: #00D679;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 214, 121, 0.3);
+    }
+    .btn-keypad-done:active {
+      background: #00BF6C;
+    }
+
+    
+    /* 雇佣企业抽屉搜索框 (1:1 像素级复刻图一) */
+    .company-search-box {
+      margin-bottom: 12px;
+      height: 38px;
+      background: #F4F6F9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 6px;
+    }
+    .company-search-box svg {
+      width: 15px;
+      height: 15px;
+      stroke: #9497B1;
+    }
+    .company-search-input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 13.5px;
+      color: #202536;
+      width: 100%;
+    }
+    .company-search-input::placeholder {
+      color: #9497B1;
+    }
+
+    /* 雇佣企业列表项样式 (1:1 像素级复刻图一：无单选圆圈，纯文本列表带微底色与悬停) */
+    .company-item-clean {
+      padding: 13px 8px;
+      font-size: 14.5px;
+      color: #33384B;
+      font-weight: 500;
+      border-bottom: 1px solid #F5F6F9;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .company-item-clean:active,
+    .company-item-clean.selected {
+      background: #F0FBF6;
+      color: #00BF6A;
+      font-weight: 600;
+    }
+
+    /* 底部未找到对应企业去创建条目 (浅绿底色，+ 未找到对应企业，去创建) */
+    .company-create-bar {
+      margin-top: 8px;
+      background: #E8F9F1;
+      height: 38px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00BF6A;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .company-create-bar:active {
+      background: #D4F4E4;
+    }
+
+    /* 合同模版抽屉项 (1:1 像素级复刻图二：左对齐纯文本列表) */
+    .template-item-clean {
+      padding: 13px 8px;
+      font-size: 14.5px;
+      color: #33384B;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 1px solid #F8F9FA;
+      transition: background 0.12s;
+    }
+    .template-item-clean:active,
+    .template-item-clean.selected {
+      background: #F0FBF6;
+      color: #00BF6A;
+      font-weight: 600;
+    }
+
+    /* 抽屉顶部标题栏 (带右侧关闭 X 按钮，1:1 还原截图) */
+    .drawer-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .drawer-title-bold {
+      font-size: 16px;
+      font-weight: 700;
+      color: #202536;
+      text-align: center;
+      flex: 1;
+      margin-left: 20px;
+    }
+    .drawer-x-btn {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      color: #9497B1;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .drawer-actions {
+      flex-shrink: 0;
+      display: flex;
+      gap: 12px;
+      margin-top: auto;
     }
     @keyframes sheetUp {
       from { transform: translateY(100%); }
@@ -1078,43 +1339,38 @@ html.protoMobile-ready body {
       </div>
     </div>
 
-    <!-- 底部固定主按钮：创建合同 (1:1 还原截图) -->
-    <div class="bottom-bar">
-      <button class="btn-submit" onclick="handleSubmit()">创建合同</button>
-    </div>
-  </div>
-
-  
-  <!-- 发起企业选择抽屉 -->
+  <!-- 发起企业/雇佣企业选择抽屉 (1:1 像素级复刻图一 media_1792744799753_6a450c83.png) -->
   <div class="drawer-overlay" id="companyDrawer" onclick="handleMaskClick(event, 'companyDrawer')">
     <div class="drawer-sheet" onclick="event.stopPropagation()">
-      <div class="drawer-title">请选择发起企业</div>
+      <div class="drawer-header-row">
+        <div class="drawer-title-bold">雇佣企业</div>
+        <button class="drawer-x-btn" type="button" onclick="closeDrawer('companyDrawer')">&times;</button>
+      </div>
+      
+      <!-- 搜索企业框 -->
+      <div class="company-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="company-search-input" id="companySearchInput" placeholder="请输入企业名称" oninput="filterCompanies(this.value)">
+      </div>
+
+      <!-- 企业列表 (复刻图一全部企业项) -->
       <div class="drawer-list" id="companyList">
-        <div class="drawer-item selected" data-val="苏州蓝豚跃动信息科技有限公司" onclick="selectCompanyItem(this)">
-          <span class="drawer-item-text">苏州蓝豚跃动信息科技有限公司</span>
-          <div class="radio-circle">
-            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-        </div>
-        <div class="drawer-item" data-val="西安华为技术有限公司" onclick="selectCompanyItem(this)">
-          <span class="drawer-item-text">西安华为技术有限公司</span>
-          <div class="radio-circle">
-            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-        </div>
-        <div class="drawer-item" data-val="昆山科森科技股份有限公司" onclick="selectCompanyItem(this)">
-          <span class="drawer-item-text">昆山科森科技股份有限公司</span>
-          <div class="radio-circle">
-            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-        </div>
-        <div class="drawer-item" data-val="苏州汇川技术有限公司" onclick="selectCompanyItem(this)">
-          <span class="drawer-item-text">苏州汇川技术有限公司</span>
-          <div class="radio-circle">
-            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
+        <div class="company-item-clean" data-val="昆山华泰企业管理有限公司" onclick="selectCleanCompany(this)">昆山华泰企业管理有限公司</div>
+        <div class="company-item-clean" data-val="南京霸碗供应链管理有限公司" onclick="selectCleanCompany(this)">南京霸碗供应链管理有限公司</div>
+        <div class="company-item-clean" data-val="爱士惟新能源技术（扬中）有限公司" onclick="selectCleanCompany(this)">爱士惟新能源技术（扬中）有限公司</div>
+        <div class="company-item-clean" data-val="苏州迅景企业管理咨询有限公司" onclick="selectCleanCompany(this)">苏州迅景企业管理咨询有限公司</div>
+        <div class="company-item-clean" data-val="浙江五芳斋电子商务有限公司" onclick="selectCleanCompany(this)">浙江五芳斋电子商务有限公司</div>
+        <div class="company-item-clean selected" data-val="嘉兴无问西东供应链有限公司" onclick="selectCleanCompany(this)">嘉兴无问西东供应链有限公司</div>
+
+        <!-- 底部浅绿条：+ 未找到对应企业，去创建 -->
+        <div class="company-create-bar" onclick="alert('即将跳转至企业资质认证/报备创建页面')">
+          + 未找到对应企业，去创建
         </div>
       </div>
+
       <div class="drawer-actions">
         <button class="drawer-btn drawer-btn-cancel" onclick="closeDrawer('companyDrawer')">取消</button>
         <button class="drawer-btn drawer-btn-confirm" onclick="confirmCompany()">确定</button>
@@ -1122,45 +1378,62 @@ html.protoMobile-ready body {
     </div>
   </div>
 
-  <!-- 合同模版选择抽屉 -->
+  <!-- 合同模版选择抽屉 (1:1 像素级复刻图二 media_1792744817526_8981c7fb.png) -->
   <div class="drawer-overlay" id="templateDrawer" onclick="handleMaskClick(event, 'templateDrawer')">
     <div class="drawer-sheet" onclick="event.stopPropagation()">
-      <div class="drawer-title">请选择合同模版</div>
-      <div class="drawer-list" id="templateList">
-        <div class="drawer-item selected" data-val="临时用工协议-日结" onclick="selectItem(this, 'template')">
-          <span class="drawer-item-text">临时用工协议-日结</span>
-          <div class="radio-circle">
-            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-        </div>
-        <div class="drawer-item" data-val="自由职业者劳务协议" onclick="selectItem(this, 'template')">
-          <span class="drawer-item-text">自由职业者劳务协议</span>
-          <div class="radio-circle">
-            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-        </div>
-        <div class="drawer-item" data-val="兼职用工合同模板" onclick="selectItem(this, 'template')">
-          <span class="drawer-item-text">兼职用工合同模板</span>
-          <div class="radio-circle">
-            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-        </div>
-        <div class="drawer-item" data-val="岗位外包劳务服务协议" onclick="selectItem(this, 'template')">
-          <span class="drawer-item-text">岗位外包劳务服务协议</span>
-          <div class="radio-circle">
-            <svg class="radio-inner-check" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-        </div>
+      <div class="drawer-header-row">
+        <div class="drawer-title-bold">合同模版</div>
+        <button class="drawer-x-btn" type="button" onclick="closeDrawer('templateDrawer')">&times;</button>
       </div>
+      
+      <!-- 模版列表 (1:1 像素级复刻图二全部模版项) -->
+      <div class="drawer-list" id="templateList">
+        <div class="template-item-clean selected" data-val="临时用工协议-日结" onclick="selectCleanTemplate(this)">临时用工协议-日结</div>
+        <div class="template-item-clean" data-val="临时用工协议-日结" onclick="selectCleanTemplate(this)">临时用工协议-日结</div>
+        <div class="template-item-clean" data-val="临时用工协议-日结" onclick="selectCleanTemplate(this)">临时用工协议-日结</div>
+        <div class="template-item-clean" data-val="劳务用工合同" onclick="selectCleanTemplate(this)">劳务用工合同</div>
+        <div class="template-item-clean" data-val="发薪SaaS系统-服务协议-签署版本" onclick="selectCleanTemplate(this)">发薪SaaS系统-服务协议-签署版本</div>
+        <div class="template-item-clean" data-val="直客加盟协议(模板)" onclick="selectCleanTemplate(this)">直客加盟协议(模板)</div>
+        <div class="template-item-clean" data-val="劳动合同书-测试模版2" onclick="selectCleanTemplate(this)">劳动合同书-测试模版2</div>
+      </div>
+
       <div class="drawer-actions">
         <button class="drawer-btn drawer-btn-cancel" onclick="closeDrawer('templateDrawer')">取消</button>
-        <button class="drawer-btn drawer-btn-confirm" onclick="confirmTemplate()">确定</button>
+        <button class="drawer-btn drawer-btn-confirm" onclick="confirmTemplate()">确认</button>
       </div>
     </div>
   </div>
 
+    <!-- 底部固定主按钮：创建合同 (1:1 还原截图) -->
+    <div class="bottom-bar">
+      <button class="btn-submit" onclick="handleSubmit()">创建合同</button>
+    </div>
+  </div>
+
+  
   <script>
     
+    
+    function selectCleanCompany(el) {
+      document.querySelectorAll('#companyList .company-item-clean').forEach(it => it.classList.remove('selected'));
+      el.classList.add('selected');
+      tempCompany = el.getAttribute('data-val');
+    }
+
+    function selectCleanTemplate(el) {
+      document.querySelectorAll('#templateList .template-item-clean').forEach(it => it.classList.remove('selected'));
+      el.classList.add('selected');
+      tempTemplate = el.getAttribute('data-val');
+    }
+
+    function filterCompanies(val) {
+      const kw = val.trim().toLowerCase();
+      document.querySelectorAll('#companyList .company-item-clean').forEach(it => {
+        const text = it.innerText.toLowerCase();
+        it.style.display = text.includes(kw) ? 'block' : 'none';
+      });
+    }
+
     let tempCompany = '苏州蓝豚跃动信息科技有限公司';
     let confirmedCompany = '';
 
@@ -1205,6 +1478,70 @@ html.protoMobile-ready body {
     }
 
     // 模版抽屉
+    
+    
+    let currentEditingTemplate = '';
+    let currentExpireNum = '10';
+    let currentExpireUnit = '天';
+
+    function editSpecificTemplate(tplName) {
+      currentEditingTemplate = tplName;
+      // 打开设置合同到期时间抽屉 (图二)
+      document.getElementById('expireTimeDrawer').style.display = 'flex';
+    }
+
+    function closeExpireTimeDrawer() {
+      document.getElementById('expireTimeDrawer').style.display = 'none';
+    }
+
+    function setExpireUnit(unit) {
+      document.querySelectorAll('.segmented-btn').forEach(btn => btn.classList.remove('active'));
+      const unitMap = { '年': '年', '月': '个月', '日': '天' };
+      currentExpireUnit = unitMap[unit] || '天';
+      if (unit === '年') document.getElementById('segYear').classList.add('active');
+      else if (unit === '月') document.getElementById('segMonth').classList.add('active');
+      else document.getElementById('segDay').classList.add('active');
+
+      document.getElementById('expireUnitVal').innerText = currentExpireUnit;
+    }
+
+    function pressKey(key) {
+      if (key === 'backspace') {
+        currentExpireNum = currentExpireNum.slice(0, -1);
+        if (!currentExpireNum) currentExpireNum = '0';
+      } else if (key === '.') {
+        if (!currentExpireNum.includes('.')) {
+          currentExpireNum += '.';
+        }
+      } else {
+        if (currentExpireNum === '0' || currentExpireNum === '10' && !window.__keypadTouched) {
+          currentExpireNum = key;
+          window.__keypadTouched = true;
+        } else {
+          currentExpireNum += key;
+        }
+      }
+      document.getElementById('expireNumVal').innerText = currentExpireNum;
+    }
+
+    function confirmExpireTime() {
+      closeExpireTimeDrawer();
+      window.__keypadTouched = false;
+      // 轻提示或回显
+      const tplItem = document.querySelector(`[data-val="${currentEditingTemplate}"] .drawer-item-text`);
+      if (tplItem && !tplItem.innerHTML.includes('到期')) {
+        tplItem.innerHTML = `${currentEditingTemplate} <span style="font-size:11.5px;color:#00D679;font-weight:600;margin-left:4px;">(${currentExpireNum}${currentExpireUnit}到期)</span>`;
+      }
+    }
+
+    function _old_editSpecificTemplate(tplName) {
+      sessionStorage.setItem('edit_template_name', tplName);
+      window.location.href = 'contract_list.html?tab=template&edit=' + encodeURIComponent(tplName);
+    }
+    function goToTemplateManagement() {
+      window.location.href = 'contract_list.html?tab=template';
+    }
+
     function openTemplateDrawer() {
       const cur = confirmedTemplate || '临时用工协议-日结';
       tempTemplate = cur;
